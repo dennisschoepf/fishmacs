@@ -10,6 +10,7 @@ tramp
 *.save
 .lsp-session-v1
 projectile-bookmarks.el
+
 recentf
 
 # Org-mode

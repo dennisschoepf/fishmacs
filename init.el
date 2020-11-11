@@ -73,3 +73,4 @@
 ;; Angular development
 
 ;; Org mode
+(load-file "./$HOME/.config/emacs/includes/orgmode.el")
