@@ -5,6 +5,11 @@
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 (package-initialize)
+
+(use-package exec-path-from-shell
+	:init (when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize)))
+
 (unless package-archive-contents
   (package-refresh-contents))
 
@@ -23,7 +28,7 @@
  '(custom-safe-themes
 	 '("5036346b7b232c57f76e8fb72a9c0558174f87760113546d3a9838130f1cdb74" default))
  '(package-selected-packages
-	 '(web-mode projectile ivy which-key neotree doom-themes doom-modeline use-package)))
+	 '(magit exec-path-from-shell lsp-ivy lsp-mode company highlight-indent-guides add-node-modules-path prettier swiper prettier-js flycheck web-mode projectile ivy which-key neotree doom-themes doom-modeline use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -34,31 +39,34 @@
 ;; --- ACTUAL CONFIG BELOW ---
 
 ;; Default configuration before everything else
-(load-file "./$HOME/.emacs.d/includes/defaults.el")
+(load-file "./$HOME/.config/emacs/includes/defaults.el")
 
 ;; Keybindings
-(load-file "./$HOME/.emacs.d/includes/keybindings.el")
-
-;; Theming & Appearance
-(load-file "./$HOME/.emacs.d/includes/appearance.el")
-
-;; Sidebar / File Manager
-(load-file "./$HOME/.emacs.d/includes/sidebar.el")
-
-;; Window & Buffer management
-(load-file "./$HOME/.emacs.d/includes/window.el")
-
-;; Helpers
-(load-file "./$HOME/.emacs.d/includes/helpers.el")
+(load-file "./$HOME/.config/emacs/includes/keybindings.el")
 
 ;; Search & generic autocompletion
-(load-file "./$HOME/.emacs.d/includes/completion.el")
+(load-file "./$HOME/.config/emacs/includes/completion.el")
+
+;; Theming & Appearance
+(load-file "./$HOME/.config/emacs/includes/appearance.el")
+
+;; Sidebar / File Manager
+(load-file "./$HOME/.config/emacs/includes/sidebar.el")
+
+;; Window & Buffer management
+(load-file "./$HOME/.config/emacs/includes/window.el")
+
+;; Helpers
+(load-file "./$HOME/.config/emacs/includes/helpers.el")
 
 ;; Project management
-(load-file "./$HOME/.emacs.d/includes/project.el")
+(load-file "./$HOME/.config/emacs/includes/project.el")
+
+;; Git
+(load-file "./$HOME/.config/emacs/includes/git.el")
 
 ;; Generic development
-(load-file "./$HOME/.emacs.d/includes/dev-environment.el")
+(load-file "./$HOME/.config/emacs/includes/dev-environment.el")
 
 ;; React development
 

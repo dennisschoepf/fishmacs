@@ -6,5 +6,5 @@
   ("C-c p" . projectile-command-map)
   :init
 	(setq projectile-switch-project-action #'projectile-dired)
-  (when (file-directory-p "~/Repositories/")
-		(setq projectile-project-search-path '("~/Repositories/digitalh/" "~/Repositories/personal/" "~/Repositories/university/" "~/Repositories/util/" ))))
+  (when (file-directory-p "~/")
+		(setq projectile-project-search-path '("~/Repositories/digitalh/" "~/Repositories/personal/" "~/Repositories/university/" "~/Repositories/util/" "~/Dropbox/orgnzr"))))
