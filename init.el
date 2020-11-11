@@ -28,7 +28,7 @@
  '(custom-safe-themes
 	 '("5036346b7b232c57f76e8fb72a9c0558174f87760113546d3a9838130f1cdb74" default))
  '(package-selected-packages
-	 '(magit exec-path-from-shell lsp-ivy lsp-mode company highlight-indent-guides add-node-modules-path prettier swiper prettier-js flycheck web-mode projectile ivy which-key neotree doom-themes doom-modeline use-package)))
+	 '(multiple-cursors magit exec-path-from-shell lsp-ivy lsp-mode company highlight-indent-guides add-node-modules-path prettier swiper prettier-js flycheck web-mode projectile ivy which-key neotree doom-themes doom-modeline use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
