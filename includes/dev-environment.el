@@ -10,6 +10,7 @@
 	(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 	(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
 	(add-to-list 'auto-mode-alist '("\\.[s]css?\\'" . web-mode))
+	(add-to-list 'auto-mode-alist '("\\.json\\'" . web-mode))
 	(setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
 	(setq typescript-indent-level 2)
 	(setq js-indent-level 2)
@@ -23,6 +24,8 @@
   (setq web-mode-code-indent-offset 2)
   (setq react-indent-level 2)
 	(setq web-mode-script-padding 2)
+	:hook
+	(web-mode . lsp-deferred)
 	:init
 	(add-hook 'web-mode-hook 'web-mode-init-hook))
 

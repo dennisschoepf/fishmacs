@@ -13,3 +13,14 @@
 (electric-pair-mode t)
 (cua-mode t)
 (show-paren-mode 1)
+
+;; Disable line numbers for a few modes
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+;; Important keybinding
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
