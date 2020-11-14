@@ -11,10 +11,8 @@
 	 ("C-c a" . org-agenda)
 	 ("C-c c" . org-capture))
 	:config
-	(setq org-agenda-files (directory-files-recursively "~/Dropbox/orgnzr" "\\.org$"))
-	(setq org-ellipsis " ▾")
-	:init
-	(add-hook 'after-save-hook 'org-icalendar-combine-agenda-files))
+	(setq org-agenda-files (list "~/Dropbox/orgnzr/_university.org" "~/Dropbox/orgnzr/in.org" "~/Dropbox/orgnzr/tickler.org"))
+	(setq org-ellipsis " ▾"))
 
 (use-package visual-fill-column
   :hook (org-mode . dnsc/org-mode-visual-fill))

@@ -27,10 +27,11 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
 	 '("5036346b7b232c57f76e8fb72a9c0558174f87760113546d3a9838130f1cdb74" default))
+ '(js-indent-level 2)
  '(org-agenda-files
 	 '("~/Dropbox/orgnzr/university/courses/content_management_systems/assignment4.org" "~/Dropbox/orgnzr/university/courses/impacts_of_future_technologies/analysis_of_the_now.org" "~/Dropbox/orgnzr/university/courses/impacts_of_future_technologies/envisioning_the_future.org" "~/Dropbox/orgnzr/in.org"))
  '(package-selected-packages
-	 '(multiple-cursors magit exec-path-from-shell lsp-ivy lsp-mode company highlight-indent-guides add-node-modules-path prettier swiper prettier-js flycheck web-mode projectile ivy which-key neotree doom-themes doom-modeline use-package)))
+	 '(company-quickhelp js-mode json-mode rjsx-mode multiple-cursors magit exec-path-from-shell lsp-ivy lsp-mode company highlight-indent-guides add-node-modules-path prettier swiper prettier-js flycheck web-mode projectile ivy which-key neotree doom-themes doom-modeline use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
