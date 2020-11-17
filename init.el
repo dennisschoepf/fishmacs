@@ -116,13 +116,29 @@
 
 ;; Packages
 (use-package org
+  :hook
+	(org-mode . flyspell-mode)
+	(org-mode . auto-fill-mode)
 	:bind
 	(("C-c l" . org-store-link)
 	 ("C-c a" . org-agenda)
 	 ("C-c c" . org-capture))
 	:config
 	(setq org-agenda-files (list "~/Dropbox/orgnzr/_university.org" "~/Dropbox/orgnzr/_personal.org" "~/Dropbox/orgnzr/_work.org" "~/Dropbox/orgnzr/in.org" "~/Dropbox/orgnzr/tickler.org"))
-	(setq org-ellipsis " ▾"))
+	(setq org-ellipsis " ▾")
+	(setq org-indent-indentation-per-level 1)
+	(setq org-adapt-indentation nil)
+	(setq org-hide-leading-stars 't)
+	(setq org-hide-emphasis-markers t)
+	(setq org-cycle-separator-lines 1)
+	(setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+	(setf org-blank-after-new-entry '((heading . nil) (plain-list-item . nil))))
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-s") 'save-buffer)
@@ -132,3 +148,4 @@
 (global-set-key (kbd "C-c <up>")    'windmove-up)
 (global-set-key (kbd "C-c <down>")  'windmove-down)
 (global-set-key (kbd "C-M-b") 'switch-to-buffer)
+(global-set-key (kbd "<f6>") (lambda() (interactive)(find-file "~/.config/emacs/configuration.org")))
