@@ -1,3 +1,10 @@
+#+TITLE: Personal fishmacs configuration
+
+* Global Configuration
+
+All the global modes and global UI configuration.
+
+#+begin_src emacs-lisp :tangle ./init.el
 (setq inhibit-startup-message t)
 (setq visible-bell t)
 (setq-default tab-width 2)
@@ -23,7 +30,13 @@
 
 ;; Important keybinding
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+#+end_src
 
+* Package Management
+
+Package management with use-package.
+
+#+begin_src emacs-lisp :tangle ./init.el
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
@@ -43,7 +56,12 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
+#+end_src
+* General Appearance
 
+I use Fira Code as my main monospace font and doom-horizon as my color theme of choice. Also I use a pretty small doom-modeline.
+
+#+begin_src emacs-lisp :tangle ./init.el
 ;; Set font & font size
 (set-face-attribute 'default nil :font "Fira Code Retina" :height 130)
 
@@ -56,19 +74,36 @@
   :init (load-theme 'doom-horizon t)
 	(doom-themes-org-config)
 	(doom-themes-treemacs-config))
+#+end_src
 
+* Window Movement & Corruption
+
+I'm setting the meta key to move around in windows but also set some keybindings to move around in org-mode.
+
+#+begin_src emacs-lisp :tangle ./init.el
 (windmove-default-keybindings 'meta)
 (global-set-key (kbd "C-c <left>")  'windmove-left)
 (global-set-key (kbd "C-c <right>") 'windmove-right)
 (global-set-key (kbd "C-c <up>")    'windmove-up)
 (global-set-key (kbd "C-c <down>")  'windmove-down)
+#+end_src
 
+* File Tree / Sidebar
+
+I'm using neotree to display my sidebar.
+
+#+begin_src emacs-lisp :tangle ./init.el
 (use-package neotree
   :config
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   :init
   (global-set-key [f8] 'neotree-toggle))
+#+end_src
+* Auto-completion & Search
 
+For autocompletion and search I use Swiper, Ivy and Company.
+
+#+begin_src emacs-lisp :tangle ./init.el
 (use-package swiper)
 
 (use-package ivy
@@ -84,7 +119,12 @@
   :config
   (setq company-idle-delay 0.1)
   (global-company-mode t))
+#+end_src
+* UI helpers & tweaks
 
+I use which-key to help me find out about commands I do not have in my mind. Also I use multiple cursors.
+
+#+begin_src emacs-lisp :tangle ./init.el
 (use-package which-key
   :init (which-key-mode)
   :diminish which-key-mode
@@ -95,7 +135,13 @@
 	:bind
 	(("C-M-l" . mc/mark-all-like-this)
 	 ("C-S-<mouse-1>" . 'mc/add-cursor-on-click)))
+#+end_src
 
+* Project Management
+
+Projectile for project management.
+
+#+begin_src emacs-lisp :tangle ./init.el
 (use-package projectile
 	:diminish projectile-mode
 	:config (projectile-mode)
@@ -105,15 +151,37 @@
   :init
 	(setq projectile-switch-project-action #'projectile-dired)
 	(setq projectile-project-search-path '("~/Repositories/digitalh/" "~/Repositories/personal/" "~/Repositories/university/" "~/Repositories/util/" "~/Dropbox/" "/var/www/")))
+#+end_src
+* Git
 
+#+begin_src emacs-lisp :tangle ./init.el
 (use-package magit
 	:bind(("C-g" . magit-status)))
+#+end_src
+* Dev Environment
 
+** General Dev Setup
+** HTML & CSS
+** JS
+** TS
+** JSX
+** TSX
+** Angular
+** PHP
+** Wordpress
+
+* Writing setup
+
+#+begin_src emacs-lisp :tangle ./init.el
 (use-package olivetti
   :hook
   (org-mode . olivetti-mode)
   (text-mode . olivetti-mode))
+#+end_src
 
+* Org mode
+
+#+begin_src emacs-lisp :tangle ./init.el
 ;; Packages
 (use-package org
 	:bind
@@ -123,7 +191,11 @@
 	:config
 	(setq org-agenda-files (list "~/Dropbox/orgnzr/_university.org" "~/Dropbox/orgnzr/_personal.org" "~/Dropbox/orgnzr/_work.org" "~/Dropbox/orgnzr/in.org" "~/Dropbox/orgnzr/tickler.org"))
 	(setq org-ellipsis " ▾"))
+#+end_src
 
+* My special keybindings
+
+#+begin_src emacs-lisp :tangle ./init.el
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-p") 'projectile-find-file)
@@ -132,3 +204,4 @@
 (global-set-key (kbd "C-c <up>")    'windmove-up)
 (global-set-key (kbd "C-c <down>")  'windmove-down)
 (global-set-key (kbd "C-M-b") 'switch-to-buffer)
+#+end_src
