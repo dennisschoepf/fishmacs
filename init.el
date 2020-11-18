@@ -109,6 +109,26 @@
 (use-package magit
 	:bind(("C-g" . magit-status)))
 
+(defun efs/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook
+  (lsp-mode . efs/lsp-mode-setup)
+  (rjsx-mode . lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ivy)
+
+(use-package rjsx-mode
+  :mode "\\.js\\'"
+  :config (setq js-indent-level 2))
+
 (use-package olivetti
   :hook
   (org-mode . olivetti-mode)
@@ -141,7 +161,7 @@
   :ensure nil
   :diminish
   :custom
-  (org-indent-indentation-per-level ))
+  (org-indent-indentation-per-level 1))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-s") 'save-buffer)

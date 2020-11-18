@@ -155,12 +155,38 @@ Projectile for project management.
 	:bind(("C-g" . magit-status)))
 #+end_src
 * Development Environment
-
 ** General Dev Setup
+*** LSP
+
+#+begin_src emacs-lisp :tangle ./init.el
+(defun efs/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook
+  (lsp-mode . efs/lsp-mode-setup)
+  (rjsx-mode . lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ivy)
+#+end_src
+
 ** HTML & CSS
 ** JS
 ** TS
 ** JSX
+
+#+begin_src emacs-lisp :tangle ./init.el
+(use-package rjsx-mode
+  :mode "\\.js\\'"
+  :config (setq js-indent-level 2))
+#+end_src
+
 ** TSX
 ** Angular
 ** PHP
@@ -203,7 +229,7 @@ Projectile for project management.
   :ensure nil
   :diminish
   :custom
-  (org-indent-indentation-per-level ))
+  (org-indent-indentation-per-level 1))
 #+end_src
 * My special keybindings
 
