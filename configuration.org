@@ -168,6 +168,7 @@ Projectile for project management.
   :hook
   (lsp-mode . efs/lsp-mode-setup)
   (rjsx-mode . lsp-deferred)
+  (typescript-mode . lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
   :config
@@ -177,17 +178,36 @@ Projectile for project management.
 #+end_src
 
 ** HTML & CSS
-** JS
 ** TS
+
+#+begin_src emacs-lisp :tangle ./init.el
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+#+end_src
+
 ** JSX
 
 #+begin_src emacs-lisp :tangle ./init.el
 (use-package rjsx-mode
   :mode "\\.js\\'"
-  :config (setq js-indent-level 2))
+  :hook (rjsx-mode . lsp-deferred)
+  :config
+  (setq js-indent-level 2))
 #+end_src
 
-** TSX
+** JSON
+
+#+begin_src emacs-lisp :tangle ./init.el
+(use-package json-mode
+  :mode "\\.json\\'"
+  :hook (rjsx-mode . lsp-deferred)
+  :config
+  (setq json-reformat:indent-width 2))
+#+end_src
+
 ** Angular
 ** PHP
 ** Wordpress

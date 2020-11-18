@@ -118,6 +118,7 @@
   :hook
   (lsp-mode . efs/lsp-mode-setup)
   (rjsx-mode . lsp-deferred)
+  (typescript-mode . lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
   :config
@@ -125,9 +126,23 @@
 
 (use-package lsp-ivy)
 
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+
 (use-package rjsx-mode
   :mode "\\.js\\'"
-  :config (setq js-indent-level 2))
+  :hook (rjsx-mode . lsp-deferred)
+  :config
+  (setq js-indent-level 2))
+
+(use-package json-mode
+  :mode "\\.json\\'"
+  :hook (rjsx-mode . lsp-deferred)
+  :config
+  (setq json-reformat:indent-width 2))
 
 (use-package olivetti
   :hook
