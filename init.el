@@ -127,9 +127,9 @@
 	(setq org-agenda-files (list "~/Dropbox/orgnzr/_university.org" "~/Dropbox/orgnzr/_personal.org" "~/Dropbox/orgnzr/_work.org" "~/Dropbox/orgnzr/in.org" "~/Dropbox/orgnzr/tickler.org"))
 	(setq org-ellipsis " ▾")
 	(setq org-hide-leading-stars 't)
-	(setq org-hide-emphasis-markers t)
-	(setq org-cycle-separator-lines -1)
-	(setq org-startup-indented t))
+	(setq org-hide-emphasis-markers 't)
+	(setq org-cycle-separator-lines 2)
+	(setq org-startup-indented 't))
 
 (use-package org-bullets
   :after org
