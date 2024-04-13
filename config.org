@@ -558,8 +558,7 @@ Highlights uncommitted changes on the left side of the window (area also known a
 Currently I use ~lazygit~ at work. Within emacs nothing beats ~magit~ though.
 
 #+begin_src emacs-lisp
-(use-package magit
-  :ensure nil)
+(use-package magit)
 #+end_src
 
 ** TODO Github Permalinks
