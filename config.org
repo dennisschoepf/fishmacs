@@ -562,7 +562,7 @@ Highlights uncommitted changes on the left side of the window (area also known a
   :init (global-diff-hl-mode))
 #+end_src
 
-** TODO Magit
+** Magit
 Currently I use ~lazygit~ at work. Within emacs nothing beats ~magit~ though. ~forge~ is added for better Github integration.
 
 #+begin_src emacs-lisp
