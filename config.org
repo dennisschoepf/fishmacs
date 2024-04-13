@@ -515,7 +515,7 @@ Check out their [[https://github.com/minad/consult][git repository]] for more aw
   )
 #+end_src
 
-* Shell
+* TODO Shell
 I am coming from ~tmux~, ~neovim~ and ~zsh~. While emacs should be the default place to manipulate text in the future, I still like to use my existing shell configuration. Thus, ~eshell~ is not something I am interested in, and I rather use ~vterm~ and ~vterm-toggle~.
 
 #+begin_src emacs-lisp
@@ -549,6 +549,7 @@ I am coming from ~tmux~, ~neovim~ and ~zsh~. While emacs should be the default p
 (use-package vterm-toggle)
 #+end_src
 
+** TODO Improve shell ergonomics (see Doom Emacs) or switch to ~eshell~
 * TODO Projects
 * TODO Git
 ** Diff in Gutter
