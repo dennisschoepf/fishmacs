@@ -590,8 +590,7 @@ I often visit and copy a link to a specific line for my colleagues. This functio
 #+end_src
 
 ** TODO Git Timemachine
-
-* Org Mode
+* TODO Org Mode
 My org mode specific configuration.
 
 #+begin_src emacs-lisp
@@ -640,6 +639,10 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
   :after org)
 #+end_src
 
+** TODO Org Journal Setup
+** TODO Org Agenda Filters
+* TODO Writing Setup (& Homepage)
+* TODO Programming Setup
 * Misc
 ** Diminish
 This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.
