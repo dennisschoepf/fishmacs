@@ -580,7 +580,17 @@ Currently I use ~lazygit~ at work. Within emacs nothing beats ~magit~ though. ~f
               forge-add-pullreq-refspec nil))
 #+end_src
 
-** TODO Github Permalinks
+** Github Permalinks
+I often visit and copy a link to a specific line for my colleagues. This functionality is provided by ~git-link~.
+
+#+begin_src emacs-lisp
+(use-package git-link
+  :custom
+  (git-link-open-in-browser t))
+#+end_src
+
+** TODO Git Timemachine
+
 * Org Mode
 My org mode specific configuration.
 

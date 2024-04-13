@@ -456,6 +456,10 @@
               forge-display-in-status-buffer nil
               forge-add-pullreq-refspec nil))
 
+(use-package git-link
+  :custom
+  (git-link-open-in-browser t))
+
 (use-package org
   :ensure nil
   :custom
