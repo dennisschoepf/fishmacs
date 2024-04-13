@@ -435,7 +435,18 @@
          (magit-post-refresh . diff-hl-magit-post-refresh))
   :init (global-diff-hl-mode))
 
-(use-package magit)
+(use-package magit
+  :custom
+  (magit-repository-directories (list (cons elpaca-repos-directory 1)))
+  (magit-diff-refine-hunk 'all)
+  :config
+  (transient-bind-q-to-quit))
+(use-package transient :defer t) 
+(use-package forge
+  :after magit
+  :init (setq forge-add-default-bindings nil
+              forge-display-in-status-buffer nil
+              forge-add-pullreq-refspec nil))
 
 (use-package org
   :ensure nil

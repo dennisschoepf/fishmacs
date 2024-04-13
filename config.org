@@ -555,10 +555,21 @@ Highlights uncommitted changes on the left side of the window (area also known a
 #+end_src
 
 ** TODO Magit
-Currently I use ~lazygit~ at work. Within emacs nothing beats ~magit~ though.
+Currently I use ~lazygit~ at work. Within emacs nothing beats ~magit~ though. ~forge~ is added for better Github integration.
 
 #+begin_src emacs-lisp
-(use-package magit)
+(use-package magit
+  :custom
+  (magit-repository-directories (list (cons elpaca-repos-directory 1)))
+  (magit-diff-refine-hunk 'all)
+  :config
+  (transient-bind-q-to-quit))
+(use-package transient :defer t) 
+(use-package forge
+  :after magit
+  :init (setq forge-add-default-bindings nil
+              forge-display-in-status-buffer nil
+              forge-add-pullreq-refspec nil))
 #+end_src
 
 ** TODO Github Permalinks
