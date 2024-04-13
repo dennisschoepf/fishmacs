@@ -643,6 +643,9 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 
 ** TODO Org Journal Setup
 ** TODO Org Agenda Filters
+** TODO Org Calendar Integration
+- [ ] Decide on if I want to go down this path, if so use [[https://github.com/dengste/org-caldav/blob/master/doc/org-caldav.org][org-caldav]]
+
 * TODO Writing Setup (& Homepage)
 * TODO Programming Setup
 * Misc
