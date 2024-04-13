@@ -243,46 +243,48 @@ I am still learning all the keybindings that emacs provides (including the ones 
 These are some defaults to make emacs look nicer initally.
 
 #+begin_src emacs-lisp
-  (use-package emacs
-    :ensure nil
-    :custom
-    (menu-bar-mode nil)         ;; Disable the menu bar
-    (scroll-bar-mode nil)       ;; Disable the scroll bar
-    (tool-bar-mode nil)         ;; Disable the tool bar
-    (inhibit-startup-screen t)  ;; Disable welcome screen
+(fset 'yes-or-no-p 'y-or-n-p)
 
-    (delete-selection-mode t)   ;; Select text and delete it by typing.
-    (electric-indent-mode nil)  ;; Turn off the weird indenting that Emacs does by default.
-    (electric-pair-mode t)      ;; Turns on automatic parens pairing
+(use-package emacs
+  :ensure nil
+  :custom
+  (menu-bar-mode nil)         ;; Disable the menu bar
+  (scroll-bar-mode nil)       ;; Disable the scroll bar
+  (tool-bar-mode nil)         ;; Disable the tool bar
+  (inhibit-startup-screen t)  ;; Disable welcome screen
 
-    (blink-cursor-mode nil)     ;; Don't blink cursor
-    (global-auto-revert-mode t) ;; Automatically reload file and show changes if the file has changed
+  (delete-selection-mode t)   ;; Select text and delete it by typing.
+  (electric-indent-mode nil)  ;; Turn off the weird indenting that Emacs does by default.
+  (electric-pair-mode t)      ;; Turns on automatic parens pairing
 
-    (dired-kill-when-opening-new-dired-buffer t) ;; Dired don't create new buffer
-    ;;(recentf-mode t) ;; Enable recent file mode
+  (blink-cursor-mode nil)     ;; Don't blink cursor
+  (global-auto-revert-mode t) ;; Automatically reload file and show changes if the file has changed
 
-    (global-visual-line-mode t)           ;; Enable truncated lines
-    (display-line-numbers-type 'relative) ;; Relative line numbers
-    (global-display-line-numbers-mode t)  ;; Display line numbers
+  (dired-kill-when-opening-new-dired-buffer t) ;; Dired don't create new buffer
+  ;;(recentf-mode t) ;; Enable recent file mode
 
-    (mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
-    (scroll-conservatively 10) ;; Smooth scrolling
-    (scroll-margin 8)
+  (global-visual-line-mode t)           ;; Enable truncated lines
+  (display-line-numbers-type 'relative) ;; Relative line numbers
+  (global-display-line-numbers-mode t)  ;; Display line numbers
 
-    (tab-width 4)
+  (mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
+  (scroll-conservatively 10) ;; Smooth scrolling
+  (scroll-margin 8)
 
-    (make-backup-files t) ;; Stop creating ~ backup files
-    (auto-save-default nil) ;; Stop creating # auto save files
-    :hook
-    (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
-    :config
-    ;; Move customization variables to a separate file and load it, avoid filling up init.el with unnecessary variables
-    (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-    (load custom-file 'noerror 'nomessage)
-    :bind (
-		   ([escape] . keyboard-escape-quit) ;; Makes Escape quit prompts (Minibuffer Escape)
-		   )
-    )
+  (tab-width 4)
+
+  (make-backup-files t) ;; Stop creating ~ backup files
+  (auto-save-default nil) ;; Stop creating # auto save files
+  :hook
+  (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
+  :config
+  ;; Move customization variables to a separate file and load it, avoid filling up init.el with unnecessary variables
+  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
+  (load custom-file 'noerror 'nomessage)
+  :bind (
+		 ([escape] . keyboard-escape-quit) ;; Makes Escape quit prompts (Minibuffer Escape)
+		 )
+  )
 #+end_src
 
 ** File & Folder Management
@@ -536,7 +538,13 @@ I am coming from ~tmux~, ~neovim~ and ~zsh~. While emacs should be the default p
                       so (expand-file-name (file-name-nondirectory so)
                                            "../../builds/vterm")
                       'ok-if-already-exists))))
-  :hook (vterm-mode . (lambda() (display-line-numbers-mode -1))))
+  :hook (vterm-mode . (lambda() (display-line-numbers-mode -1)))
+  :config
+  (evil-define-key 'normal vterm-mode-map "p" 'vterm-yank)
+  (evil-define-key 'normal vterm-mode-map "P" '(lambda ()
+                                                 (interactive)
+                                                 (vterm-send-C-b)
+                                                 (vterm-yank))))
 
 (use-package vterm-toggle)
 #+end_src

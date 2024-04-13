@@ -190,6 +190,8 @@
   (which-key-max-description-length 25)
   (which-key-allow-imprecise-window-fit nil))
 
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (use-package emacs
   :ensure nil
   :custom
@@ -425,7 +427,13 @@
                       so (expand-file-name (file-name-nondirectory so)
                                            "../../builds/vterm")
                       'ok-if-already-exists))))
-  :hook (vterm-mode . (lambda() (display-line-numbers-mode -1))))
+  :hook (vterm-mode . (lambda() (display-line-numbers-mode -1)))
+  :config
+  (evil-define-key 'normal vterm-mode-map "p" 'vterm-yank)
+  (evil-define-key 'normal vterm-mode-map "P" '(lambda ()
+                                                 (interactive)
+                                                 (vterm-send-C-b)
+                                                 (vterm-yank))))
 
 (use-package vterm-toggle)
 
