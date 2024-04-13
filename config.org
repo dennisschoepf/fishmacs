@@ -197,6 +197,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 
   (start/leader-keys
 	"g" '(:ignore t :wk "Git")
+	"g l" '(git-link :wk "Navigate to git forge permalink")
 	"g g" '(magit-status :wk "Magit status"))
 
   (start/leader-keys

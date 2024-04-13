@@ -155,6 +155,7 @@
 
   (start/leader-keys
 	"g" '(:ignore t :wk "Git")
+	"g l" '(git-link :wk "Navigate to git forge permalink")
 	"g g" '(magit-status :wk "Magit status"))
 
   (start/leader-keys
