@@ -435,7 +435,8 @@
          (magit-post-refresh . diff-hl-magit-post-refresh))
   :init (global-diff-hl-mode))
 
-(use-package magit)
+(use-package magit
+  :ensure nil)
 
 (use-package org
   :ensure nil
