@@ -270,7 +270,7 @@ These are some defaults to make emacs look nicer initally.
   (global-auto-revert-mode t) ;; Automatically reload file and show changes if the file has changed
 
   (dired-kill-when-opening-new-dired-buffer t) ;; Dired don't create new buffer
-  ;;(recentf-mode t) ;; Enable recent file mode
+  (recentf-mode t) ;; Enable recent file mode
 
   (global-visual-line-mode t)           ;; Enable truncated lines
   (display-line-numbers-type 'relative) ;; Relative line numbers
