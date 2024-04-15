@@ -276,6 +276,9 @@ These are some defaults to make emacs look nicer initally.
 
   (make-backup-files t) ;; Stop creating ~ backup files
   (auto-save-default nil) ;; Stop creating # auto save files
+  
+  ;; MacOS specific configuration
+  (mac-right-option-modifier "none")
   :hook
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
   :config
@@ -314,20 +317,20 @@ I am using ~catppuccin nearly everywhere.
 #+end_src
 
 ** Fonts
-Defining the fonts I am using. Currently only ~JetBrains Mono~.
+Defining the fonts I am using. Currently only ~Iosevka Term~.
 
 #+begin_src emacs-lisp
 (set-face-attribute 'default nil
-					:font "JetBrainsMono Nerd Font"
-					:height 130
+					:font "IosevkaTerm Nerd Font"
+					:height 180
 					:weight 'regular)
 ;;(set-face-attribute 'variable-pitch nil
 ;;  :font "JetBrainsMono Nerd Font"
 ;;  :height 140
 ;;  :weight 'medium)
 (set-face-attribute 'fixed-pitch nil
-					:font "JetBrainsMono Nerd Font"
-					:height 130
+					:font "IosevkaTerm Nerd Font"
+					:height 180
 					:weight 'regular)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.
@@ -340,7 +343,7 @@ Defining the fonts I am using. Currently only ~JetBrains Mono~.
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13"))
+(add-to-list 'default-frame-alist '(font . "IosevkaTerm Nerd Font-18"))
 
 ;; Uncomment the following line if line spacing needs adjusting.
 (setq-default line-spacing 0.12)
@@ -646,6 +649,7 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 ** TODO Org Calendar Integration
 - [ ] Decide on if I want to go down this path, if so use [[https://github.com/dengste/org-caldav/blob/master/doc/org-caldav.org][org-caldav]]
 
+** TODO Denote/Org Roam
 * TODO Writing Setup (& Homepage)
 * TODO Programming Setup
 * Misc

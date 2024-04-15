@@ -223,6 +223,9 @@
 
   (make-backup-files t) ;; Stop creating ~ backup files
   (auto-save-default nil) ;; Stop creating # auto save files
+  
+  ;; MacOS specific configuration
+  (mac-right-option-modifier "none")
   :hook
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
   :config
@@ -249,16 +252,16 @@
   (catppuccin-reload))
 
 (set-face-attribute 'default nil
-					:font "JetBrainsMono Nerd Font"
-					:height 130
+					:font "IosevkaTerm Nerd Font"
+					:height 180
 					:weight 'regular)
 ;;(set-face-attribute 'variable-pitch nil
 ;;  :font "JetBrainsMono Nerd Font"
 ;;  :height 140
 ;;  :weight 'medium)
 (set-face-attribute 'fixed-pitch nil
-					:font "JetBrainsMono Nerd Font"
-					:height 130
+					:font "IosevkaTerm Nerd Font"
+					:height 180
 					:weight 'regular)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.
@@ -271,7 +274,7 @@
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13"))
+(add-to-list 'default-frame-alist '(font . "IosevkaTerm Nerd Font-18"))
 
 ;; Uncomment the following line if line spacing needs adjusting.
 (setq-default line-spacing 0.12)
