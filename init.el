@@ -484,7 +484,8 @@
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
-   '((sequence "PROJECT" "TODO" "WAITING" "NEXT" "MEET" "|" "DONE")))
+   '((sequence "PROJECT(p)" "TODO(t)" "WAITING(w)" "NEXT(n)" "|" "DONE(d)")
+     (sequence "PREPARE(a)" "READY(r)" "|" "FINISHED(f)")))
   (org-default-notes-file "~/orgnzr/inbox.org")
   (org-agenda-files '("~/orgnzr"))
   (org-capture-templates
