@@ -96,6 +96,7 @@
   (evil-collection-init))
 
 (use-package evil-goggles
+  :after evil
   :config
   (setq evil-goggles-duration 0.100)
   (setq evil-goggles-enable-delete nil)
@@ -103,6 +104,13 @@
   (setq evil-goggles-enable-change nil)
   (evil-goggles-mode)
   (evil-goggles-use-diff-faces))
+
+(use-package evil-org
+  :after org
+  :hook (org-mode . (lambda () evil-org-mode))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 
 (use-package general
   :config
@@ -147,7 +155,7 @@
 	"w l" '(windmove-right :wk "Move to right window"))
 
   (start/leader-keys
-	"B" '(ibuffer :wk "Show all buffers"))
+	"B" '(consult-buffer :wk "Show all buffers"))
 
   (start/leader-keys
 	"o" '(:ignore t :wk "Open")
@@ -400,16 +408,16 @@
   ;; By default `consult-project-function' uses `project-root' from project.el.
   ;; Optionally configure a different project root function.
    ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;(setq consult-project-function #'consult--default-project--function)
    ;;;; 2. vc.el (vc-root-dir)
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
    ;;;; 3. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
    ;;;; 4. projectile.el (projectile-project-root)
-  (autoload 'projectile-project-root "projectile")
-  (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;(autoload 'projectile-project-root "projectile")
+  ;;(setq consult-project-function (lambda (_) (projectile-project-root)))
    ;;;; 5. No project support
-  ;; (setq consult-project-function nil)
+  (setq consult-project-function nil)
   )
 
 (use-package vterm
@@ -476,8 +484,9 @@
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
-   '((sequence "PROJECT" "TODO" "WAITING" "NEXT" "|" "DONE")))
+   '((sequence "PROJECT" "TODO" "WAITING" "NEXT" "MEET" "|" "DONE")))
   (org-default-notes-file "~/orgnzr/inbox.org")
+  (org-agenda-files '("~/orgnzr"))
   (org-capture-templates
    '(("t" "Task" entry (file "~/orgnzr/inbox.org")
 	  "* TODO %?\n %i\n")
