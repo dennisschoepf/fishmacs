@@ -629,6 +629,10 @@ My org mode specific configuration.
      (sequence "PREPARE(a)" "READY(r)" "|" "FINISHED(f)")))
   (org-default-notes-file "~/orgnzr/inbox.org")
   (org-agenda-files '("~/orgnzr"))
+  (org-refile-use-outline-path 'file)
+  (org-refile-targets
+   '((nil :maxlevel . 2)
+     (org-agenda-files :maxlevel . 2)))
   (org-capture-templates
    '(("t" "Task" entry (file "~/orgnzr/inbox.org")
 	  "* TODO %?\n %i\n")
