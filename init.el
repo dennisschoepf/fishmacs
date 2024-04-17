@@ -300,6 +300,11 @@
 
 (add-to-list 'default-frame-alist '(alpha-background . 96))
 
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-total-line-number t))
+
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))

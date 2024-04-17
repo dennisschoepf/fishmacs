@@ -385,6 +385,16 @@ Emacs now supports transparency OOTB, let's enable it.
 (add-to-list 'default-frame-alist '(alpha-background . 96))
 #+end_src
 
+** Modeline
+I am using doom modeline until I have got the time to set up the default modeline the way I want.
+
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-total-line-number t))
+#+end_src
+
 * Completion
 ** Completion Style
 The ~orderless~ completion style seems to be what everyone is using now. Trying it out currently.
