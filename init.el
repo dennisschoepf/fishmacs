@@ -260,17 +260,17 @@
   (catppuccin-reload))
 
 (set-face-attribute 'default nil
-					:font "IosevkaTerm Nerd Font"
+					:font "dnsc-iosevka"
 					:height 200
-					:weight 'regular)
-;;(set-face-attribute 'variable-pitch nil
-;;  :font "JetBrainsMono Nerd Font"
-;;  :height 140
-;;  :weight 'medium)
+					:weight 'normal)
+(set-face-attribute 'variable-pitch nil
+					:font "dnsc-iosevka"
+					:height 200
+					:weight 'normal)
 (set-face-attribute 'fixed-pitch nil
-					:font "IosevkaTerm Nerd Font"
+					:font "dnsc-iosevka"
 					:height 200
-					:weight 'regular)
+					:weight 'normal)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.
 ;; Your font must have an italic face available.
@@ -282,7 +282,7 @@
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "IosevkaTerm Nerd Font-20"))
+(add-to-list 'default-frame-alist '(font . "dnsc-iosevka-20"))
 
 ;; Uncomment the following line if line spacing needs adjusting.
 (setq-default line-spacing 0.12)
