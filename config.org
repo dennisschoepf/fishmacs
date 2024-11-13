@@ -260,6 +260,8 @@ These are some defaults to make emacs look nicer initally.
   (scroll-bar-mode nil)       ;; Disable the scroll bar
   (tool-bar-mode nil)         ;; Disable the tool bar
   (inhibit-startup-screen t)  ;; Disable welcome screen
+  (visible-bell t)  ;; Disable welcome screen
+  (ring-bell-function 'ignore) ;; Disable sounds
 
   (delete-selection-mode t)   ;; Select text and delete it by typing.
   (electric-indent-mode nil)  ;; Turn off the weird indenting that Emacs does by default.
@@ -312,33 +314,34 @@ I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This c
 
 * Appearance
 ** Set Theme
-I am using ~catppuccin nearly everywhere.
+I am using ~catppuccin~ for emacs, as the ~rose-pine-theme~ does not work that well.
 
 #+begin_src emacs-lisp
 (use-package catppuccin-theme
   :config
   (load-theme 'catppuccin t t)
   (setq catppuccin-flavor 'mocha)
+  (setq catppuccin-italic-comments t)
   (setq catppuccin-enlarge-headings nil)
   (catppuccin-reload))
 #+end_src
 
 ** Fonts
-Defining the fonts I am using. Currently only ~Iosevka Term~.
+Defining the fonts I am using. Currently only ~VictorMono as a nerd font~.
 
 #+begin_src emacs-lisp
 (set-face-attribute 'default nil
-					:font "dnsc-iosevka"
-					:height 200
-					:weight 'normal)
+					:font "VictorMono Nerd Font"
+					:height 180
+					:weight 'light)
 (set-face-attribute 'variable-pitch nil
-					:font "dnsc-iosevka"
-					:height 200
-					:weight 'normal)
+					:font "VictorMono Nerd Font"
+					:height 180
+					:weight 'light)
 (set-face-attribute 'fixed-pitch nil
-					:font "dnsc-iosevka"
-					:height 200
-					:weight 'normal)
+					:font "VictorMono Nerd Font"
+					:height 180
+					:weight 'light)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.
 ;; Your font must have an italic face available.
@@ -350,7 +353,7 @@ Defining the fonts I am using. Currently only ~Iosevka Term~.
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "dnsc-iosevka-20"))
+(add-to-list 'default-frame-alist '(font . "VictorMono Nerd Font-18"))
 
 ;; Uncomment the following line if line spacing needs adjusting.
 (setq-default line-spacing 0.12)
@@ -381,7 +384,7 @@ You can use the bindings C-+ C-- for zooming in/out. You can also use CTRL plus 
 Emacs now supports transparency OOTB, let's enable it.
 
 #+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(alpha-background . 96))
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 #+end_src
 
 ** Modeline
@@ -545,47 +548,7 @@ Check out their [[https://github.com/minad/consult][git repository]] for more aw
 
 ** TODO Change consult project to projectile after configuring it
 
-* TODO Shell
-I am coming from ~tmux~, ~neovim~ and ~zsh~. While emacs should be the default place to manipulate text in the future, I still like to use my existing shell configuration. Thus, ~eshell~ is not something I am interested in, and I rather use ~vterm~ and ~vterm-toggle~.
-
-#+begin_src emacs-lisp
-(use-package vterm
-  :ensure (vterm :post-build
-                 (progn
-                   (setq vterm-always-compile-module t)
-                   (require 'vterm)
-                   ;;print compilation info for elpaca
-                   (with-current-buffer (get-buffer-create vterm-install-buffer-name)
-                     (goto-char (point-min))
-                     (while (not (eobp))
-                       (message "%S"
-                                (buffer-substring (line-beginning-position)
-                                                  (line-end-position)))
-                       (forward-line)))
-                   (when-let ((so (expand-file-name "./vterm-module.so"))
-                              ((file-exists-p so)))
-                     (make-symbolic-link
-                      so (expand-file-name (file-name-nondirectory so)
-                                           "../../builds/vterm")
-                      'ok-if-already-exists))))
-  :hook (vterm-mode . (lambda() (display-line-numbers-mode -1)))
-  :config
-  (evil-define-key 'normal vterm-mode-map "p" 'vterm-yank)
-  (evil-define-key 'normal vterm-mode-map "P" '(lambda ()
-                                                 (interactive)
-                                                 (vterm-send-C-b)
-                                                 (vterm-yank))))
-
-(use-package vterm-toggle)
-#+end_src
-
-** TODO Improve shell ergonomics (see Doom Emacs) 
-** TODO Use ~multi-vterm~ for multiplexing
-** TODO Use emacs daemon for session storing
-* TODO Projects
-Will probably be using projectile
-
-* TODO Git
+* Git
 ** Diff in Gutter
 Highlights uncommitted changes on the left side of the window (area also known as the "gutter"), allows you to jump between and revert them selectively.
 
@@ -624,8 +587,7 @@ I often visit and copy a link to a specific line for my colleagues. This functio
   (git-link-open-in-browser t))
 #+end_src
 
-** TODO Git Timemachine
-* TODO Org Mode
+* Org Mode
 My org mode specific configuration.
 
 #+begin_src emacs-lisp
@@ -641,8 +603,7 @@ My org mode specific configuration.
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
-   '((sequence "PROJECT(p)" "TODO(t)" "WAITING(w)" "NEXT(n)" "|" "DONE(d)")
-     (sequence "PREPARE(a)" "READY(r)" "|" "FINISHED(f)")))
+   '((sequence "PROJECT(p)" "TODO(t)" "NEXT(n)" "|" "DONE(d)")))
   (org-default-notes-file "~/orgnzr/inbox.org")
   (org-agenda-files '("~/orgnzr"))
   (org-refile-use-outline-path 'file)
@@ -681,13 +642,7 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 #+end_src
 
 ** TODO Org Journal Setup
-** TODO Org Agenda Filters
-** TODO Org Calendar Integration
-- [ ] Decide on if I want to go down this path, if so use [[https://github.com/dengste/org-caldav/blob/master/doc/org-caldav.org][org-caldav]]
-
-** TODO Denote/Org Roam
-* TODO Writing Setup (& Homepage)
-* TODO Programming Setup
+** TODO Org Agenda Views
 * Misc
 ** Diminish
 This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.

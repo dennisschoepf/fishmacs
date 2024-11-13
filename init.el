@@ -208,6 +208,8 @@
   (scroll-bar-mode nil)       ;; Disable the scroll bar
   (tool-bar-mode nil)         ;; Disable the tool bar
   (inhibit-startup-screen t)  ;; Disable welcome screen
+  (visible-bell t)  ;; Disable welcome screen
+  (ring-bell-function 'ignore) ;; Disable sounds
 
   (delete-selection-mode t)   ;; Select text and delete it by typing.
   (electric-indent-mode nil)  ;; Turn off the weird indenting that Emacs does by default.
@@ -256,21 +258,22 @@
   :config
   (load-theme 'catppuccin t t)
   (setq catppuccin-flavor 'mocha)
+  (setq catppuccin-italic-comments t)
   (setq catppuccin-enlarge-headings nil)
   (catppuccin-reload))
 
 (set-face-attribute 'default nil
-					:font "dnsc-iosevka"
-					:height 200
-					:weight 'normal)
+					:font "VictorMono Nerd Font"
+					:height 180
+					:weight 'light)
 (set-face-attribute 'variable-pitch nil
-					:font "dnsc-iosevka"
-					:height 200
-					:weight 'normal)
+					:font "VictorMono Nerd Font"
+					:height 180
+					:weight 'light)
 (set-face-attribute 'fixed-pitch nil
-					:font "dnsc-iosevka"
-					:height 200
-					:weight 'normal)
+					:font "VictorMono Nerd Font"
+					:height 180
+					:weight 'light)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.
 ;; Your font must have an italic face available.
@@ -282,7 +285,7 @@
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "dnsc-iosevka-20"))
+(add-to-list 'default-frame-alist '(font . "VictorMono Nerd Font-18"))
 
 ;; Uncomment the following line if line spacing needs adjusting.
 (setq-default line-spacing 0.12)
@@ -298,7 +301,7 @@
   ("<C-wheel-up>" . text-scale-increase)
   ("<C-wheel-down>" . text-scale-decrease))
 
-(add-to-list 'default-frame-alist '(alpha-background . 96))
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
@@ -427,35 +430,6 @@
   (setq consult-project-function nil)
   )
 
-(use-package vterm
-  :ensure (vterm :post-build
-                 (progn
-                   (setq vterm-always-compile-module t)
-                   (require 'vterm)
-                   ;;print compilation info for elpaca
-                   (with-current-buffer (get-buffer-create vterm-install-buffer-name)
-                     (goto-char (point-min))
-                     (while (not (eobp))
-                       (message "%S"
-                                (buffer-substring (line-beginning-position)
-                                                  (line-end-position)))
-                       (forward-line)))
-                   (when-let ((so (expand-file-name "./vterm-module.so"))
-                              ((file-exists-p so)))
-                     (make-symbolic-link
-                      so (expand-file-name (file-name-nondirectory so)
-                                           "../../builds/vterm")
-                      'ok-if-already-exists))))
-  :hook (vterm-mode . (lambda() (display-line-numbers-mode -1)))
-  :config
-  (evil-define-key 'normal vterm-mode-map "p" 'vterm-yank)
-  (evil-define-key 'normal vterm-mode-map "P" '(lambda ()
-                                                 (interactive)
-                                                 (vterm-send-C-b)
-                                                 (vterm-yank))))
-
-(use-package vterm-toggle)
-
 (use-package diff-hl
   :hook ((dired-mode         . diff-hl-dired-mode-unless-remote)
          (magit-pre-refresh  . diff-hl-magit-pre-refresh)
@@ -491,8 +465,7 @@
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
-   '((sequence "PROJECT(p)" "TODO(t)" "WAITING(w)" "NEXT(n)" "|" "DONE(d)")
-     (sequence "PREPARE(a)" "READY(r)" "|" "FINISHED(f)")))
+   '((sequence "PROJECT(p)" "TODO(t)" "NEXT(n)" "|" "DONE(d)")))
   (org-default-notes-file "~/orgnzr/inbox.org")
   (org-agenda-files '("~/orgnzr"))
   (org-refile-use-outline-path 'file)
