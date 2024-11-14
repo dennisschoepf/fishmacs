@@ -40,7 +40,7 @@ This auto tangles the configuration on saving.
 I am using ~elpaca~ as my package manager of choice.
 
 #+begin_src emacs-lisp
-(defvar elpaca-installer-version 0.7)
+(defvar elpaca-installer-version 0.8)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -392,7 +392,8 @@ I am using doom modeline until I have got the time to set up the default modelin
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom
-  (doom-modeline-total-line-number t))
+  (doom-modeline-total-line-number t)
+  (doom-modeline-battery t))
 #+end_src
 
 * Completion
