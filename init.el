@@ -260,15 +260,15 @@
   (catppuccin-reload))
 
 (set-face-attribute 'default nil
-					:font "dnsc-iosevka"
+					:font "VictorMono Nerd Font"
 					:height 200
 					:weight 'normal)
 (set-face-attribute 'variable-pitch nil
-					:font "dnsc-iosevka"
+					:font "VictorMono Nerd Font"
 					:height 200
 					:weight 'normal)
 (set-face-attribute 'fixed-pitch nil
-					:font "dnsc-iosevka"
+					:font "VictorMono Nerd Font"
 					:height 200
 					:weight 'normal)
 ;; Makes commented text and keywords italics.
