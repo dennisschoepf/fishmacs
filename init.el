@@ -145,7 +145,7 @@
   (start/leader-keys
 	"b" '(:ignore t :wk "[b]uffers")
 	"b b" '(consult-buffer :wk "Switch buffer")
-	"b d" '(kill-this-buffer :wk "Kill this buffer")
+	"b d" '(kill-current-buffer :wk "Kill this buffer")
 	"b n" '(next-buffer :wk "Next buffer")
 	"b p" '(previous-buffer :wk "Previous buffer")
 	"b r" '(revert-buffer :wk "Reload buffer"))
@@ -170,8 +170,9 @@
 	"o" '(:ignore t :wk "[o]pen")
 	;; TODO: Add "o t" keybinding to open scratch terminal
 	"o d" '(dnsc/dired-open-to-side :wk "[o]pen [d]ired on the side")
-	"o l" '(org-todo-list :wk "[o]pen a [l]ist of all tasks")
+	"o l" '(org-agenda :wk "[o]pen al[l] agenda views")
 	"o a" '(org-agenda-list :wk "[o]pen [a]genda")
+	"o n" '((lambda () (interactive) (org-agenda nil "n")) :wk "[o]pen [n]ext tasks")
 	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
@@ -481,12 +482,15 @@
       "* TODO %?\n %i\n")
      ("l" "Task  line" entry (file "~/orgnzr/inbox.org")
       "* TODO %?\n Relevant line: [[file://%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n")))
+  (org-agenda-custom-commands
+   '(("n" todo "NEXT")
+     ("p" todo "PROJECT")))
   :hook
   (org-mode . org-indent-mode) ;; Indent text
   (org-mode . (lambda ()
-				(setq-local electric-pair-inhibit-predicate
-							`(lambda (c)
-							   (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c)))))))
+                (setq-local electric-pair-inhibit-predicate
+                            `(lambda (c)
+                               (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c)))))))
 
 (use-package org-superstar
   :hook (org-mode . org-superstar-mode))
