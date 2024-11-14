@@ -112,6 +112,13 @@
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
+(defun dnsc/dired-open-to-side ()
+  "Opens dired at the current directory in a window to the side"
+  (interactive)
+  (split-window-horizontally)
+  (windmove-right)
+  (dired-jump))
+
 (use-package general
   :config
   (general-evil-setup)
@@ -126,27 +133,26 @@
 	"." '(find-file :wk "Find file"))
 
   (start/leader-keys
-	"f" '(:ignore t :wk "Find")
+	"f" '(:ignore t :wk "[f]ind")
 	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :wk "Edit emacs config")
 	"f s" '(save-buffer :wk "Saves current buffer")
-	"f r" '(consult-recent-file :wk "Recent files")
-	"f f" '(consult-fd :wk "Fd search for files")
-	"f g" '(consult-ripgrep :wk "Ripgrep search in files")
-	"f l" '(consult-line :wk "Find line")
-	"f i" '(consult-imenu :wk "Imenu buffer locations"))
+	"f r" '(consult-recent-file :wk "[f]ind [r]ecent files")
+	"f f" '(consult-find :wk "[f]ind [f]iles")
+	"f g" '(consult-ripgrep :wk "[f]ind with rip[g]rep")
+	"f l" '(consult-line :wk "[f]ind [l]ine")
+	"f i" '(consult-imenu :wk "[f]ind [i]menu buffer locations"))
 
   (start/leader-keys
-	"b" '(:ignore t :wk "Buffer Bookmarks")
+	"b" '(:ignore t :wk "[b]uffers")
 	"b b" '(consult-buffer :wk "Switch buffer")
 	"b d" '(kill-this-buffer :wk "Kill this buffer")
 	"b n" '(next-buffer :wk "Next buffer")
 	"b p" '(previous-buffer :wk "Previous buffer")
-	"b r" '(revert-buffer :wk "Reload buffer")
-	"b j" '(consult-bookmark :wk "Bookmark jump"))
+	"b r" '(revert-buffer :wk "Reload buffer"))
 
   (start/leader-keys
-	"w" '(:ignore t :wk "Window")
-	"w s" '(split-window-horizontally :wk "Split window horizontally")
+	"w" '(:ignore t :wk "[w]indow")
+	"w s" '(split-window-vertically :wk "Split window horizontally")
 	"w v" '(split-window-horizontally :wk "Split window vertically")
 	"w d" '(delete-window :wk "Close window")
 	"w h" '(windmove-left :wk "Move to left window")
@@ -155,35 +161,34 @@
 	"w l" '(windmove-right :wk "Move to right window"))
 
   (start/leader-keys
-	"B" '(consult-buffer :wk "Show all buffers"))
+	"n" '(dired-jump :wk "ope[n] dired at current directory"))
 
   (start/leader-keys
-	"o" '(:ignore t :wk "Open")
-	"o d" '(dired-jump :wk "Open dired at current directory"))
+	"B" '(consult-buffer :wk "Show all [B]uffers"))
 
   (start/leader-keys
-	"g" '(:ignore t :wk "Git")
-	"g l" '(git-link :wk "Navigate to git forge permalink")
-	"g g" '(magit-status :wk "Magit status"))
+	"o" '(:ignore t :wk "[o]pen")
+	;; TODO: Add "o t" keybinding to open scratch terminal
+	"o d" '(dnsc/dired-open-to-side :wk "[o]pen [d]ired on the side")
+	"o l" '(org-todo-list :wk "[o]pen a [l]ist of all tasks")
+	"o a" '(org-agenda-list :wk "[o]pen [a]genda")
+	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
-	"h" '(:ignore t :wk "Help") ;; To get more help use C-h commands (describe variable, function, etc.)
-	"h s" '(describe-symbol :wk "Get help for symbol")
-	"h v" '(describe-variable :wk "Get help for variable")
-	"h f" '(describe-function :wk "Get help for function")
+	"g" '(:ignore t :wk "[g]it")
+	"g l" '(git-link :wk "Navigate to [g] forge [l]ink")
+	"g g" '(magit-status :wk "[g]et ma[g]it status"))
+
+  (start/leader-keys
+	"h" '(:ignore t :wk "[h]elp") ;; To get more help use C-h commands (describe variable, function, etc.)
+	"h s" '(describe-symbol :wk "Get [h]elp for [s]ymbol")
+	"h v" '(describe-variable :wk "Get [h]elp for [v]ariable")
+	"h f" '(describe-function :wk "Get [h]elp for [f]unction")
 	"h r r" '((lambda () (interactive) (load-file user-init-file)) :wk "Reload Emacs config"))
 
   (start/leader-keys
-	"t" '(:ignore t :wk "Terminal")
-	"t t" '(vterm-toggle-cd :wk "Toggle terminal with cd")
-	"t o" '(vterm :wk "Open terminal here")
-	"t v" '(vterm-other-window :wk "Open terminal in other window")
-	"t n" '(vterm-toggle-forward :wk "Switch to next vterm")
-	"t p" '(vterm-toggle-backward :wk "Switch to previous vterm"))
-
-  (start/leader-keys
-	"q" '(:ignore t :wk "Quit")
-	"q q" '(kill-emacs :wk "Quit Emacs and Daemon")))
+	"q" '(:ignore t :wk "[q]uit")
+	"q q" '(kill-emacs :wk "[q][q]uit Emacs and Daemon")))
 
 (use-package which-key
   :diminish
@@ -208,6 +213,8 @@
   (scroll-bar-mode nil)       ;; Disable the scroll bar
   (tool-bar-mode nil)         ;; Disable the tool bar
   (inhibit-startup-screen t)  ;; Disable welcome screen
+  (visible-bell t)  ;; Disable welcome screen
+  (ring-bell-function 'ignore) ;; Disable sounds
 
   (delete-selection-mode t)   ;; Select text and delete it by typing.
   (electric-indent-mode nil)  ;; Turn off the weird indenting that Emacs does by default.
@@ -256,20 +263,21 @@
   :config
   (load-theme 'catppuccin t t)
   (setq catppuccin-flavor 'mocha)
+  (setq catppuccin-italic-comments t)
   (setq catppuccin-enlarge-headings nil)
   (catppuccin-reload))
 
 (set-face-attribute 'default nil
 					:font "VictorMono Nerd Font"
-					:height 200
+					:height 180
 					:weight 'normal)
 (set-face-attribute 'variable-pitch nil
 					:font "VictorMono Nerd Font"
-					:height 200
+					:height 180
 					:weight 'normal)
 (set-face-attribute 'fixed-pitch nil
 					:font "VictorMono Nerd Font"
-					:height 200
+					:height 180
 					:weight 'normal)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.
@@ -282,7 +290,7 @@
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "dnsc-iosevka-20"))
+(add-to-list 'default-frame-alist '(font . "VictorMono Nerd Font-18"))
 
 ;; Uncomment the following line if line spacing needs adjusting.
 (setq-default line-spacing 0.12)
@@ -297,8 +305,6 @@
   ("C--" . text-scale-decrease)
   ("<C-wheel-up>" . text-scale-increase)
   ("<C-wheel-down>" . text-scale-decrease))
-
-(add-to-list 'default-frame-alist '(alpha-background . 96))
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
@@ -427,35 +433,6 @@
   (setq consult-project-function nil)
   )
 
-(use-package vterm
-  :ensure (vterm :post-build
-                 (progn
-                   (setq vterm-always-compile-module t)
-                   (require 'vterm)
-                   ;;print compilation info for elpaca
-                   (with-current-buffer (get-buffer-create vterm-install-buffer-name)
-                     (goto-char (point-min))
-                     (while (not (eobp))
-                       (message "%S"
-                                (buffer-substring (line-beginning-position)
-                                                  (line-end-position)))
-                       (forward-line)))
-                   (when-let ((so (expand-file-name "./vterm-module.so"))
-                              ((file-exists-p so)))
-                     (make-symbolic-link
-                      so (expand-file-name (file-name-nondirectory so)
-                                           "../../builds/vterm")
-                      'ok-if-already-exists))))
-  :hook (vterm-mode . (lambda() (display-line-numbers-mode -1)))
-  :config
-  (evil-define-key 'normal vterm-mode-map "p" 'vterm-yank)
-  (evil-define-key 'normal vterm-mode-map "P" '(lambda ()
-                                                 (interactive)
-                                                 (vterm-send-C-b)
-                                                 (vterm-yank))))
-
-(use-package vterm-toggle)
-
 (use-package diff-hl
   :hook ((dired-mode         . diff-hl-dired-mode-unless-remote)
          (magit-pre-refresh  . diff-hl-magit-pre-refresh)
@@ -487,12 +464,11 @@
   (org-src-tab-acts-natively t)
   (org-edit-src-content-indentation 0)
   (org-edit-src-preserve-indentation nil)
-  (org-log-done 'time)
+  (org-log-done 'note)
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
-   '((sequence "PROJECT(p)" "TODO(t)" "WAITING(w)" "NEXT(n)" "|" "DONE(d)")
-     (sequence "PREPARE(a)" "READY(r)" "|" "FINISHED(f)")))
+   '((sequence "PROJECT(p)" "TODO(t)" "NEXT(n)" "|" "DONE(d)")))
   (org-default-notes-file "~/orgnzr/inbox.org")
   (org-agenda-files '("~/orgnzr"))
   (org-refile-use-outline-path 'file)
@@ -501,9 +477,9 @@
      (org-agenda-files :maxlevel . 2)))
   (org-capture-templates
    '(("t" "Task" entry (file "~/orgnzr/inbox.org")
-	  "* TODO %?\n %i\n")
-	 ("w" "Work Task" entry (file "~/orgnzr/inbox.org")
-	  "* TODO %? :work:\n %i\n")))
+      "* TODO %?\n %i\n")
+     ("l" "Task  line" entry (file "~/orgnzr/inbox.org")
+      "* TODO %?\n Relevant line: [[file://%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n")))
   :hook
   (org-mode . org-indent-mode) ;; Indent text
   (org-mode . (lambda ()
