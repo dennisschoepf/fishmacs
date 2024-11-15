@@ -605,7 +605,16 @@ Highlights uncommitted changes on the left side of the window (area also known a
 #+end_src
 
 ** Magit
-Currently I use ~lazygit~ at work. Within emacs nothing beats ~magit~ though. ~forge~ is added for better Github integration.
+Currently I use ~lazygit~ at work. Within emacs nothing beats ~magit~ though. ~forge~ is added for Github integration. A succint guide to setting it up can be found [[https://practical.li/spacemacs/source-control/forge-configuration/][here]]. Note: A ~classic~ token has to be generated for Github. It was also necessary to install to do the following on MacOS to set up GPG for to use encrypted ~.authinfo.gpg~:
+
+#+begin_src shell
+brew install gpg pinentry-mac
+export GPG_TTY=$(tty)
+echo "pinentry-program $(which pinentry-mac)"
+killall gpg-agent
+#+end_src
+
+The actual magit/forge config can be found here:
 
 #+begin_src emacs-lisp
 (use-package magit
