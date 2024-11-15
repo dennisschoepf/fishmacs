@@ -70,6 +70,12 @@
 ;;(use-package general :ensure t :demand t)
 ;;(elpaca-wait)
 
+(use-package exec-path-from-shell
+  :ensure t
+  :init
+  (when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize)))
+
 (use-package evil
   :init ;; Execute code Before a package is loaded
   (evil-mode)
@@ -253,6 +259,9 @@
 
   (make-backup-files t) ;; Stop creating ~ backup files
   (auto-save-default nil) ;; Stop creating # auto save files
+  
+  ;; Use encrypted authinfo file for auth-sources
+  (auth-sources '("~/.authinfo.gpg"))
   
   ;; MacOS specific configuration
   (mac-right-option-modifier "none")

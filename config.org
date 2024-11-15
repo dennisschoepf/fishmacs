@@ -96,6 +96,17 @@ I am using ~elpaca~ as my package manager of choice.
 ;;(elpaca-wait)
 #+end_src
 
+** Setup PATH
+Make sure to have the same ~PATH~ as in my shell.
+
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :init
+  (when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize)))
+#+end_src
+
 * Keybindings
 ** Evil Mode
 An extensible vi/vim layer for Emacs. Because…let’s face it. The Vim keybindings are just plain better.
@@ -305,6 +316,9 @@ These are some defaults to make emacs look nicer initally.
 
   (make-backup-files t) ;; Stop creating ~ backup files
   (auto-save-default nil) ;; Stop creating # auto save files
+  
+  ;; Use encrypted authinfo file for auth-sources
+  (auth-sources '("~/.authinfo.gpg"))
   
   ;; MacOS specific configuration
   (mac-right-option-modifier "none")
