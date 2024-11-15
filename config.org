@@ -318,6 +318,8 @@ I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This c
 	      (concat dired-omit-files "\\|^\\..+$")))
 #+end_src
 
+* Projects
+** TODO Setup project.el
 * Appearance
 ** Set Theme
 I am using ~catppuccin~ for emacs, as the ~rose-pine-theme~ does not work that well.
@@ -646,6 +648,15 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 
 ** TODO Org Journal Setup
 ** TODO Org Agenda Views
+* Terminal & Runners
+** TODO vterm vs. eat?
+** TODO Scratchpad-like Terminal
+- [[https://github.com/jixiuf/vterm-toggle][vterm-toggle]] might be a good option
+- Check if ~eat~ has something similar
+
+** TODO Run npm/go/... scripts
+Find out the idiomatic emacs way of doing this.
+
 * Misc
 ** Diminish
 This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.
