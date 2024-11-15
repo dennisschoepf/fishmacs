@@ -463,6 +463,7 @@
 
 (use-package magit
   :custom
+  (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (magit-repository-directories (list (cons elpaca-repos-directory 1)))
   (magit-diff-refine-hunk 'all)
   :config
