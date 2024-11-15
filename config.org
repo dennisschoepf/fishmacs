@@ -717,6 +717,7 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 * TODO Additional configuration
 - [ ] [[https://github.com/karthink/gptel][gptel]] and/or [[https://github.com/s-kostyaev/ellama?tab=readme-ov-file][ellama]]
 - [ ] [[https://github.com/skeeto/elfeed][elfeed]]
+- [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
 - Writing Mode (Olivetti or similar for UI, Markdown for further writing)
 - Programming Modes
 * Misc
