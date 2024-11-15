@@ -610,7 +610,7 @@ Currently I use ~lazygit~ at work. Within emacs nothing beats ~magit~ though. ~f
 #+begin_src shell
 brew install gpg pinentry-mac
 export GPG_TTY=$(tty)
-echo "pinentry-program $(which pinentry-mac)"
+echo "pinentry-program $(which pinentry-mac)" >> ~/.gnupg/gpg-agent.conf
 killall gpg-agent
 #+end_src
 
