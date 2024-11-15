@@ -134,27 +134,27 @@
 
   (start/leader-keys
 	"f" '(:ignore t :wk "[f]ind")
-	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :wk "Edit emacs config")
+	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :wk "Edit emacs [c]onfig")
 	"f s" '(save-buffer :wk "Saves current buffer")
-	"f r" '(consult-recent-file :wk "[f]ind [r]ecent files")
-	"f f" '(consult-find :wk "[f]ind [f]iles")
-	"f g" '(consult-ripgrep :wk "[f]ind with rip[g]rep")
-	"f l" '(consult-line :wk "[f]ind [l]ine")
-	"f i" '(consult-imenu :wk "[f]ind [i]menu buffer locations"))
+	"f r" '(consult-recent-file :wk "Find [r]ecent files")
+	"f f" '(consult-find :wk "Find [f]iles")
+	"f g" '(consult-ripgrep :wk "Find with rip[g]rep")
+	"f l" '(consult-line :wk "Find [l]ine")
+	"f i" '(consult-imenu :wk "Find [i]menu buffer locations"))
 
   (start/leader-keys
 	"b" '(:ignore t :wk "[b]uffers")
-	"b b" '(consult-buffer :wk "Switch buffer")
-	"b d" '(kill-current-buffer :wk "Kill this buffer")
-	"b n" '(next-buffer :wk "Next buffer")
-	"b p" '(previous-buffer :wk "Previous buffer")
-	"b r" '(revert-buffer :wk "Reload buffer"))
+	"b b" '(consult-buffer :wk "Switch [b]uffer")
+	"b d" '(kill-current-buffer :wk "[d]elete this buffer")
+	"b n" '(next-buffer :wk "[n]ext buffer")
+	"b p" '(previous-buffer :wk "[p]revious buffer")
+	"b r" '(revert-buffer :wk "[r]eload buffer"))
 
   (start/leader-keys
 	"w" '(:ignore t :wk "[w]indow")
-	"w s" '(split-window-vertically :wk "Split window horizontally")
-	"w v" '(split-window-horizontally :wk "Split window vertically")
-	"w d" '(delete-window :wk "Close window")
+	"w s" '(split-window-vertically :wk "[s]plit window horizontally")
+	"w v" '(split-window-horizontally :wk "Split window [v]ertically")
+	"w d" '(delete-window :wk "[d]elete window")
 	"w h" '(windmove-left :wk "Move to left window")
 	"w k" '(windmove-up :wk "Move to upper window")
 	"w j" '(windmove-down :wk "Move to lower window")
@@ -169,23 +169,37 @@
   (start/leader-keys
 	"o" '(:ignore t :wk "[o]pen")
 	;; TODO: Add "o t" keybinding to open scratch terminal
-	"o d" '(dnsc/dired-open-to-side :wk "[o]pen [d]ired on the side")
-	"o l" '(org-agenda :wk "[o]pen al[l] agenda views")
-	"o a" '(org-agenda-list :wk "[o]pen [a]genda")
+	"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
+	"o l" '(org-agenda :wk "Open al[l] agenda views")
+	"o a" '(org-agenda-list :wk "Open [a]genda")
 	"o n" '((lambda () (interactive) (org-agenda nil "n")) :wk "[o]pen [n]ext tasks")
 	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
-	"g" '(:ignore t :wk "[g]it")
-	"g l" '(git-link :wk "Navigate to [g] forge [l]ink")
-	"g g" '(magit-status :wk "[g]et ma[g]it status"))
+	"g" '(:ignore t :wk "[g]it & more")
+	"g l" '(git-link :wk "Navigate to git forge [l]ink")
+	"g c c" '(comment-line :wk "[g]o [c]omment [c]urrent line")
+	"g g" '(magit-status :wk "Ma[g]it status"))
 
   (start/leader-keys
 	"h" '(:ignore t :wk "[h]elp") ;; To get more help use C-h commands (describe variable, function, etc.)
-	"h s" '(describe-symbol :wk "Get [h]elp for [s]ymbol")
-	"h v" '(describe-variable :wk "Get [h]elp for [v]ariable")
-	"h f" '(describe-function :wk "Get [h]elp for [f]unction")
+	"h s" '(describe-symbol :wk "Get help for [s]ymbol")
+	"h v" '(describe-variable :wk "Get help for [v]ariable")
+	"h f" '(describe-function :wk "Get help for [f]unction")
 	"h r r" '((lambda () (interactive) (load-file user-init-file)) :wk "Reload Emacs config"))
+
+  (start/leader-keys
+	"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
+	"p p" '(project-switch-project :wk "Switch to another [p]roject")
+	"p f" '(project-find-file :wk "[f]ind a file in the project")
+	"p g" '(project-find-regexp :wk "[s]earch within project") ;; Maybe use something else here
+	"p s" '(project-shell :wk "Open [s]hell within project")
+	"p d" '(project-dired :wk "Open [d]ired in project root")
+	"p c" '(project-compile :wk "[c]ompile project")
+	"p b" '(project-list-buffers :wk "Show project [b]uffers")
+	"p k" '(project-kill-buffers :wk "[d]elete all project buffers")
+	"p r" '(project-query-replace-regexp :wk "[r]eplace in current project")
+	"p x" '(project-async-shell-command :wk "e[x]ecute shell command"))
 
   (start/leader-keys
 	"q" '(:ignore t :wk "[q]uit")
@@ -202,7 +216,7 @@
   (which-key-add-column-padding 4) ;; Number of spaces to add to the left of each column
   (which-key-min-display-lines 6)  ;; Increase the minimum lines to display, because the default is only 1
   (which-key-idle-delay 0.5)       ;; Set the time delay (in seconds) for the which-key popup to appear
-  (which-key-max-description-length 25)
+  (which-key-max-description-length 35)
   (which-key-allow-imprecise-window-fit nil))
 
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -259,6 +273,12 @@
   :config
   (setq dired-omit-files
 	      (concat dired-omit-files "\\|^\\..+$")))
+
+(use-package project
+  :ensure nil
+  :custom
+  (project-vc-ignores '("target/" "bin/" "out/" "node_modules/"))
+  (project-vc-extra-root-markers '(".project" "package.json" "Cargo.toml" "go.mod" "Gemfile")))
 
 (use-package catppuccin-theme
   :config

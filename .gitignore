@@ -8,3 +8,6 @@ elpaca/
 /*.sqlite
 /recentf
 /bookmarks
+.project
+/eshell/
+/projects
