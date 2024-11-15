@@ -252,6 +252,11 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 	"p k" '(project-kill-buffers :wk "[d]elete all project buffers")
 	"p r" '(project-query-replace-regexp :wk "[r]eplace in current project")
 	"p x" '(project-async-shell-command :wk "e[x]ecute shell command"))
+  
+  (start/leader-keys
+	"s" '(:ignore t :wk "[s]earch/[s]pell")
+	"s c" '(jinx-correct :wk "[c]orrect spelling")
+	"s l" '(jinx-languages :wk "Jinx [l]anguages"))
 
   (start/leader-keys
 	"q" '(:ignore t :wk "[q]uit")
@@ -259,7 +264,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 #+end_src
 
 ** Which-Key
-I am still learning all the keybindings that emacs provides (including the ones I have set).
+I am still learning all the keybindings that Emacs provides (including the ones I have set).
 
 #+begin_src emacs-lisp
 (use-package which-key
@@ -279,7 +284,7 @@ I am still learning all the keybindings that emacs provides (including the ones 
 
 * Defaults
 ** Better Defaults
-These are some defaults to make emacs look nicer initally.
+These are some defaults to make Emacs look nicer initially.
 
 #+begin_src emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -358,13 +363,13 @@ For better or worse I do work with monorepos. Thus I need the option to narrow d
 #+end_src
 
 ** TODO Compilation & Tasks within a project
-This [[https://old.reddit.com/r/emacs/comments/104ud8k/how_do_you_use_the_terminal_during_a_coding/][reddit discussion]] has some thoughts on terminals within emacs. An option might be to just spawn a new wezterm window besides emacs and create a faster keybinding for that. Running code/writing/export-specific tasks could be done through emacs itself.
+This [[https://old.reddit.com/r/emacs/comments/104ud8k/how_do_you_use_the_terminal_during_a_coding/][reddit discussion]] has some thoughts on terminals within Emacs. An option might be to just spawn a new wezterm window besides Emacs and create a faster keybinding for that. Running code/writing/export-specific tasks could be done through Emacs itself.
 
 ~compile~ was mentioned in the reddit discussion as a way to run ~compile~-Tasks. I should check for task runner plugins as well, as a way to run long-lived processes in a project. Maybe ~project.el~ or ~projectile~ has a way of natively handling this.
 
 * Appearance
 ** Set Theme
-I am using ~catppuccin~ for emacs, as the ~rose-pine-theme~ does not work that well.
+I am using ~catppuccin~ for Emacs, as the ~rose-pine-theme~ does not work that well.
 
 #+begin_src emacs-lisp
 (use-package catppuccin-theme
@@ -452,13 +457,13 @@ The ~orderless~ completion style seems to be what everyone is using now. Trying 
   (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 
-** Minibuffer
-- Vertico: Provides a performant and minimalistic vertical completion UI based on the default completion system.
+** Mini-buffer
+- Vertico: Provides a performant and minimalist vertical completion UI based on the default completion system.
 - Savehist: Saves completion history.
 - Marginalia: Adds extra metadata for completions in the margins (like descriptions).
 
-We use this packages, because they use emacs native functions. Unlike Ivy or Helm.
-One alternative is ivy and counsel, check out the [[https://github.com/MiniApollo/kickstart.emacs/wiki][project wiki]] for more inforomation.
+We use this packages, because they use Emacs native functions. Unlike Ivy or Helm.
+One alternative is ivy and counsel, check out the [[https://github.com/MiniApollo/kickstart.emacs/wiki][project wiki]] for more information.
 
 #+begin_src emacs-lisp
 (use-package vertico
@@ -605,7 +610,7 @@ Highlights uncommitted changes on the left side of the window (area also known a
 #+end_src
 
 ** Magit
-Currently I use ~lazygit~ at work. Within emacs nothing beats ~magit~ though. ~forge~ is added for Github integration. A succint guide to setting it up can be found [[https://practical.li/spacemacs/source-control/forge-configuration/][here]]. Note: A ~classic~ token has to be generated for Github. It was also necessary to install to do the following on MacOS to set up GPG for to use encrypted ~.authinfo.gpg~:
+Currently I use ~lazygit~ at work. Within Emacs nothing beats ~magit~ though. ~forge~ is added for GitHub integration. A succinct guide to setting it up can be found [[https://practical.li/spacemacs/source-control/forge-configuration/][here]]. Note: A ~classic~ token has to be generated for GitHub. It was also necessary to install to do the following on MacOS to set up GPG for to use encrypted ~.authinfo.gpg~:
 
 #+begin_src shell
 brew install gpg pinentry-mac
@@ -632,13 +637,22 @@ The actual magit/forge config can be found here:
               forge-add-pullreq-refspec nil))
 #+end_src
 
-** Github Permalinks
+** GitHub Permalinks
 I often visit and copy a link to a specific line for my colleagues. This functionality is provided by ~git-link~.
 
 #+begin_src emacs-lisp
 (use-package git-link
   :custom
   (git-link-open-in-browser t))
+#+end_src
+
+* Writing
+** Spellchecking
+The [[https://github.com/minad/jinx][JINX package]] provides a performant option for spell checking (see its README for details). To be able to use it a spell checker and dictionaries have to be installed. I use ~nuspell~ and added the dictionaries on my mac by following the instructions on [[https://github.com/wooorm/dictionaries/tree/main][wooorm/dictionaries]]. To compile ~jinx~ it is also necessary to do: ~brew install enchant pkgconf~.
+
+#+begin_src emacs-lisp
+(use-package jinx
+  :hook (emacs-startup . global-jinx-mode))
 #+end_src
 
 * Org Mode
@@ -720,7 +734,7 @@ To make sure that all ~:init~ and ~add-init-hook~'s are working I am using this 
 
 ** Runtime Performance
 Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
-We also increase Read Process Output Max so emacs can read more data.
+We also increase Read Process Output Max so Emacs can read more data.
 
 #+begin_src emacs-lisp
 ;; Make gc pauses faster by decreasing the threshold.

@@ -206,6 +206,11 @@
 	"p k" '(project-kill-buffers :wk "[d]elete all project buffers")
 	"p r" '(project-query-replace-regexp :wk "[r]eplace in current project")
 	"p x" '(project-async-shell-command :wk "e[x]ecute shell command"))
+  
+  (start/leader-keys
+	"s" '(:ignore t :wk "[s]earch/[s]pell")
+	"s c" '(jinx-correct :wk "[c]orrect spelling")
+	"s l" '(jinx-languages :wk "Jinx [l]anguages"))
 
   (start/leader-keys
 	"q" '(:ignore t :wk "[q]uit")
@@ -487,6 +492,9 @@
 (use-package git-link
   :custom
   (git-link-open-in-browser t))
+
+(use-package jinx
+  :hook (emacs-startup . global-jinx-mode))
 
 (use-package org
   :ensure nil
