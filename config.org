@@ -648,14 +648,10 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 
 ** TODO Org Journal Setup
 ** TODO Org Agenda Views
-* Terminal & Runners
-** TODO vterm vs. eat?
-** TODO Scratchpad-like Terminal
-- [[https://github.com/jixiuf/vterm-toggle][vterm-toggle]] might be a good option
-- Check if ~eat~ has something similar
+* TODO Task Runner & Terminal Worflow
+This [[https://old.reddit.com/r/emacs/comments/104ud8k/how_do_you_use_the_terminal_during_a_coding/][reddit discussion]] has some thoughts on terminals within emacs. An option might be to just spawn a new wezterm window besides emacs and create a faster keybinding for that. Running code/writing/export-specific tasks could be done through emacs itself.
 
-** TODO Run npm/go/... scripts
-Find out the idiomatic emacs way of doing this.
+~compile~ was mentioned in the reddit discussion as a way to run ~compile~-Tasks. I should check for task runner plugins as well, as a way to run long-lived processes in a project. Maybe ~project.el~ or ~projectile~ has a way of natively handling this.
 
 * Misc
 ** Diminish
