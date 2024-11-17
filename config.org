@@ -311,7 +311,6 @@ These are some defaults to make Emacs look nicer initially.
 
   (global-visual-line-mode t)           ;; Enable truncated lines
   (display-line-numbers-type 'relative) ;; Relative line numbers
-  (global-display-line-numbers-mode t)  ;; Display line numbers
 
   (mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
   (scroll-conservatively 10) ;; Smooth scrolling
@@ -325,9 +324,13 @@ These are some defaults to make Emacs look nicer initially.
   ;; Use encrypted authinfo file for auth-sources
   (auth-sources '("~/.authinfo.gpg"))
   
+  ;; Set the fill column width
+  (fill-column 80)
+  
   ;; MacOS specific configuration
   (mac-right-option-modifier "none")
   :hook
+  (prog-mode . display-line-numbers-mode)
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
   :config
   ;; Move customization variables to a separate file and load it, avoid filling up init.el with unnecessary variables
@@ -350,6 +353,9 @@ I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This c
   (setq dired-omit-files
 	      (concat dired-omit-files "\\|^\\..+$")))
 #+end_src
+
+** TODO Visual Undo
+I have to decide if I want to go for ~vundo~ or ~undo-tree~.
 
 * Projects
 For better or worse I do work with monorepos. Thus I need the option to narrow down projects within a single vc-backed directory. Luckily ~project.el~ allows me to customize ~project-vc-extra-root-markers~ with additional markers. I've added some root markers for the languages I currently work with. To manually add a non-vc-backed directory a ~.project~ file can be added to any directory. If the project is not recognized right away by ~project.el~ I can run ~M-x project-remember-projects-under RET ./parent-dir-or-project-dir~.
@@ -646,15 +652,7 @@ I often visit and copy a link to a specific line for my colleagues. This functio
   (git-link-open-in-browser t))
 #+end_src
 
-* Writing
 ** Spellchecking
-The [[https://github.com/minad/jinx][JINX package]] provides a performant option for spell checking (see its README for details). To be able to use it a spell checker and dictionaries have to be installed. I use ~nuspell~ and added the dictionaries on my mac by following the instructions on [[https://github.com/wooorm/dictionaries/tree/main][wooorm/dictionaries]]. To compile ~jinx~ it is also necessary to do: ~brew install enchant pkgconf~.
-
-#+begin_src emacs-lisp
-(use-package jinx
-  :hook (emacs-startup . global-jinx-mode))
-#+end_src
-
 * Org Mode
 My org mode specific configuration.
 
@@ -675,6 +673,8 @@ My org mode specific configuration.
   (org-default-notes-file "~/orgnzr/inbox.org")
   (org-agenda-files '("~/orgnzr"))
   (org-refile-use-outline-path 'file)
+  (org-hide-emphasis-markers t)
+  (org-pretty-entities t)
   (org-refile-targets
    '((nil :maxlevel . 2)
      (org-agenda-files :maxlevel . 2)))
@@ -687,7 +687,7 @@ My org mode specific configuration.
    '(("n" todo "NEXT")
      ("p" todo "PROJECT")))
   :hook
-  (org-mode . org-indent-mode) ;; Indent text
+  (org-mode . org-indent-mode)
   (org-mode . (lambda ()
                 (setq-local electric-pair-inhibit-predicate
                             `(lambda (c)
@@ -695,11 +695,37 @@ My org mode specific configuration.
       #+end_src
 
 ** Beautify Org Mode
-I am using ~org-superstar~ to make org-mode a bit more pleasant to the eye.
+I am using [[https://github.com/minad/org-modern?tab=readme-ov-file][org-modern]] to make org-mode a bit more pleasant to the eye.
 
 #+begin_src emacs-lisp
-(use-package org-superstar
-  :hook (org-mode . org-superstar-mode))
+(use-package org-modern
+  :ensure t
+  :custom
+  (org-modern-star 'replace)
+  :hook 
+  (org-mode . org-modern-mode)
+  (org-agenda-finalize . org-modern-agenda))
+#+end_src
+
+Additionally [[https://codeberg.org/joostkremers/visual-fill-column][Visual-Fill-Column]] is used to center the text.
+
+#+begin_src emacs-lisp
+(use-package visual-fill-column
+  :ensure t
+  :custom
+  (visual-fill-column-center-text t)
+  (visual-fill-column-enable-sensible-window-split t)
+  (visual-fill-column-fringes-outside-margins t)
+  :hook
+  (org-mode . visual-fill-column-mode))
+#+end_src
+
+And finally [[https://github.com/awth13/org-appear][org-appear]] to see the hidden emphasis markers when hovering over them.
+
+#+begin_src emacs-lisp
+(use-package org-appear
+  :ensure (:host github :repo "awth13/org-appear")
+  :hook (org-mode . org-appear-mode))
 #+end_src
 
 ** Source Code Block Tag Expansion
@@ -713,10 +739,45 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 #+end_src
 
 ** TODO Org Journal Setup
-** TODO Org Agenda Views
+** TODO Desktop Notifications
+* TODO RSS Reader
+I use [[https://github.com/skeeto/elfeed][elfeed]] as an RSS reader to keep up with interesting blogs & more. I tried to subscribe to YouTube channels through RSS but settled on using [[https://github.com/polymorphicshade/Tubular][Tubular]] on Android and limiting my desktop YouTube usage.
+
+These feeds should be added to the config:
+- https://arne.me/blog/atom.xml
+- https://xenodium.com/rss.xml
+- https://sachachua.com/blog/feed/index.xml
+
+* TODO Programming
+** TODO LSP Setup
+Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three][Arne.me / LSP and Treesitter setup]]. There is ~lsp-booster~ and ~lsp-bridge~ if performance is lacking.
+
+** TODO Treesitter
+[[https://github.com/renzmann/treesit-auto][Treesit-auto]] greatly simplifies Treesitter usage within Emacs. Besides prompting for (and automatically installing) new grammars, it also sets the major mode for a language to its Treesitter mode, if one exists.
+
+** TODO Language-specific modes
+** TODO AI Integration
+ [[https://github.com/karthink/gptel][gptel]] together with ChatGPT-4o or Claude Sonnet 3.5 seems  to be the best option.
+
+** TODO Run external services
+I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple external services in an easy to use interface.
+
+** TODO Terminal/Shell commands
+* TODO Presentations
+I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
+
+* TODO Writing
+** Spell Checker
+The [[https://github.com/minad/jinx][JINX package]] provides a performant option for spell checking (see its README for details). To be able to use it a spell checker and dictionaries have to be installed. I use ~nuspell~ and added the dictionaries on my mac by following the instructions on [[https://github.com/wooorm/dictionaries/tree/main][wooorm/dictionaries]]. To compile ~jinx~ it is also necessary to do: ~brew install enchant pkgconf~.
+
+#+begin_src emacs-lisp
+(use-package jinx
+  :hook (emacs-startup . global-jinx-mode))
+#+end_src
+
+** TODO Markdown Mode
+** TODO Typst Mode
 * TODO Additional configuration
-- [ ] [[https://github.com/karthink/gptel][gptel]] and/or [[https://github.com/s-kostyaev/ellama?tab=readme-ov-file][ellama]]
-- [ ] [[https://github.com/skeeto/elfeed][elfeed]]
 - [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
 - Writing Mode (Olivetti or similar for UI, Markdown for further writing)
 - Programming Modes

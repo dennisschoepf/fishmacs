@@ -254,7 +254,6 @@
 
   (global-visual-line-mode t)           ;; Enable truncated lines
   (display-line-numbers-type 'relative) ;; Relative line numbers
-  (global-display-line-numbers-mode t)  ;; Display line numbers
 
   (mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
   (scroll-conservatively 10) ;; Smooth scrolling
@@ -268,9 +267,13 @@
   ;; Use encrypted authinfo file for auth-sources
   (auth-sources '("~/.authinfo.gpg"))
   
+  ;; Set the fill column width
+  (fill-column 80)
+  
   ;; MacOS specific configuration
   (mac-right-option-modifier "none")
   :hook
+  (prog-mode . display-line-numbers-mode)
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
   :config
   ;; Move customization variables to a separate file and load it, avoid filling up init.el with unnecessary variables
@@ -493,9 +496,6 @@
   :custom
   (git-link-open-in-browser t))
 
-(use-package jinx
-  :hook (emacs-startup . global-jinx-mode))
-
 (use-package org
   :ensure nil
   :custom
@@ -512,6 +512,8 @@
   (org-default-notes-file "~/orgnzr/inbox.org")
   (org-agenda-files '("~/orgnzr"))
   (org-refile-use-outline-path 'file)
+  (org-hide-emphasis-markers t)
+  (org-pretty-entities t)
   (org-refile-targets
    '((nil :maxlevel . 2)
      (org-agenda-files :maxlevel . 2)))
@@ -524,18 +526,39 @@
    '(("n" todo "NEXT")
      ("p" todo "PROJECT")))
   :hook
-  (org-mode . org-indent-mode) ;; Indent text
+  (org-mode . org-indent-mode)
   (org-mode . (lambda ()
                 (setq-local electric-pair-inhibit-predicate
                             `(lambda (c)
                                (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c)))))))
 
-(use-package org-superstar
-  :hook (org-mode . org-superstar-mode))
+(use-package org-modern
+  :ensure t
+  :custom
+  (org-modern-star 'replace)
+  :hook 
+  (org-mode . org-modern-mode)
+  (org-agenda-finalize . org-modern-agenda))
+
+(use-package visual-fill-column
+  :ensure t
+  :custom
+  (visual-fill-column-center-text t)
+  (visual-fill-column-enable-sensible-window-split t)
+  (visual-fill-column-fringes-outside-margins t)
+  :hook
+  (org-mode . visual-fill-column-mode))
+
+(use-package org-appear
+  :ensure (:host github :repo "awth13/org-appear")
+  :hook (org-mode . org-appear-mode))
 
 (use-package org-tempo
   :ensure nil
   :after org)
+
+(use-package jinx
+  :hook (emacs-startup . global-jinx-mode))
 
 (use-package diminish)
 
