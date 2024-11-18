@@ -654,6 +654,7 @@ I often visit and copy a link to a specific line for my colleagues. This functio
 
 ** Spellchecking
 * Org Mode
+** Base Configuration
 My org mode specific configuration.
 
 #+begin_src emacs-lisp
@@ -718,14 +719,6 @@ Additionally [[https://codeberg.org/joostkremers/visual-fill-column][Visual-Fill
   (visual-fill-column-fringes-outside-margins t)
   :hook
   (org-mode . visual-fill-column-mode))
-#+end_src
-
-And finally [[https://github.com/awth13/org-appear][org-appear]] to see the hidden emphasis markers when hovering over them.
-
-#+begin_src emacs-lisp
-(use-package org-appear
-  :ensure (:host github :repo "awth13/org-appear")
-  :hook (org-mode . org-appear-mode))
 #+end_src
 
 ** Source Code Block Tag Expansion

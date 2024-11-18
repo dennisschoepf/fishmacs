@@ -549,10 +549,6 @@
   :hook
   (org-mode . visual-fill-column-mode))
 
-(use-package org-appear
-  :ensure (:host github :repo "awth13/org-appear")
-  :hook (org-mode . org-appear-mode))
-
 (use-package org-tempo
   :ensure nil
   :after org)
