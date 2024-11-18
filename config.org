@@ -185,6 +185,9 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 	"." '(find-file :wk "Find file"))
 
   (start/leader-keys
+	"SPC" '(project-find-file :wk "[f]ind a file in the project"))
+
+  (start/leader-keys
 	"f" '(:ignore t :wk "[f]ind")
 	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :wk "Edit emacs [c]onfig")
 	"f s" '(save-buffer :wk "Saves current buffer")
@@ -243,7 +246,6 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
   (start/leader-keys
 	"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
 	"p p" '(project-switch-project :wk "Switch to another [p]roject")
-	"p f" '(project-find-file :wk "[f]ind a file in the project")
 	"p g" '(project-find-regexp :wk "[s]earch within project") ;; Maybe use something else here
 	"p s" '(project-shell :wk "Open [s]hell within project")
 	"p d" '(project-dired :wk "Open [d]ired in project root")
@@ -731,7 +733,10 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
   :after org)
 #+end_src
 
-** TODO Org Journal Setup
+** TODO Org-Refile Configuration
+~org-refile~ does not work that well currently. Research how to improve that.
+
+** TODO Org Roam
 ** TODO Desktop Notifications
 * TODO RSS Reader
 I use [[https://github.com/skeeto/elfeed][elfeed]] as an RSS reader to keep up with interesting blogs & more. I tried to subscribe to YouTube channels through RSS but settled on using [[https://github.com/polymorphicshade/Tubular][Tubular]] on Android and limiting my desktop YouTube usage.
@@ -740,6 +745,9 @@ These feeds should be added to the config:
 - https://arne.me/blog/atom.xml
 - https://xenodium.com/rss.xml
 - https://sachachua.com/blog/feed/index.xml
+
+* TODO Presentations
+I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
 
 * TODO Programming
 ** TODO LSP Setup
@@ -756,9 +764,7 @@ Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three]
 I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple external services in an easy to use interface.
 
 ** TODO Terminal/Shell commands
-* TODO Presentations
-I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
-
+- [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
 * TODO Writing
 ** Spell Checker
 The [[https://github.com/minad/jinx][JINX package]] provides a performant option for spell checking (see its README for details). To be able to use it a spell checker and dictionaries have to be installed. I use ~nuspell~ and added the dictionaries on my mac by following the instructions on [[https://github.com/wooorm/dictionaries/tree/main][wooorm/dictionaries]]. To compile ~jinx~ it is also necessary to do: ~brew install enchant pkgconf~.
@@ -770,10 +776,6 @@ The [[https://github.com/minad/jinx][JINX package]] provides a performant option
 
 ** TODO Markdown Mode
 ** TODO Typst Mode
-* TODO Additional configuration
-- [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
-- Writing Mode (Olivetti or similar for UI, Markdown for further writing)
-- Programming Modes
 * Misc
 ** Diminish
 This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.

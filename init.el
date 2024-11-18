@@ -139,6 +139,9 @@
 	"." '(find-file :wk "Find file"))
 
   (start/leader-keys
+	"SPC" '(project-find-file :wk "[f]ind a file in the project"))
+
+  (start/leader-keys
 	"f" '(:ignore t :wk "[f]ind")
 	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :wk "Edit emacs [c]onfig")
 	"f s" '(save-buffer :wk "Saves current buffer")
@@ -197,7 +200,6 @@
   (start/leader-keys
 	"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
 	"p p" '(project-switch-project :wk "Switch to another [p]roject")
-	"p f" '(project-find-file :wk "[f]ind a file in the project")
 	"p g" '(project-find-regexp :wk "[s]earch within project") ;; Maybe use something else here
 	"p s" '(project-shell :wk "Open [s]hell within project")
 	"p d" '(project-dired :wk "Open [d]ired in project root")
