@@ -167,7 +167,8 @@
 	"w h" '(windmove-left :wk "Move to left window")
 	"w k" '(windmove-up :wk "Move to upper window")
 	"w j" '(windmove-down :wk "Move to lower window")
-	"w l" '(windmove-right :wk "Move to right window"))
+	"w l" '(windmove-right :wk "Move to right window")
+	"w z" '(zoom-window-zoom :wk "Toggle [z]oom for current window"))
 
   (start/leader-keys
 	"n" '(dired-jump :wk "ope[n] dired at current directory"))
@@ -181,7 +182,8 @@
 	"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
 	"o l" '(org-agenda :wk "Open al[l] agenda views")
 	"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
-	"o w" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open [w]ork agenda")
+	"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
+	"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
 	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
@@ -292,6 +294,11 @@
   :config
   (setq dired-omit-files
 	      (concat dired-omit-files "\\|^\\..+$")))
+
+(use-package zoom-window
+  :ensure t
+  :custom
+  (zoom-window-mode-line-color "DarkSlateGray"))
 
 (use-package project
   :ensure nil
@@ -565,6 +572,9 @@
 (use-package org-tempo
   :ensure nil
   :after org)
+
+(use-package org-drill
+  :ensure t)
 
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode))

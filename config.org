@@ -756,6 +756,14 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
   :after org)
 #+end_src
 
+** Org Drill
+I am currently learning Spanish and was looking for a spaced repetition system similar to Anki cards for Emacs/Org Mode. I've found [[https://gitlab.com/phillord/org-drill][org-drill]] for that. Using it is as simple as creating a ~.org~ file that conforms to the [[https://gitlab.com/phillord/org-drill/#writing-the-questions][specifications]], visiting that ~.org~ file and running ~org-drill~.
+
+#+begin_src emacs-lisp
+(use-package org-drill
+  :ensure t)
+#+end_src
+
 ** TODO Org-Refile Configuration
 ~org-refile~ does not work that well currently. Research how to improve that.
 
