@@ -1,6 +1,6 @@
 #+Title: DNSC Emacs Config
 #+Author: Dennis Schoepf
-#+Description: My emacs config based on kickstart-emacs
+#+Description: My emacs config based on kickstartmacs
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 
 * Important to load first
@@ -226,8 +226,8 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 	;; TODO: Add "o t" keybinding to open scratch terminal
 	"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
 	"o l" '(org-agenda :wk "Open al[l] agenda views")
-	"o a" '(org-agenda-list :wk "Open [a]genda")
-	"o n" '((lambda () (interactive) (org-agenda nil "n")) :wk "[o]pen [n]ext tasks")
+	"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
+	"o w" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open [w]ork agenda")
 	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
@@ -685,10 +685,21 @@ My org mode specific configuration.
    '(("t" "Task" entry (file "~/orgnzr/inbox.org")
       "* TODO %?\n %i\n")
      ("l" "Task  line" entry (file "~/orgnzr/inbox.org")
-      "* TODO %?\n Relevant line: [[file://%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n")))
+      "* TODO %?\n Relevant line: [[file://%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n")
+	 ("w" "Work Task" entry (file+olp+datetree "~/orgnzr/work.org")
+    "* TODO %?\n")))
   (org-agenda-custom-commands
-   '(("n" todo "NEXT")
-     ("p" todo "PROJECT")))
+   '(("p" "Personal" 
+	  ((agenda "")
+	  (todo "NEXT" ((org-agenda-overriding-header "Next Tasks"))))
+	  ((org-agenda-tag-filter-preset '("-work"))))
+	 ("w" "Work"
+	  ((agenda "")
+	  (tags "+work+TODO=\"NEXT\"" ((org-agenda-overriding-header "Time-Insensitive Tasks")))
+	  (tags "+work+TODO=\"TODO\""
+			((org-agenda-overriding-header "Unscheduled Tasks")
+			 (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
+	  ((org-agenda-tag-filter-preset '("+work"))))))
   :hook
   (org-mode . org-indent-mode)
   (org-mode . (lambda ()
