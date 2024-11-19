@@ -1,7 +1,8 @@
 (setq package-enable-at-startup nil)
 
-;; Transparent background
-;; (set-frame-parameter nil 'alpha-background 80)
-;; (add-to-list 'default-frame-alist '(alpha-background . 80))
+;; Make the title bar transparent
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+
+;; And give the frame itself a little bit of opacity
 (set-frame-parameter (selected-frame) 'alpha 98)
 (add-to-list 'default-frame-alist '(alpha . 98))
