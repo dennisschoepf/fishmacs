@@ -213,7 +213,8 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 	"w h" '(windmove-left :wk "Move to left window")
 	"w k" '(windmove-up :wk "Move to upper window")
 	"w j" '(windmove-down :wk "Move to lower window")
-	"w l" '(windmove-right :wk "Move to right window"))
+	"w l" '(windmove-right :wk "Move to right window")
+	"w z" '(zoom-window-zoom :wk "Toggle [z]oom for current window"))
 
   (start/leader-keys
 	"n" '(dired-jump :wk "ope[n] dired at current directory"))
@@ -227,7 +228,8 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 	"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
 	"o l" '(org-agenda :wk "Open al[l] agenda views")
 	"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
-	"o w" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open [w]ork agenda")
+	"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
+	"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
 	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
@@ -284,7 +286,7 @@ I am still learning all the keybindings that Emacs provides (including the ones 
   (which-key-allow-imprecise-window-fit nil)) 
 #+end_src
 
-* Defaults
+* General
 ** Better Defaults
 These are some defaults to make Emacs look nicer initially.
 
@@ -354,6 +356,16 @@ I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This c
   :config
   (setq dired-omit-files
 	      (concat dired-omit-files "\\|^\\..+$")))
+#+end_src
+
+** Window Zoom
+I regularly use tmux's (or WezTerm for that matter) zoom feature, so naturally I want it in Emacs, too.
+
+#+begin_src emacs-lisp
+(use-package zoom-window
+  :ensure t
+  :custom
+  (zoom-window-mode-line-color "DarkSlateGray"))
 #+end_src
 
 ** TODO Visual Undo
