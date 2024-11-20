@@ -350,10 +350,12 @@ These are some defaults to make Emacs look nicer initially.
   )
 #+end_src
 
-** File & Folder Management
+** TODO File & Folder Management
 I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This configuration will probably be extended as I am growing accustomed to it. Initially ~dired-omit-mode~ should be turned on. Currently it is configured to just hide dot files.
 
 #+begin_src emacs-lisp
+;; TODO: Add https://protesilaos.com/emacs/dired-preview
+;; TODO: Add https://www.masteringemacs.org/article/wdired-editable-dired-buffers
 (use-package dired-x
   :ensure nil
   :commands (dired-omit-mode)

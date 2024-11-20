@@ -292,6 +292,8 @@
 		 )
   )
 
+;; TODO: Add https://protesilaos.com/emacs/dired-preview
+;; TODO: Add https://www.masteringemacs.org/article/wdired-editable-dired-buffers
 (use-package dired-x
   :ensure nil
   :commands (dired-omit-mode)
