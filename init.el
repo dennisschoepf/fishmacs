@@ -190,6 +190,7 @@
 	"g" '(:ignore t :wk "[g]it & more")
 	"g l" '(git-link :wk "Navigate to git forge [l]ink")
 	"g c c" '(comment-line :wk "[g]o [c]omment [c]urrent line")
+	"g c r" '(comment-or-uncomment-region :wk "[g]o [c]omment [r]egion")
 	"g g" '(magit-status :wk "Ma[g]it status"))
 
   (start/leader-keys
@@ -265,7 +266,8 @@
 
   (tab-width 4)
 
-  (make-backup-files t) ;; Stop creating ~ backup files
+  (make-backup-files nil) ;; Stop creating ~ backup files
+  (backup-by-copying t)
   (auto-save-default nil) ;; Stop creating # auto save files
   
   ;; Use encrypted authinfo file for auth-sources
@@ -280,6 +282,8 @@
   (prog-mode . display-line-numbers-mode)
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
   :config
+  (when (eq system-type 'darwin)
+	(setq insert-directory-program "/opt/homebrew/bin/gls"))
   ;; Move customization variables to a separate file and load it, avoid filling up init.el with unnecessary variables
   (setq custom-file (locate-user-emacs-file "custom-vars.el"))
   (load custom-file 'noerror 'nomessage)
@@ -299,6 +303,13 @@
   :ensure t
   :custom
   (zoom-window-mode-line-color "DarkSlateGray"))
+
+(use-package uniquify
+  :ensure nil
+  :config
+  (setq uniquify-buffer-name-style 'forward))
+
+;; tbd
 
 (use-package project
   :ensure nil

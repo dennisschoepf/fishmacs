@@ -236,6 +236,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 	"g" '(:ignore t :wk "[g]it & more")
 	"g l" '(git-link :wk "Navigate to git forge [l]ink")
 	"g c c" '(comment-line :wk "[g]o [c]omment [c]urrent line")
+	"g c r" '(comment-or-uncomment-region :wk "[g]o [c]omment [r]egion")
 	"g g" '(magit-status :wk "Ma[g]it status"))
 
   (start/leader-keys
@@ -322,7 +323,8 @@ These are some defaults to make Emacs look nicer initially.
 
   (tab-width 4)
 
-  (make-backup-files t) ;; Stop creating ~ backup files
+  (make-backup-files nil) ;; Stop creating ~ backup files
+  (backup-by-copying t)
   (auto-save-default nil) ;; Stop creating # auto save files
   
   ;; Use encrypted authinfo file for auth-sources
@@ -337,6 +339,8 @@ These are some defaults to make Emacs look nicer initially.
   (prog-mode . display-line-numbers-mode)
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
   :config
+  (when (eq system-type 'darwin)
+	(setq insert-directory-program "/opt/homebrew/bin/gls"))
   ;; Move customization variables to a separate file and load it, avoid filling up init.el with unnecessary variables
   (setq custom-file (locate-user-emacs-file "custom-vars.el"))
   (load custom-file 'noerror 'nomessage)
@@ -368,8 +372,27 @@ I regularly use tmux's (or WezTerm for that matter) zoom feature, so naturally I
   (zoom-window-mode-line-color "DarkSlateGray"))
 #+end_src
 
+** Unique Buffer Names
+This package makes sure that each buffer name is unique.
+
+#+begin_src emacs-lisp
+(use-package uniquify
+  :ensure nil
+  :config
+  (setq uniquify-buffer-name-style 'forward))
+#+end_src
+
+** TODO Session and Perspective Management
+Similar to my WezTerm setup I want one session per project. I am on the lookout on how to achieve this with project.el and packages like easysession.el. [[https://github.com/nex3/perspective-el][perspective.el]] might be what I need regarding the buffer setup.
+
+*UPDATE:* After consideration of a number of packages [[https://github.com/mclear-tools/tabspaces][tabspaces.el]] seems to do all that is necessary (project-specific buffers per tab, automatic sessions, easy project/tab switching). I need to add [[https://github.com/mclear-tools/tabspaces?tab=readme-ov-file#consult][additional configuration]] to make it work well with ~consult~ though.
+
+#+begin_src emacs-lisp
+;; tbd
+#+end_src
+
 ** TODO Visual Undo
-I have to decide if I want to go for ~vundo~ or ~undo-tree~.
+I have to decide if I want to go for ~vundo~ or ~undo-tree~. Might need to watch some videos on how it could/should work in Emacs in general.
 
 * Projects
 For better or worse I do work with monorepos. Thus I need the option to narrow down projects within a single vc-backed directory. Luckily ~project.el~ allows me to customize ~project-vc-extra-root-markers~ with additional markers. I've added some root markers for the languages I currently work with. To manually add a non-vc-backed directory a ~.project~ file can be added to any directory. If the project is not recognized right away by ~project.el~ I can run ~M-x project-remember-projects-under RET ./parent-dir-or-project-dir~.
