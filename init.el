@@ -280,6 +280,7 @@
   (mac-right-option-modifier "none")
   :hook
   (prog-mode . display-line-numbers-mode)
+  (prog-mode . hl-line-mode)
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
   :config
   (when (eq system-type 'darwin)
@@ -293,13 +294,19 @@
   )
 
 ;; TODO: Add https://protesilaos.com/emacs/dired-preview
-;; TODO: Add https://www.masteringemacs.org/article/wdired-editable-dired-buffers
+(use-package emacs
+  :ensure nil
+  :custom
+  (wdired-allow-to-change-permissions t)
+  (wdired-use-interactive-rename t)
+  (wdired-confirm-overwrite t))
+
 (use-package dired-x
   :ensure nil
   :commands (dired-omit-mode)
   :config
   (setq dired-omit-files
-	      (concat dired-omit-files "\\|^\\..+$")))
+	    (concat dired-omit-files "\\|^\\..+$")))
 
 (use-package zoom-window
   :ensure t
@@ -319,13 +326,31 @@
   (project-vc-ignores '("target/" "bin/" "out/" "node_modules/"))
   (project-vc-extra-root-markers '(".project" "package.json" "Cargo.toml" "go.mod" "Gemfile")))
 
-(use-package catppuccin-theme
+(use-package emacs
+  :ensure nil
   :config
-  (load-theme 'catppuccin t t)
-  (setq catppuccin-flavor 'mocha)
-  (setq catppuccin-italic-comments t)
-  (setq catppuccin-enlarge-headings nil)
-  (catppuccin-reload))
+  (require-theme 'modus-themes)
+
+  (setq modus-themes-common-palette-overrides
+		'((border-mode-line-active bg-mode-line-active)
+          (border-mode-line-inactive bg-mode-line-inactive)
+		  (fg-heading-1 blue-cooler)
+		  (prose-done fg-dim)
+		  (prose-done fg-dim)
+		  (fringe unspecified)
+		  (bg-line-number-inactive unspecified)
+          (bg-line-number-active bg-dim)
+          (bg-hl-line bg-dim)
+		  (bg-prose-block-delimiter unspecified)
+		  (comment fg-dim)))
+
+  (setq modus-themes-fringes nil)
+  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-bold-constructs t)
+  (setq modus-themes-mixed-fonts t)
+  (setq modus-themes-custom-auto-reload t)
+
+  (load-theme 'modus-vivendi-tinted))
 
 (set-face-attribute 'default nil
 					:font "VictorMono Nerd Font"
@@ -365,12 +390,6 @@
   ("C--" . text-scale-decrease)
   ("<C-wheel-up>" . text-scale-increase)
   ("<C-wheel-down>" . text-scale-decrease))
-
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom
-  (doom-modeline-total-line-number t)
-  (doom-modeline-battery t))
 
 (use-package orderless
   :custom
@@ -495,6 +514,9 @@
   )
 
 (use-package diff-hl
+  :ensure t
+  :custom
+  (diff-hl-draw-borders nil)
   :hook ((dired-mode         . diff-hl-dired-mode-unless-remote)
          (magit-pre-refresh  . diff-hl-magit-pre-refresh)
          (magit-post-refresh . diff-hl-magit-post-refresh))
