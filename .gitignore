@@ -12,3 +12,7 @@ elpaca/
 /eshell/
 /projects
 /places
+/.DS_Store
+/.org-id-locations
+*.db
+/persist/
