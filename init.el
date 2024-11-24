@@ -376,6 +376,9 @@
           (bg-line-number-active bg-dim)
           (bg-hl-line bg-dim)
 		  (bg-prose-block-delimiter unspecified)
+		  (bg-tab-bar bg-main)
+		  (bg-tab-current bg-main)
+		  (bg-tab-other bg-main)
 		  (comment fg-dim)))
 
   (setq modus-themes-fringes nil)
