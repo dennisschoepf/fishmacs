@@ -142,11 +142,15 @@
 	"SPC" '(project-find-file :wk "[f]ind a file in the project"))
 
   (start/leader-keys
+	"TAB" '(tabspaces-open-or-create-project-and-workspace :wk "Open or create workspace with project"))
+
+  (start/leader-keys
 	"f" '(:ignore t :wk "[f]ind")
 	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :wk "Edit emacs [c]onfig")
 	"f s" '(save-buffer :wk "Saves current buffer")
 	"f r" '(consult-recent-file :wk "Find [r]ecent files")
-	"f f" '(consult-find :wk "Find [f]iles")
+	"f f" '(consult-fd :wk "Find [f]iles")
+	"f h" '(consult-headline :wk "Find [h]eadline")
 	"f g" '(consult-ripgrep :wk "Find with rip[g]rep")
 	"f l" '(consult-line :wk "Find [l]ine")
 	"f i" '(consult-imenu :wk "Find [i]menu buffer locations"))
@@ -293,7 +297,6 @@
 		 )
   )
 
-;; TODO: Add https://protesilaos.com/emacs/dired-preview
 (use-package emacs
   :ensure nil
   :custom
@@ -318,7 +321,38 @@
   :config
   (setq uniquify-buffer-name-style 'forward))
 
-;; tbd
+;; consult-buffer only shows workspace buffers unless 'b' is pressed
+(with-eval-after-load 'consult
+(consult-customize consult--source-buffer :hidden t :default nil)
+(defvar consult--source-workspace
+  (list :name     "Workspace Buffers"
+        :narrow   ?w
+        :history  'buffer-name-history
+        :category 'buffer
+        :state    #'consult--buffer-state
+        :default  t
+        :items    (lambda () (consult--buffer-query
+                         :predicate #'tabspaces--local-buffer-p
+                         :sort 'visibility
+                         :as #'buffer-name)))
+
+  "Set workspace buffer list for consult-buffer.")
+(add-to-list 'consult-buffer-sources 'consult--source-workspace))
+
+(use-package tabspaces
+  :ensure (:host github :repo "mclear-tools/tabspaces")
+  :hook (after-init . tabspaces-mode)
+  :commands (tabspaces-switch-or-create-workspace
+             tabspaces-open-or-create-project-and-workspace)
+  :custom
+  (tabspaces-use-filtered-buffers-as-default t)
+  (tabspaces-default-tab "Default")
+  (tabspaces-remove-to-default t)
+  (tabspaces-include-buffers '("*scratch*"))
+  (tabspaces-initialize-project-with-todo nil)
+  (tabspaces-session t)
+  (tabspaces-session-auto-restore t)
+  (tab-bar-new-tab-choice "*scratch*"))
 
 (use-package project
   :ensure nil

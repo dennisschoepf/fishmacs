@@ -188,11 +188,15 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 	"SPC" '(project-find-file :wk "[f]ind a file in the project"))
 
   (start/leader-keys
+	"TAB" '(tabspaces-open-or-create-project-and-workspace :wk "Open or create workspace with project"))
+
+  (start/leader-keys
 	"f" '(:ignore t :wk "[f]ind")
 	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :wk "Edit emacs [c]onfig")
 	"f s" '(save-buffer :wk "Saves current buffer")
 	"f r" '(consult-recent-file :wk "Find [r]ecent files")
-	"f f" '(consult-find :wk "Find [f]iles")
+	"f f" '(consult-fd :wk "Find [f]iles")
+	"f h" '(consult-headline :wk "Find [h]eadline")
 	"f g" '(consult-ripgrep :wk "Find with rip[g]rep")
 	"f l" '(consult-line :wk "Find [l]ine")
 	"f i" '(consult-imenu :wk "Find [i]menu buffer locations"))
@@ -351,11 +355,10 @@ These are some defaults to make Emacs look nicer initially.
   )
 #+end_src
 
-** TODO File & Folder Management
+** File & Folder Management
 I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This configuration will probably be extended as I am growing accustomed to it. Initially ~dired-omit-mode~ should be turned on. Currently it is configured to just hide dot files.
 
 #+begin_src emacs-lisp
-;; TODO: Add https://protesilaos.com/emacs/dired-preview
 (use-package emacs
   :ensure nil
   :custom
@@ -391,13 +394,44 @@ This package makes sure that each buffer name is unique.
   (setq uniquify-buffer-name-style 'forward))
 #+end_src
 
-** TODO Session and Perspective Management
+** Session and Perspective Management
 Similar to my WezTerm setup I want one session per project. I am on the lookout on how to achieve this with project.el and packages like easysession.el. [[https://github.com/nex3/perspective-el][perspective.el]] might be what I need regarding the buffer setup.
 
 *UPDATE:* After consideration of a number of packages [[https://github.com/mclear-tools/tabspaces][tabspaces.el]] seems to do all that is necessary (project-specific buffers per tab, automatic sessions, easy project/tab switching). I need to add [[https://github.com/mclear-tools/tabspaces?tab=readme-ov-file#consult][additional configuration]] to make it work well with ~consult~ though.
 
 #+begin_src emacs-lisp
-;; tbd
+;; consult-buffer only shows workspace buffers unless 'b' is pressed
+(with-eval-after-load 'consult
+(consult-customize consult--source-buffer :hidden t :default nil)
+(defvar consult--source-workspace
+  (list :name     "Workspace Buffers"
+        :narrow   ?w
+        :history  'buffer-name-history
+        :category 'buffer
+        :state    #'consult--buffer-state
+        :default  t
+        :items    (lambda () (consult--buffer-query
+                         :predicate #'tabspaces--local-buffer-p
+                         :sort 'visibility
+                         :as #'buffer-name)))
+
+  "Set workspace buffer list for consult-buffer.")
+(add-to-list 'consult-buffer-sources 'consult--source-workspace))
+
+(use-package tabspaces
+  :ensure (:host github :repo "mclear-tools/tabspaces")
+  :hook (after-init . tabspaces-mode)
+  :commands (tabspaces-switch-or-create-workspace
+             tabspaces-open-or-create-project-and-workspace)
+  :custom
+  (tabspaces-use-filtered-buffers-as-default t)
+  (tabspaces-default-tab "Default")
+  (tabspaces-remove-to-default t)
+  (tabspaces-include-buffers '("*scratch*"))
+  (tabspaces-initialize-project-with-todo nil)
+  (tabspaces-session t)
+  (tabspaces-session-auto-restore t)
+  (tab-bar-new-tab-choice "*scratch*"))
 #+end_src
 
 ** TODO Visual Undo

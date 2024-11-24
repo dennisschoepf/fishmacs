@@ -16,3 +16,4 @@ elpaca/
 /.org-id-locations
 *.db
 /persist/
+/tabsession.el
