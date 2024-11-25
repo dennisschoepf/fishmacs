@@ -196,7 +196,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 	"f s" '(save-buffer :wk "Saves current buffer")
 	"f r" '(consult-recent-file :wk "Find [r]ecent files")
 	"f f" '(consult-fd :wk "Find [f]iles")
-	"f h" '(consult-headline :wk "Find [h]eadline")
+	"f h" '(consult-org-heading :wk "Find [h]eadline")
 	"f g" '(consult-ripgrep :wk "Find with rip[g]rep")
 	"f l" '(consult-line :wk "Find [l]ine")
 	"f i" '(consult-imenu :wk "Find [i]menu buffer locations"))
@@ -266,6 +266,14 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 	"s" '(:ignore t :wk "[s]earch/[s]pell")
 	"s c" '(jinx-correct :wk "[c]orrect spelling")
 	"s l" '(jinx-languages :wk "Jinx [l]anguages"))
+
+  (start/leader-keys
+	"t" '(:ignore t :wk "[t]abspaces")
+	"t s" '(tabspaces-save-session :wk "[s]ave session")
+	"t r" '(tabspaces-restore-session :wk "[r]estore session")
+	"t d" '(tabspaces-close-workspace :wk "[d]elete tabspace")
+	"t D" '(tabspaces-clear-buffers :wk "[D]elete tabspace except current buffer")
+	"t x" '(tabspaces-kill-buffers-close-workspace :wk "Delete tabspace and clear all open buffers"))
 
   (start/leader-keys
 	"q" '(:ignore t :wk "[q]uit")
@@ -454,7 +462,7 @@ This [[https://old.reddit.com/r/emacs/comments/104ud8k/how_do_you_use_the_termin
 ~compile~ was mentioned in the reddit discussion as a way to run ~compile~-Tasks. I should check for task runner plugins as well, as a way to run long-lived processes in a project. Maybe ~project.el~ or ~projectile~ has a way of natively handling this.
 
 * Appearance
-** Set Theme
+** Theme
 Coming from Neovim and TUI-based tools in general I mainly used widely available color themes on all platforms (e.g. ~catppuccin~ or ~rose-pine~). After trying it out for a few minutes the built-in modus-themes won me over, though. The exceptional support of Emacs' faces as well as the ergonomic overrides and options for [[https://protesilaos.com/emacs/modus-themes#h:f4651d55-8c07-46aa-b52b-bed1e53463bb][advanced customization]] is just that good.
 
 #+begin_src emacs-lisp
@@ -463,6 +471,11 @@ Coming from Neovim and TUI-based tools in general I mainly used widely available
   :config
   (require-theme 'modus-themes)
 
+  (custom-set-faces
+   '(tab-bar ((t (:height 0.85))))
+   '(tab-bar-tab-inactive
+	 ((t (:slant italic :foreground "#606270")))))
+  
   (setq modus-themes-common-palette-overrides
 		'((border-mode-line-active bg-mode-line-active)
           (border-mode-line-inactive bg-mode-line-inactive)

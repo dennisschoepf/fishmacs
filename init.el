@@ -150,7 +150,7 @@
 	"f s" '(save-buffer :wk "Saves current buffer")
 	"f r" '(consult-recent-file :wk "Find [r]ecent files")
 	"f f" '(consult-fd :wk "Find [f]iles")
-	"f h" '(consult-headline :wk "Find [h]eadline")
+	"f h" '(consult-org-heading :wk "Find [h]eadline")
 	"f g" '(consult-ripgrep :wk "Find with rip[g]rep")
 	"f l" '(consult-line :wk "Find [l]ine")
 	"f i" '(consult-imenu :wk "Find [i]menu buffer locations"))
@@ -220,6 +220,14 @@
 	"s" '(:ignore t :wk "[s]earch/[s]pell")
 	"s c" '(jinx-correct :wk "[c]orrect spelling")
 	"s l" '(jinx-languages :wk "Jinx [l]anguages"))
+
+  (start/leader-keys
+	"t" '(:ignore t :wk "[t]abspaces")
+	"t s" '(tabspaces-save-session :wk "[s]ave session")
+	"t r" '(tabspaces-restore-session :wk "[r]estore session")
+	"t d" '(tabspaces-close-workspace :wk "[d]elete tabspace")
+	"t D" '(tabspaces-clear-buffers :wk "[D]elete tabspace except current buffer")
+	"t x" '(tabspaces-kill-buffers-close-workspace :wk "Delete tabspace and clear all open buffers"))
 
   (start/leader-keys
 	"q" '(:ignore t :wk "[q]uit")
@@ -365,6 +373,11 @@
   :config
   (require-theme 'modus-themes)
 
+  (custom-set-faces
+   '(tab-bar ((t (:height 0.85))))
+   '(tab-bar-tab-inactive
+	 ((t (:slant italic :foreground "#606270")))))
+  
   (setq modus-themes-common-palette-overrides
 		'((border-mode-line-active bg-mode-line-active)
           (border-mode-line-inactive bg-mode-line-inactive)
