@@ -376,7 +376,12 @@
   (custom-set-faces
    '(tab-bar ((t (:height 0.85))))
    '(tab-bar-tab-inactive
-	 ((t (:slant italic :foreground "#606270")))))
+     ((t (:slant italic :foreground "#606270")))))
+  
+  (setq tab-bar-close-button nil)
+  (setq tab-bar-new-button nil)
+  (setq tab-bar-auto-width nil)
+  (setq tab-bar-separator nil)
   
   (setq modus-themes-common-palette-overrides
 		'((border-mode-line-active bg-mode-line-active)
