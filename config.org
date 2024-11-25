@@ -125,7 +125,7 @@ Notes:
   (evil-want-keybinding nil)    ;; Disable evil bindings in other modes (It's not consistent and not good)
   (evil-want-C-u-scroll t)      ;; Set C-u to scroll up
   (evil-want-C-i-jump nil)      ;; Disables C-i jump
-  (evil-undo-system 'undo-redo) ;; C-r to redo
+  (evil-undo-system 'undo-fu) 
   (org-return-follows-link t)   ;; Sets RETURN key in org-mode to follow links
   ;; Unmap keys in 'evil-maps. If not done, org-return-follows-link will not work
   :bind (:map evil-motion-state-map
@@ -343,6 +343,10 @@ These are some defaults to make Emacs look nicer initially.
   
   ;; Use encrypted authinfo file for auth-sources
   (auth-sources '("~/.authinfo.gpg"))
+
+  (undo-limit 67108864)
+  (undo-strong-limit 100663296)
+  (undo-outer-limit 1006632960)
   
   ;; Set the fill column width
   (fill-column 80)
@@ -444,8 +448,31 @@ Similar to my WezTerm setup I want one session per project. I am on the lookout 
   (tab-bar-new-tab-choice "*scratch*"))
 #+end_src
 
-** TODO Visual Undo
-I have to decide if I want to go for ~vundo~ or ~undo-tree~. Might need to watch some videos on how it could/should work in Emacs in general.
+** Undo functionality 
+~undo-fu~ (together with ~undo-fu-session~) allows me to have persistent undo/redo over multiple sessions and undo/redo in a region. ~vundo~ enhances the functionality by visualizing undo/redo steps in a tree structure.
+
+#+begin_src emacs-lisp
+(use-package undo-fu
+  :ensure t
+  :custom
+  (undo-fu-allow-undo-in-region t)
+  :config
+  (global-unset-key (kbd "C-z"))
+  (global-set-key (kbd "C-z")   'undo-fu-only-undo)
+  (global-set-key (kbd "C-S-z") 'undo-fu-only-redo))
+
+(use-package undo-fu-session
+  :ensure t
+  :config
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
+
+(undo-fu-session-global-mode)
+
+(use-package vundo
+  :ensure t
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols))
+#+end_src
 
 * Projects
 For better or worse I do work with monorepos. Thus I need the option to narrow down projects within a single vc-backed directory. Luckily ~project.el~ allows me to customize ~project-vc-extra-root-markers~ with additional markers. I've added some root markers for the languages I currently work with. To manually add a non-vc-backed directory a ~.project~ file can be added to any directory. If the project is not recognized right away by ~project.el~ I can run ~M-x project-remember-projects-under RET ./parent-dir-or-project-dir~.

@@ -86,7 +86,7 @@
   (evil-want-keybinding nil)    ;; Disable evil bindings in other modes (It's not consistent and not good)
   (evil-want-C-u-scroll t)      ;; Set C-u to scroll up
   (evil-want-C-i-jump nil)      ;; Disables C-i jump
-  (evil-undo-system 'undo-redo) ;; C-r to redo
+  (evil-undo-system 'undo-fu) 
   (org-return-follows-link t)   ;; Sets RETURN key in org-mode to follow links
   ;; Unmap keys in 'evil-maps. If not done, org-return-follows-link will not work
   :bind (:map evil-motion-state-map
@@ -286,6 +286,10 @@
   
   ;; Use encrypted authinfo file for auth-sources
   (auth-sources '("~/.authinfo.gpg"))
+
+  (undo-limit 67108864)
+  (undo-strong-limit 100663296)
+  (undo-outer-limit 1006632960)
   
   ;; Set the fill column width
   (fill-column 80)
@@ -363,6 +367,27 @@
   (tabspaces-session t)
   (tabspaces-session-auto-restore t)
   (tab-bar-new-tab-choice "*scratch*"))
+
+(use-package undo-fu
+  :ensure t
+  :custom
+  (undo-fu-allow-undo-in-region t)
+  :config
+  (global-unset-key (kbd "C-z"))
+  (global-set-key (kbd "C-z")   'undo-fu-only-undo)
+  (global-set-key (kbd "C-S-z") 'undo-fu-only-redo))
+
+(use-package undo-fu-session
+  :ensure t
+  :config
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
+
+(undo-fu-session-global-mode)
+
+(use-package vundo
+  :ensure t
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package project
   :ensure nil
