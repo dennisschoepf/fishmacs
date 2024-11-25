@@ -257,6 +257,7 @@
   (menu-bar-mode nil)         ;; Disable the menu bar
   (scroll-bar-mode nil)       ;; Disable the scroll bar
   (tool-bar-mode nil)         ;; Disable the tool bar
+  (tab-bar-mode nil)         ;; Disable the tab bar
   (inhibit-startup-screen t)  ;; Disable welcome screen
   (visible-bell t)  ;; Disable welcome screen
   (ring-bell-function 'ignore) ;; Disable sounds
@@ -382,12 +383,20 @@
   :config
   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
 
-(undo-fu-session-global-mode)
-
 (use-package vundo
   :ensure t
   :custom
   (vundo-glyph-alist vundo-unicode-symbols))
+
+(use-package doom-modeline
+  :ensure t
+  :custom
+  (doom-modeline-height 28)
+  (doom-modeline-buffer-file-name-style 'relative-to-project)
+  (doom-modeline-major-mode-icon nil)
+  (doom-modeline-buffer-modification-icon nil)
+  (doom-modeline-unicode-fallback t)
+  :hook (after-init . doom-modeline-mode))
 
 (use-package project
   :ensure nil
@@ -404,11 +413,6 @@
    '(tab-bar ((t (:height 0.85))))
    '(tab-bar-tab-inactive
      ((t (:slant italic :foreground "#606270")))))
-  
-  (setq tab-bar-close-button nil)
-  (setq tab-bar-new-button nil)
-  (setq tab-bar-auto-width nil)
-  (setq tab-bar-separator nil)
   
   (setq modus-themes-common-palette-overrides
 		'((border-mode-line-active bg-mode-line-active)
