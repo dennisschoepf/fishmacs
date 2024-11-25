@@ -408,7 +408,7 @@ This package makes sure that each buffer name is unique.
   (setq uniquify-buffer-name-style 'forward))
 #+end_src
 
-** Session and Perspective Management
+** Workspace Management
 Similar to my WezTerm setup I want one session per project. I am on the lookout on how to achieve this with project.el and packages like easysession.el. [[https://github.com/nex3/perspective-el][perspective.el]] might be what I need regarding the buffer setup.
 
 *UPDATE:* After consideration of a number of packages [[https://github.com/mclear-tools/tabspaces][tabspaces.el]] seems to do all that is necessary (project-specific buffers per tab, automatic sessions, easy project/tab switching). I need to add [[https://github.com/mclear-tools/tabspaces?tab=readme-ov-file#consult][additional configuration]] to make it work well with ~consult~ though.
