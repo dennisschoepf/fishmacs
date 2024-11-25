@@ -182,12 +182,14 @@
 
   (start/leader-keys
 	"o" '(:ignore t :wk "[o]pen")
-	;; TODO: Add "o t" keybinding to open scratch terminal
 	"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
 	"o l" '(org-agenda :wk "Open al[l] agenda views")
 	"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
 	"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
 	"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
+	"o n n" '(org-roam-node-find :wk "Open roam note")
+	"o n i" '(org-roam-node-find :wk "Insert roam note")
+	"o n t" '(org-roam-node-find :wk "Toggle roam buffer")
 	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
@@ -665,6 +667,14 @@
 
 (use-package org-drill
   :ensure t)
+
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory "~/orgnzr/notes")
+  (org-roam-completion-everywhere t)
+  :config
+  (org-roam-setup))
 
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode))

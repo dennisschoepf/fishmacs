@@ -228,12 +228,14 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 
   (start/leader-keys
 	"o" '(:ignore t :wk "[o]pen")
-	;; TODO: Add "o t" keybinding to open scratch terminal
 	"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
 	"o l" '(org-agenda :wk "Open al[l] agenda views")
 	"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
 	"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
 	"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
+	"o n n" '(org-roam-node-find :wk "Open roam note")
+	"o n i" '(org-roam-node-find :wk "Insert roam note")
+	"o n t" '(org-roam-node-find :wk "Toggle roam buffer")
 	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
@@ -763,7 +765,6 @@ I often visit and copy a link to a specific line for my colleagues. This functio
   (git-link-open-in-browser t))
 #+end_src
 
-** Spellchecking
 * Org Mode
 ** Base Configuration
 My org mode specific configuration.
@@ -861,10 +862,22 @@ I am currently learning Spanish and was looking for a spaced repetition system s
   :ensure t)
 #+end_src
 
+** Org Roam
+No note taking sticked for me as well as ~org-roam~ did.
+
+#+begin_src emacs-lisp
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory "~/orgnzr/notes")
+  (org-roam-completion-everywhere t)
+  :config
+  (org-roam-setup))
+#+end_src
+
 ** TODO Org-Refile Configuration
 ~org-refile~ does not work that well currently. Research how to improve that.
 
-** TODO Org Roam
 ** TODO Desktop Notifications
 * TODO RSS Reader
 I use [[https://github.com/skeeto/elfeed][elfeed]] as an RSS reader to keep up with interesting blogs & more. I tried to subscribe to YouTube channels through RSS but settled on using [[https://github.com/polymorphicshade/Tubular][Tubular]] on Android and limiting my desktop YouTube usage.
