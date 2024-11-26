@@ -937,7 +937,7 @@ I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org
 
 * TODO Programming
 ** TODO LSP Setup
-Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three][Arne.me / LSP and Treesitter setup]]. There is ~lsp-booster~ and ~lsp-bridge~ if performance is lacking.
+Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three][Arne.me / LSP and Treesitter setup]]. There is ~lsp-booster~ and ~lsp-bridge~ if performance is lacking. ~lsp-mode~ together with ~lsp-booster~ might be the easiest to setup.
 
 ** TODO Treesitter
 [[https://github.com/renzmann/treesit-auto][Treesit-auto]] greatly simplifies Treesitter usage within Emacs. Besides prompting for (and automatically installing) new grammars, it also sets the major mode for a language to its Treesitter mode, if one exists.
@@ -951,6 +951,7 @@ I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple
 
 ** TODO Terminal/Shell commands
 - [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
+
 * TODO Writing
 ** Spell Checker
 The [[https://github.com/minad/jinx][JINX package]] provides a performant option for spell checking (see its README for details). To be able to use it a spell checker and dictionaries have to be installed. I use ~nuspell~ and added the dictionaries on my mac by following the instructions on [[https://github.com/wooorm/dictionaries/tree/main][wooorm/dictionaries]]. To compile ~jinx~ it is also necessary to do: ~brew install enchant pkgconf~.
