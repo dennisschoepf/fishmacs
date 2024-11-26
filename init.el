@@ -257,7 +257,6 @@
   (menu-bar-mode nil)         ;; Disable the menu bar
   (scroll-bar-mode nil)       ;; Disable the scroll bar
   (tool-bar-mode nil)         ;; Disable the tool bar
-  (tab-bar-mode nil)         ;; Disable the tab bar
   (inhibit-startup-screen t)  ;; Disable welcome screen
   (visible-bell t)  ;; Disable welcome screen
   (ring-bell-function 'ignore) ;; Disable sounds
@@ -294,6 +293,12 @@
   
   ;; Set the fill column width
   (fill-column 80)
+  
+  ;; Tab Bar config
+  (tab-bar-mode 1)
+  (tab-bar-close-button-show nil)
+  (tab-bar-new-button-show nil)
+  (tab-bar-auto-width nil)
   
   ;; MacOS specific configuration
   (mac-right-option-modifier "none")
@@ -388,9 +393,17 @@
   :custom
   (vundo-glyph-alist vundo-unicode-symbols))
 
+(use-package evil-anzu)
+
+(use-package anzu
+  :init
+  (global-anzu-mode +1))
+
 (use-package doom-modeline
   :ensure t
   :custom
+  (doom-modeline-workspace-name nil)
+  (doom-modeline-position-column-line-format '("%l:%c"))
   (doom-modeline-height 28)
   (doom-modeline-buffer-file-name-style 'relative-to-project)
   (doom-modeline-major-mode-icon nil)
