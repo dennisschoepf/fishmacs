@@ -188,8 +188,8 @@
 	"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
 	"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
 	"o n n" '(org-roam-node-find :wk "Open roam note")
-	"o n i" '(org-roam-node-find :wk "Insert roam note")
-	"o n t" '(org-roam-node-find :wk "Toggle roam buffer")
+	"o n i" '(org-roam-node-insert :wk "Insert roam note")
+	"o n t" '(org-roam-buffer-toggle :wk "Toggle roam buffer")
 	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
@@ -654,12 +654,11 @@
    '((sequence "PROJECT(p)" "TODO(t)" "NEXT(n)" "|" "DONE(d)")))
   (org-default-notes-file "~/orgnzr/inbox.org")
   (org-agenda-files '("~/orgnzr"))
-  (org-refile-use-outline-path 'file)
   (org-hide-emphasis-markers t)
   (org-pretty-entities t)
   (org-refile-targets
-   '((nil :maxlevel . 2)
-     (org-agenda-files :maxlevel . 2)))
+   '((nil :maxlevel . 5)
+     (org-agenda-files :maxlevel . 5)))
   (org-capture-templates
    '(("t" "Task" entry (file "~/orgnzr/inbox.org")
       "* TODO %?\n %i\n")
