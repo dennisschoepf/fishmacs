@@ -923,7 +923,25 @@ No note taking sticked for me as well as ~org-roam~ did.
   (org-roam-setup))
 #+end_src
 
-** TODO Desktop Notifications
+** Desktop Notifications
+This allows for desktop notifications on MacOS.
+
+#+begin_src emacs-lisp
+(use-package org-alert
+   :ensure t 
+   :custom
+   (org-alert-notification-title "Orgnzr")
+   (org-alert-interval 300)
+   (org-alert-notify-cutoff 10)
+   (org-alert-notify-after-event-cutoff 10) 
+   :config 
+   (org-alert-enable))
+
+(use-package alert 
+   :ensure t 
+   :config (setq alert-default-style 'osx-notifier))
+#+end_src
+
 * TODO RSS Reader
 I use [[https://github.com/skeeto/elfeed][elfeed]] as an RSS reader to keep up with interesting blogs & more. I tried to subscribe to YouTube channels through RSS but settled on using [[https://github.com/polymorphicshade/Tubular][Tubular]] on Android and limiting my desktop YouTube usage.
 

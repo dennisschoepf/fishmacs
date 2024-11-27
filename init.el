@@ -717,6 +717,20 @@
   :config
   (org-roam-setup))
 
+(use-package org-alert
+   :ensure t 
+   :custom
+   (org-alert-notification-title "Orgnzr")
+   (org-alert-interval 300)
+   (org-alert-notify-cutoff 10)
+   (org-alert-notify-after-event-cutoff 10) 
+   :config 
+   (org-alert-enable))
+
+(use-package alert 
+   :ensure t 
+   :config (setq alert-default-style 'osx-notifier))
+
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode))
 
