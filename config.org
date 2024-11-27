@@ -942,15 +942,15 @@ This allows for desktop notifications on MacOS.
    :config (setq alert-default-style 'osx-notifier))
 #+end_src
 
-* TODO Presentations
-I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
-
 * TODO Programming
 ** TODO LSP Setup
 Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three][Arne.me / LSP and Treesitter setup]]. There is ~lsp-booster~ and ~lsp-bridge~ if performance is lacking. ~lsp-mode~ together with ~lsp-booster~ might be the easiest to setup.
 
 ** TODO Treesitter
 [[https://github.com/renzmann/treesit-auto][Treesit-auto]] greatly simplifies Treesitter usage within Emacs. Besides prompting for (and automatically installing) new grammars, it also sets the major mode for a language to its Treesitter mode, if one exists.
+
+** TODO Indentation Guides
+[[https://github.com/jdtsmith/indent-bars?tab=readme-ov-file#configuring-tree-sitter][indent-bars.el]]
 
 ** TODO Language-specific modes
 ** TODO AI Integration
@@ -961,6 +961,9 @@ I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple
 
 ** TODO Terminal/Shell commands
 - [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
+
+* TODO Presentations
+I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
 
 * TODO Writing
 ** Spell Checker
