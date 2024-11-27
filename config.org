@@ -942,14 +942,6 @@ This allows for desktop notifications on MacOS.
    :config (setq alert-default-style 'osx-notifier))
 #+end_src
 
-* TODO RSS Reader
-I use [[https://github.com/skeeto/elfeed][elfeed]] as an RSS reader to keep up with interesting blogs & more. I tried to subscribe to YouTube channels through RSS but settled on using [[https://github.com/polymorphicshade/Tubular][Tubular]] on Android and limiting my desktop YouTube usage.
-
-These feeds should be added to the config:
-- https://arne.me/blog/atom.xml
-- https://xenodium.com/rss.xml
-- https://sachachua.com/blog/feed/index.xml
-
 * TODO Presentations
 I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
 
