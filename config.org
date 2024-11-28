@@ -955,24 +955,6 @@ This allows for desktop notifications on MacOS.
   (global-treesit-auto-mode))
 #+end_src
 
-** Indentation Guides
-[[https://github.com/jdtsmith/indent-bars?tab=readme-ov-file#configuring-tree-sitter][indent-bars.el]] is a package that optionally utilizes Treesitter for its indentation guides. These links include more information on how to configure specific indentation guides per language with Treesitter ([[https://github.com/jdtsmith/indent-bars?tab=readme-ov-file#tree-sitter-details][Treesitter Details]], [[https://github.com/jdtsmith/indent-bars?tab=readme-ov-file#tree-sitter][Treesitter]]).
-
-#+begin_src emacs-lisp
-(use-package indent-bars
-  :custom
-  (indent-bars-pattern ".")
-  (indent-bars-width-frac 0.1)
-  (indent-bars-pad-frac 0.1)
-  (indent-bars-zigzag nil)
-  (indent-bars-color-by-depth nil)
-  (indent-bars-highlight-current-depth t)
-  (indent-bars-display-on-blank-lines t)
-  (indent-bars-prefer-character t)
-  (indent-bars-treesit-support t)
-  :hook ((typescript-ts-mode tsx-ts-mode) . indent-bars-mode))
-#+end_src
-
 ** TODO LSP Setup
 Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three][Arne.me / LSP and Treesitter setup]]. There is ~lsp-booster~ and ~lsp-bridge~ if performance is lacking. ~lsp-mode~ together with ~lsp-booster~ might be the easiest to setup.
 

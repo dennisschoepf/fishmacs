@@ -738,19 +738,6 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
-(use-package indent-bars
-  :custom
-  (indent-bars-pattern ".")
-  (indent-bars-width-frac 0.1)
-  (indent-bars-pad-frac 0.1)
-  (indent-bars-zigzag nil)
-  (indent-bars-color-by-depth nil)
-  (indent-bars-highlight-current-depth t)
-  (indent-bars-display-on-blank-lines t)
-  (indent-bars-prefer-character t)
-  (indent-bars-treesit-support t)
-  :hook ((typescript-ts-mode tsx-ts-mode) . indent-bars-mode))
-
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode))
 
