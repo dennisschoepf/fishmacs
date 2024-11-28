@@ -319,7 +319,6 @@ These are some defaults to make Emacs look nicer initially.
   (ring-bell-function 'ignore) ;; Disable sounds
 
   (delete-selection-mode t)   ;; Select text and delete it by typing.
-  (electric-indent-mode nil)  ;; Turn off the weird indenting that Emacs does by default.
   (electric-pair-mode t)      ;; Turns on automatic parens pairing
 
   (blink-cursor-mode nil)     ;; Don't blink cursor
@@ -363,6 +362,7 @@ These are some defaults to make Emacs look nicer initially.
   (prog-mode . display-line-numbers-mode)
   (prog-mode . hl-line-mode)
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
+  (org-mode . (lambda () (electric-indent-local-mode -1)))
   :config
   (when (eq system-type 'darwin)
 	(setq insert-directory-program "/opt/homebrew/bin/gls"))
@@ -943,16 +943,46 @@ This allows for desktop notifications on MacOS.
 #+end_src
 
 * TODO Programming
+** Treesitter
+[[https://github.com/renzmann/treesit-auto][Treesit-auto]] greatly simplifies Treesitter usage within Emacs. Besides prompting for (and automatically installing) new grammars, it also sets the major mode for a language to its Treesitter mode, if one exists.
+
+#+begin_src emacs-lisp
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+#+end_src
+
+** Indentation Guides
+[[https://github.com/jdtsmith/indent-bars?tab=readme-ov-file#configuring-tree-sitter][indent-bars.el]] is a package that optionally utilizes Treesitter for its indentation guides. These links include more information on how to configure specific indentation guides per language with Treesitter ([[https://github.com/jdtsmith/indent-bars?tab=readme-ov-file#tree-sitter-details][Treesitter Details]], [[https://github.com/jdtsmith/indent-bars?tab=readme-ov-file#tree-sitter][Treesitter]]).
+
+#+begin_src emacs-lisp
+(use-package indent-bars
+  :custom
+  (indent-bars-pattern ".")
+  (indent-bars-width-frac 0.1)
+  (indent-bars-pad-frac 0.1)
+  (indent-bars-zigzag nil)
+  (indent-bars-color-by-depth nil)
+  (indent-bars-highlight-current-depth t)
+  (indent-bars-display-on-blank-lines t)
+  (indent-bars-prefer-character t)
+  (indent-bars-treesit-support t)
+  :hook ((typescript-ts-mode tsx-ts-mode) . indent-bars-mode))
+#+end_src
+
 ** TODO LSP Setup
 Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three][Arne.me / LSP and Treesitter setup]]. There is ~lsp-booster~ and ~lsp-bridge~ if performance is lacking. ~lsp-mode~ together with ~lsp-booster~ might be the easiest to setup.
 
-** TODO Treesitter
-[[https://github.com/renzmann/treesit-auto][Treesit-auto]] greatly simplifies Treesitter usage within Emacs. Besides prompting for (and automatically installing) new grammars, it also sets the major mode for a language to its Treesitter mode, if one exists.
-
-** TODO Indentation Guides
-[[https://github.com/jdtsmith/indent-bars?tab=readme-ov-file#configuring-tree-sitter][indent-bars.el]]
-
 ** TODO Language-specific modes
+*** Javascript/Typescript
+https://www.ovistoica.com/blog/2024-7-05-modern-emacs-typescript-web-tsx-config#orgf6d33f7
+
+** TODO Formatter
+https://github.com/radian-software/apheleia
+
 ** TODO AI Integration
  [[https://github.com/karthink/gptel][gptel]] together with ChatGPT-4o or Claude Sonnet 3.5 seems  to be the best option.
 

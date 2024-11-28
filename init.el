@@ -262,7 +262,6 @@
   (ring-bell-function 'ignore) ;; Disable sounds
 
   (delete-selection-mode t)   ;; Select text and delete it by typing.
-  (electric-indent-mode nil)  ;; Turn off the weird indenting that Emacs does by default.
   (electric-pair-mode t)      ;; Turns on automatic parens pairing
 
   (blink-cursor-mode nil)     ;; Don't blink cursor
@@ -306,6 +305,7 @@
   (prog-mode . display-line-numbers-mode)
   (prog-mode . hl-line-mode)
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
+  (org-mode . (lambda () (electric-indent-local-mode -1)))
   :config
   (when (eq system-type 'darwin)
 	(setq insert-directory-program "/opt/homebrew/bin/gls"))
@@ -730,6 +730,26 @@
 (use-package alert 
    :ensure t 
    :config (setq alert-default-style 'osx-notifier))
+
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
+(use-package indent-bars
+  :custom
+  (indent-bars-pattern ".")
+  (indent-bars-width-frac 0.1)
+  (indent-bars-pad-frac 0.1)
+  (indent-bars-zigzag nil)
+  (indent-bars-color-by-depth nil)
+  (indent-bars-highlight-current-depth t)
+  (indent-bars-display-on-blank-lines t)
+  (indent-bars-prefer-character t)
+  (indent-bars-treesit-support t)
+  :hook ((typescript-ts-mode tsx-ts-mode) . indent-bars-mode))
 
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode))
