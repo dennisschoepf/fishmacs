@@ -334,7 +334,6 @@ These are some defaults to make Emacs look nicer initially.
   (ring-bell-function 'ignore) ;; Disable sounds
 
   (delete-selection-mode t)   ;; Select text and delete it by typing.
-  (electric-indent-mode nil)  ;; Turn off the weird indenting that Emacs does by default.
   (electric-pair-mode t)      ;; Turns on automatic parens pairing
 
   (blink-cursor-mode nil)     ;; Don't blink cursor
@@ -378,6 +377,7 @@ These are some defaults to make Emacs look nicer initially.
   (prog-mode . display-line-numbers-mode)
   (prog-mode . hl-line-mode)
   (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
+  (org-mode . (lambda () (electric-indent-local-mode -1)))
   :config
   (when (eq system-type 'darwin)
 	(setq insert-directory-program "/opt/homebrew/bin/gls"))
@@ -938,26 +938,48 @@ No note taking sticked for me as well as ~org-roam~ did.
   (org-roam-setup))
 #+end_src
 
-** TODO Desktop Notifications
-* TODO RSS Reader
-I use [[https://github.com/skeeto/elfeed][elfeed]] as an RSS reader to keep up with interesting blogs & more. I tried to subscribe to YouTube channels through RSS but settled on using [[https://github.com/polymorphicshade/Tubular][Tubular]] on Android and limiting my desktop YouTube usage.
+** Desktop Notifications
+This allows for desktop notifications on MacOS.
 
-These feeds should be added to the config:
-- https://arne.me/blog/atom.xml
-- https://xenodium.com/rss.xml
-- https://sachachua.com/blog/feed/index.xml
+#+begin_src emacs-lisp
+(use-package org-alert
+   :ensure t 
+   :custom
+   (org-alert-notification-title "Orgnzr")
+   (org-alert-interval 300)
+   (org-alert-notify-cutoff 10)
+   (org-alert-notify-after-event-cutoff 10) 
+   :config 
+   (org-alert-enable))
 
-* TODO Presentations
-I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
+(use-package alert 
+   :ensure t 
+   :config (setq alert-default-style 'osx-notifier))
+#+end_src
 
 * TODO Programming
+** Treesitter
+[[https://github.com/renzmann/treesit-auto][Treesit-auto]] greatly simplifies Treesitter usage within Emacs. Besides prompting for (and automatically installing) new grammars, it also sets the major mode for a language to its Treesitter mode, if one exists.
+
+#+begin_src emacs-lisp
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+#+end_src
+
 ** TODO LSP Setup
 Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three][Arne.me / LSP and Treesitter setup]]. There is ~lsp-booster~ and ~lsp-bridge~ if performance is lacking. ~lsp-mode~ together with ~lsp-booster~ might be the easiest to setup.
 
-** TODO Treesitter
-[[https://github.com/renzmann/treesit-auto][Treesit-auto]] greatly simplifies Treesitter usage within Emacs. Besides prompting for (and automatically installing) new grammars, it also sets the major mode for a language to its Treesitter mode, if one exists.
-
 ** TODO Language-specific modes
+*** Javascript/Typescript
+https://www.ovistoica.com/blog/2024-7-05-modern-emacs-typescript-web-tsx-config#orgf6d33f7
+
+** TODO Formatter
+https://github.com/radian-software/apheleia
+
 ** TODO AI Integration
  [[https://github.com/karthink/gptel][gptel]] together with ChatGPT-4o or Claude Sonnet 3.5 seems  to be the best option.
 
@@ -966,6 +988,9 @@ I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple
 
 ** TODO Terminal/Shell commands
 - [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
+
+* TODO Presentations
+I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
 
 * TODO Writing
 ** Spell Checker
