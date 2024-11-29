@@ -4,6 +4,21 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 
 * Important to load first
+** Early Init
+This should be set before loading the ~init.el~ file.
+
+#+begin_src emacs-lisp :tangle ./early-init.el
+(setq package-enable-at-startup nil)
+
+;; Make the title bar transparent
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+
+;; And give the frame itself a little bit of opacity
+(set-frame-parameter (selected-frame) 'alpha 96)
+(add-to-list 'default-frame-alist '(alpha . 96))
+
+#+end_src
+
 ** Startup Performance
 Make startup faster by reducing the frequency of garbage collection. This will be set back when startup finishes.
 
