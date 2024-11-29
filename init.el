@@ -146,7 +146,7 @@
 
   (start/leader-keys
 	"f" '(:ignore t :wk "[f]ind")
-	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :wk "Edit emacs [c]onfig")
+	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/README.org")) :wk "Edit emacs [c]onfig")
 	"f s" '(save-buffer :wk "Saves current buffer")
 	"f r" '(consult-recent-file :wk "Find [r]ecent files")
 	"f f" '(consult-fd :wk "Find [f]iles")
@@ -254,68 +254,62 @@
 (use-package emacs
   :ensure nil
   :custom
-  (menu-bar-mode nil)         ;; Disable the menu bar
-  (scroll-bar-mode nil)       ;; Disable the scroll bar
-  (tool-bar-mode nil)         ;; Disable the tool bar
-  (inhibit-startup-screen t)  ;; Disable welcome screen
-  (visible-bell t)  ;; Disable welcome screen
-  (ring-bell-function 'ignore) ;; Disable sounds
-
-  (delete-selection-mode t)   ;; Select text and delete it by typing.
-  (electric-pair-mode t)      ;; Turns on automatic parens pairing
-
-  (blink-cursor-mode nil)     ;; Don't blink cursor
-  (global-auto-revert-mode t) ;; Automatically reload file and show changes if the file has changed
-
-  (dired-kill-when-opening-new-dired-buffer t) ;; Dired don't create new buffer
-  (recentf-mode t) ;; Enable recent file mode
-
-  (global-visual-line-mode t)           ;; Enable truncated lines
-  (display-line-numbers-type 'relative) ;; Relative line numbers
-
-  (mouse-wheel-progressive-speed nil) ;; Disable progressive speed when scrolling
-  (scroll-conservatively 10) ;; Smooth scrolling
-  (scroll-margin 8)
-
-  (tab-width 4)
-
-  (make-backup-files nil) ;; Stop creating ~ backup files
-  (backup-by-copying t)
-  (auto-save-default nil) ;; Stop creating # auto save files
+  ;; Disable unwanted elements
+  (menu-bar-mode nil)
+  (scroll-bar-mode nil)
+  (tool-bar-mode nil)
+  (inhibit-startup-screen t)
+  (ring-bell-function 'ignore)
+  (blink-cursor-mode nil)
   
-  ;; Use encrypted authinfo file for auth-sources
-  (auth-sources '("~/.authinfo.gpg"))
-
-  (undo-limit 67108864)
-  (undo-strong-limit 100663296)
-  (undo-outer-limit 1006632960)
-  
-  ;; Set the fill column width
-  (fill-column 80)
-  
-  ;; Tab Bar config
+  ;; Configure the tab bar to work well with tabspaces.el
   (tab-bar-mode 1)
   (tab-bar-close-button-show nil)
   (tab-bar-new-button-show nil)
   (tab-bar-auto-width nil)
+
+  ;; Set some global modes
+  (global-visual-line-mode t)
+  (delete-selection-mode t)
+  (electric-pair-mode t)
+  (global-auto-revert-mode t)
+  (recentf-mode t)
+  (visible-bell t)
   
-  ;; MacOS specific configuration
-  (mac-right-option-modifier "none")
+  ;; Set some text editing defaults
+	(electric-indent-mode t)
+  (tab-width 2)
+  (fill-column 80)
+  (display-line-numbers-type 'relative)
+  
+  ;; Configure scroll behavior
+  (mouse-wheel-progressive-speed nil)
+  (scroll-conservatively 10)
+  (scroll-margin 8)
+  
+  ;; Undo behavior
+  (undo-limit 67108864)
+  (undo-strong-limit 100663296)
+  (undo-outer-limit 1006632960)
+  
+  ;; Use encrypted authinfo file for auth-sources
+  (auth-sources '("~/.authinfo.gpg"))
+  
   :hook
   (prog-mode . display-line-numbers-mode)
   (prog-mode . hl-line-mode)
-  (prog-mode . (lambda () (hs-minor-mode t))) ;; Enable folding hide/show globally
-  (org-mode . (lambda () (electric-indent-local-mode -1)))
+  (prog-mode . (lambda () (hs-minor-mode t)))
   :config
+  ;; MacOS specfic configuration
   (when (eq system-type 'darwin)
+	(setq mac-right-option-modifier "none")
 	(setq insert-directory-program "/opt/homebrew/bin/gls"))
-  ;; Move customization variables to a separate file and load it, avoid filling up init.el with unnecessary variables
+
+  ;; Move customized variables to separate file
   (setq custom-file (locate-user-emacs-file "custom-vars.el"))
   (load custom-file 'noerror 'nomessage)
-  :bind (
-		 ([escape] . keyboard-escape-quit) ;; Makes Escape quit prompts (Minibuffer Escape)
-		 )
-  )
+  :bind
+  (([escape] . keyboard-escape-quit)))
 
 (use-package emacs
   :ensure nil
@@ -680,6 +674,7 @@
 	  ((org-agenda-tag-filter-preset '("+work"))))))
   :hook
   (org-mode . org-indent-mode)
+  (org-mode . (lambda() (electric-indent-local-mode -1)))
   (org-mode . (lambda ()
                 (setq-local electric-pair-inhibit-predicate
                             `(lambda (c)
@@ -721,8 +716,8 @@
    :ensure t 
    :custom
    (org-alert-notification-title "Orgnzr")
-   (org-alert-interval 300)
-   (org-alert-notify-cutoff 10)
+   (org-alert-interval 600)
+   (org-alert-notify-cutoff 5)
    (org-alert-notify-after-event-cutoff 10) 
    :config 
    (org-alert-enable))
@@ -737,6 +732,11 @@
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
+
+(use-package typescript-ts-mode
+	:ensure nil
+	:custom
+	(typescript-ts-mode-indent-offset 2))
 
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode))
