@@ -267,6 +267,9 @@
   (tab-bar-close-button-show nil)
   (tab-bar-new-button-show nil)
   (tab-bar-auto-width nil)
+	
+	;; Set scratch buffer message
+	(initial-scratch-message ";; Let's start ...\n")
 
   ;; Set some global modes
   (global-visual-line-mode t)
