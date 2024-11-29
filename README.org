@@ -979,6 +979,8 @@ This allows for desktop notifications on MacOS.
 ** TODO LSP Setup
 Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three][Arne.me / LSP and Treesitter setup]]. There is ~lsp-booster~ and ~lsp-bridge~ if performance is lacking. ~lsp-mode~ together with ~lsp-booster~ might be the easiest to setup.
 
+[[https://github.com/LionyxML/emacs-kick/blob/9fae955ebf471a191b34c3d3e2836532067bfe1b/init.el#L654][This]] could help. Initially setup LSP for ~TS~, ~Astro~, ~Go~, ~Typst~, ~Tailwind~, ~CSS~, ~JSON~, ~YAML~, ~Docker(-compose)~.
+
 ** TODO Language-specific modes
 *** Typescript & TSX
 https://www.ovistoica.com/blog/2024-7-05-modern-emacs-typescript-web-tsx-config#orgf6d33f7
