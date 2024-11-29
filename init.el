@@ -744,6 +744,19 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
+(use-package add-node-modules-path
+  :ensure t
+  :defer t
+  :custom
+  (eval-after-load 'typescript-ts-mode
+	'(add-hook 'typescript-ts-mode-hook #'add-node-modules-path))
+  (eval-after-load 'tsx-ts-mode
+	'(add-hook 'tsx-ts-mode-hook #'add-node-modules-path))
+  (eval-after-load 'typescriptreact-mode
+	'(add-hook 'typescriptreact-mode-hook #'add-node-modules-path))
+  (eval-after-load 'js-mode
+	'(add-hook 'js-mode-hook #'add-node-modules-path)))
+
 (use-package typescript-ts-mode
 	:ensure nil
 	:custom

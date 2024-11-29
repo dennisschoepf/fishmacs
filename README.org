@@ -982,10 +982,23 @@ Here is a tutorial: [[https://arne.me/blog/emacs-config-from-scratch-part-three]
 [[https://github.com/LionyxML/emacs-kick/blob/9fae955ebf471a191b34c3d3e2836532067bfe1b/init.el#L654][This]] could help. Initially setup LSP for ~TS~, ~Astro~, ~Go~, ~Typst~, ~Tailwind~, ~CSS~, ~JSON~, ~YAML~, ~Docker(-compose)~.
 
 ** TODO Language-specific modes
-*** Typescript & TSX
+*** Javascript, JSX, Typescript & TSX
 https://www.ovistoica.com/blog/2024-7-05-modern-emacs-typescript-web-tsx-config#orgf6d33f7
 
 #+begin_src emacs-lisp
+(use-package add-node-modules-path
+  :ensure t
+  :defer t
+  :custom
+  (eval-after-load 'typescript-ts-mode
+	'(add-hook 'typescript-ts-mode-hook #'add-node-modules-path))
+  (eval-after-load 'tsx-ts-mode
+	'(add-hook 'tsx-ts-mode-hook #'add-node-modules-path))
+  (eval-after-load 'typescriptreact-mode
+	'(add-hook 'typescriptreact-mode-hook #'add-node-modules-path))
+  (eval-after-load 'js-mode
+	'(add-hook 'js-mode-hook #'add-node-modules-path)))
+
 (use-package typescript-ts-mode
 	:ensure nil
 	:custom
