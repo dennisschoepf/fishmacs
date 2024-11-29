@@ -302,8 +302,7 @@
   :config
   ;; MacOS specfic configuration
   (when (eq system-type 'darwin)
-	(setq mac-right-option-modifier "none")
-	(setq insert-directory-program "/opt/homebrew/bin/gls"))
+		(setq mac-right-option-modifier "none"))
 
   ;; Move customized variables to separate file
   (setq custom-file (locate-user-emacs-file "custom-vars.el"))
@@ -317,6 +316,18 @@
   (wdired-allow-to-change-permissions t)
   (wdired-use-interactive-rename t)
   (wdired-confirm-overwrite t))
+
+(use-package dired
+	:ensure nil
+	:custom
+	(dired-listing-switches "-lah --group-directories-first")
+	(dired-dwim-target t)
+	(dired-kill-when-opening-new-dired-buffer t)
+	:config
+  (when (eq system-type 'darwin)
+    (let ((gls (executable-find "gls")))
+      (when gls
+        (setq insert-directory-program gls)))))
 
 (use-package dired-x
   :ensure nil
