@@ -1009,7 +1009,7 @@ https://www.ovistoica.com/blog/2024-7-05-modern-emacs-typescript-web-tsx-config#
 https://github.com/radian-software/apheleia
 
 ** TODO AI Integration
- [[https://github.com/karthink/gptel][gptel]] together with ChatGPT-4o or Claude Sonnet 3.5 seems  to be the best option.
+ [[https://github.com/karthink/gptel][gptel]] together with ChatGPT-4o or Claude Sonnet 3.5 seems to be the best option. It should also work with Copilot. [[https://github.com/lanceberge/elysium][elysium]] is a package that automatically integrates generated code in the current buffer.
 
 ** TODO Run external services
 I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple external services in an easy to use interface.
@@ -1030,7 +1030,20 @@ The [[https://github.com/minad/jinx][JINX package]] provides a performant option
 #+end_src
 
 ** TODO Markdown Mode
-** TODO Typst Mode
+** Typst Mode
+The syntax highlighting and indentation is handled by [[https://codeberg.org/meow_king/typst-ts-mode][typst-ts-mode]].
+
+#+begin_src emacs-lisp
+(use-package typst-ts-mode
+  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"
+                 :files (:defaults "*.el"))
+  :custom
+	(typst-ts-mode-indent-offset 2)
+  (typst-ts-watch-options "--open")
+  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.dylib" user-emacs-directory))
+  (typst-ts-mode-enable-raw-blocks-highlight t))
+  #+end_src
+
 * Misc
 ** Diminish
 This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.

@@ -765,6 +765,15 @@
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode))
 
+(use-package typst-ts-mode
+  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"
+                 :files (:defaults "*.el"))
+  :custom
+	(typst-ts-mode-indent-offset 2)
+  (typst-ts-watch-options "--open")
+  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.dylib" user-emacs-directory))
+  (typst-ts-mode-enable-raw-blocks-highlight t))
+
 (use-package diminish)
 
 (setq elpaca-after-init-time (or elpaca-after-init-time (current-time)))
