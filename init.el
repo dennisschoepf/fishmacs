@@ -225,6 +225,7 @@
 
   (start/leader-keys
 	"t" '(:ignore t :wk "[t]abspaces")
+	"t t" '(tabspaces-switch-or-create-workspace :wk "swi[t]ch workspace")
 	"t s" '(tabspaces-save-session :wk "[s]ave session")
 	"t r" '(tabspaces-restore-session :wk "[r]estore session")
 	"t d" '(tabspaces-close-workspace :wk "[d]elete tabspace")
@@ -278,6 +279,7 @@
   (global-auto-revert-mode t)
   (recentf-mode t)
   (visible-bell t)
+	(pixel-scroll-precision-mode t)
   
   ;; Set some text editing defaults
 	(electric-indent-mode t)
@@ -298,6 +300,8 @@
   ;; Use encrypted authinfo file for auth-sources
   (auth-sources '("~/.authinfo.gpg"))
   
+	;; Do not show native comp warning
+	(native-comp-async-report-warnings-errors nil)
   :hook
   (prog-mode . display-line-numbers-mode)
   (prog-mode . hl-line-mode)
@@ -305,7 +309,10 @@
   :config
   ;; MacOS specfic configuration
   (when (eq system-type 'darwin)
-		(setq mac-right-option-modifier "none"))
+		(setq mac-right-option-modifier "none")
+    (let ((gls (executable-find "gls")))
+      (when gls
+        (setq insert-directory-program gls))))
 
   ;; Move customized variables to separate file
   (setq custom-file (locate-user-emacs-file "custom-vars.el"))
@@ -325,19 +332,18 @@
 	:custom
 	(dired-listing-switches "-lah --group-directories-first")
 	(dired-dwim-target t)
-	(dired-kill-when-opening-new-dired-buffer t)
-	:config
-  (when (eq system-type 'darwin)
-    (let ((gls (executable-find "gls")))
-      (when gls
-        (setq insert-directory-program gls)))))
+	(dired-kill-when-opening-new-dired-buffer t))
+
+(use-package dired-narrow
+	:ensure t
+	:bind (:map dired-mode-map ("\C-s" . dired-narrow)))
 
 (use-package dired-x
   :ensure nil
   :commands (dired-omit-mode)
   :config
   (setq dired-omit-files
-	    (concat dired-omit-files "\\|^\\..+$")))
+				(concat dired-omit-files "\\|^\\..+$")))
 
 (use-package zoom-window
   :ensure t
@@ -374,7 +380,7 @@
              tabspaces-open-or-create-project-and-workspace)
   :custom
   (tabspaces-use-filtered-buffers-as-default t)
-  (tabspaces-default-tab "Default")
+  (tabspaces-default-tab "default")
   (tabspaces-remove-to-default t)
   (tabspaces-include-buffers '("*scratch*"))
   (tabspaces-initialize-project-with-todo nil)
@@ -385,16 +391,13 @@
 (use-package undo-fu
   :ensure t
   :custom
-  (undo-fu-allow-undo-in-region t)
-  :config
-  (global-unset-key (kbd "C-z"))
-  (global-set-key (kbd "C-z")   'undo-fu-only-undo)
-  (global-set-key (kbd "C-S-z") 'undo-fu-only-redo))
+  (undo-fu-allow-undo-in-region t))
 
 (use-package undo-fu-session
   :ensure t
   :config
-  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
+	(undo-fu-session-global-mode t))
 
 (use-package vundo
   :ensure t
