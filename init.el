@@ -306,13 +306,11 @@
   (prog-mode . display-line-numbers-mode)
   (prog-mode . hl-line-mode)
   (prog-mode . (lambda () (hs-minor-mode t)))
-  :config
+  :init
   ;; MacOS specfic configuration
   (when (eq system-type 'darwin)
 		(setq mac-right-option-modifier "none")
-    (let ((gls (executable-find "gls")))
-      (when gls
-        (setq insert-directory-program gls))))
+		(setq insert-directory-program "/opt/homebrew/bin/gls"))
 
   ;; Move customized variables to separate file
   (setq custom-file (locate-user-emacs-file "custom-vars.el"))
