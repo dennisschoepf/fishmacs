@@ -19,3 +19,4 @@ elpaca/
 /tabsession.el
 /undo-fu-session/
 /tree-sitter/
+/.cache/
