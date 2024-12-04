@@ -402,7 +402,7 @@ These are some defaults to make Emacs look nicer initially.
 #+end_src
 
 ** File & Folder Management
-I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This configuration will probably be extended as I am growing accustomed to it. Initially ~dired-omit-mode~ should be turned on. Currently it is configured to just hide dot files.
+I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This configuration will probably be extended as I am growing accustomed to it. Currently it is configured to just hide dot files.
 
 #+begin_src emacs-lisp
 (use-package emacs
@@ -425,12 +425,11 @@ I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This c
 
 (use-package dired-x
   :ensure nil
-  :commands (dired-omit-mode)
 	:bind (:map dired-mode-map ("\C-h" . dired-omit-mode))
   :config
-	(dired-omit-mode -1)
   (setq dired-omit-files
-				(concat dired-omit-files "\\|^\\..+$")))
+				(concat dired-omit-files "\\|^\\..+$"))
+	(dired-omit-mode -1))
 
 (use-package all-the-icons
 	:ensure t)

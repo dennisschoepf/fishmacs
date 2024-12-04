@@ -348,12 +348,11 @@
 
 (use-package dired-x
   :ensure nil
-  :commands (dired-omit-mode)
 	:bind (:map dired-mode-map ("\C-h" . dired-omit-mode))
   :config
-	(dired-omit-mode -1)
   (setq dired-omit-files
-				(concat dired-omit-files "\\|^\\..+$")))
+				(concat dired-omit-files "\\|^\\..+$"))
+	(dired-omit-mode -1))
 
 (use-package all-the-icons
 	:ensure t)
@@ -540,14 +539,32 @@
   (marginalia-mode))
 
 (use-package corfu
+	:ensure t
   :custom
   (corfu-cycle t)
   (corfu-quit-at-boundary nil)
   (corfu-preselect 'prompt)
   (corfu-on-exact-match nil)
   (corfu-quit-no-match nil)
+	(corfu-auto t)
+  (corfu-quit-no-match t)
+	(corfu-auto-prefix 2)
+  (corfu-popupinfo-mode t)
+  (corfu-popupinfo-delay 0.5)
+  :bind
+  (:map corfu-map
+				("RET" . corfu-complete)
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous))
   :init
   (global-corfu-mode))
+
+(use-package nerd-icons-corfu
+	:ensure t
+  :after corfu
+  :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package emacs
   :ensure nil
@@ -557,6 +574,7 @@
   (read-extended-command-predicate #'command-completion-default-include-p))
 
 (use-package cape
+	:ensure t
   :bind ("C-c p" . cape-prefix-map)
 	:init
 	(add-hook 'completion-at-point-functions #'cape-file)
