@@ -125,114 +125,125 @@
   (windmove-right)
   (dired-jump))
 
+(defun dnsc/open-agenda-only-window ()
+  "Opens agenda in full-screen (only-window)"
+  (interactive)
+  (let (current-value org-agenda-window-setup)
+		(unwind-protect
+				(progn
+					(setq org-agenda-window-setup 'only-window)
+					(org-agenda nil "w"))
+			(setq org-agenda-window-setup current-value))))
+
 (use-package general
   :config
   (general-evil-setup)
   ;; Set up 'SPC' as the leader key
   (general-create-definer start/leader-keys
-	:states '(normal insert visual motion emacs)
-	:keymaps 'override
-	:prefix "SPC"           ;; Set leader key
-	:global-prefix "C-SPC") ;; Set global leader key
+		:states '(normal insert visual motion emacs)
+		:keymaps 'override
+		:prefix "SPC"           ;; Set leader key
+		:global-prefix "C-SPC") ;; Set global leader key
 
   (start/leader-keys
-	"." '(find-file :wk "Find file"))
+		"." '(find-file :wk "Find file"))
 
   (start/leader-keys
-	"SPC" '(project-find-file :wk "[f]ind a file in the project"))
+		"SPC" '(project-find-file :wk "[f]ind a file in the project"))
 
   (start/leader-keys
-	"TAB" '(tabspaces-open-or-create-project-and-workspace  :wk "Open or create workspace with project"))
+		"TAB" '(tabspaces-open-or-create-project-and-workspace  :wk "Open or create workspace with project"))
 
   (start/leader-keys
-	"f" '(:ignore t :wk "[f]ind")
-	"f c" '((lambda () (interactive) (find-file "~/.emacs.d/README.org")) :wk "Edit emacs [c]onfig")
-	"f s" '(save-buffer :wk "Saves current buffer")
-	"f r" '(consult-recent-file :wk "Find [r]ecent files")
-	"f f" '(consult-fd :wk "Find [f]iles")
-	"f h" '(consult-org-heading :wk "Find [h]eadline")
-	"f y" '(consult-yank-from-kill-ring :wk "[y]ank from kill ring")
-	"f g" '(consult-ripgrep :wk "Find with rip[g]rep")
-	"f l" '(consult-goto-line :wk "Find [l]ine")
-	"f i" '(consult-imenu :wk "Find [i]menu buffer locations"))
+		"f" '(:ignore t :wk "[f]ind")
+		"f c" '((lambda () (interactive) (find-file "~/.emacs.d/README.org")) :wk "Edit emacs [c]onfig")
+		"f s" '(save-buffer :wk "Saves current buffer")
+		"f r" '(consult-recent-file :wk "Find [r]ecent files")
+		"f f" '(consult-fd :wk "Find [f]iles")
+		"f h" '(consult-org-heading :wk "Find [h]eadline")
+		"f y" '(consult-yank-from-kill-ring :wk "[y]ank from kill ring")
+		"f g" '(consult-ripgrep :wk "Find with rip[g]rep")
+		"f l" '(consult-goto-line :wk "Find [l]ine")
+		"f i" '(consult-imenu :wk "Find [i]menu buffer locations"))
 
   (start/leader-keys
-	"b" '(:ignore t :wk "[b]uffers")
-	"b b" '(consult-buffer :wk "switch to [b]uffer")
-	"b d" '(kill-current-buffer :wk "[d]elete this buffer")
-	"b n" '(next-buffer :wk "[n]ext buffer")
-	"b p" '(previous-buffer :wk "[p]revious buffer")
-	"b r" '(revert-buffer :wk "[r]eload buffer"))
+		"b" '(:ignore t :wk "[b]uffers")
+		"b b" '(consult-buffer :wk "switch to [b]uffer")
+		"b d" '(kill-current-buffer :wk "[d]elete this buffer")
+		"b n" '(next-buffer :wk "[n]ext buffer")
+		"b p" '(previous-buffer :wk "[p]revious buffer")
+		"b r" '(revert-buffer :wk "[r]eload buffer"))
 
   (start/leader-keys
-	"w" '(:ignore t :wk "[w]indow")
-	"w s" '(split-window-vertically :wk "[s]plit window horizontally")
-	"w v" '(split-window-horizontally :wk "Split window [v]ertically")
-	"w d" '(delete-window :wk "[d]elete window")
-	"w h" '(windmove-left :wk "Move to left window")
-	"w k" '(windmove-up :wk "Move to upper window")
-	"w j" '(windmove-down :wk "Move to lower window")
-	"w l" '(windmove-right :wk "Move to right window")
-	"w z" '(zoom-window-zoom :wk "Toggle [z]oom for current window"))
+		"w" '(:ignore t :wk "[w]indow")
+		"w s" '(split-window-vertically :wk "[s]plit window horizontally")
+		"w v" '(split-window-horizontally :wk "Split window [v]ertically")
+		"w d" '(delete-window :wk "[d]elete window")
+		"w h" '(windmove-left :wk "Move to left window")
+		"w k" '(windmove-up :wk "Move to upper window")
+		"w j" '(windmove-down :wk "Move to lower window")
+		"w l" '(windmove-right :wk "Move to right window")
+		"w z" '(zoom-window-zoom :wk "Toggle [z]oom for current window"))
 
   (start/leader-keys
-	"n" '(dired-jump :wk "ope[n] dired at current directory"))
+		"n" '(dired-jump :wk "ope[n] dired at current directory"))
 
   (start/leader-keys
-	"B" '(tabspaces-switch-buffer-and-tab :wk "Show all [B]uffers and switch to project and buffer"))
+		"B" '(tabspaces-switch-buffer-and-tab :wk "Show all [B]uffers and switch to project and buffer"))
 
   (start/leader-keys
-	"o" '(:ignore t :wk "[o]pen")
-	"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
-	"o l" '(org-agenda :wk "Open al[l] agenda views")
-	"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
-	"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
-	"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
-	"o n n" '(org-roam-node-find :wk "Open roam note")
-	"o n i" '(org-roam-node-insert :wk "Insert roam note")
-	"o n t" '(org-roam-buffer-toggle :wk "Toggle roam buffer")
-	"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
+		"o" '(:ignore t :wk "[o]pen")
+		"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
+		"o l" '(org-agenda :wk "Open al[l] agenda views")
+		"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
+		"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
+		"o w f" '(dnsc/open-agenda-only-window :wk "Open work [a]genda")
+		"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
+		"o n n" '(org-roam-node-find :wk "Open roam note")
+		"o n i" '(org-roam-node-insert :wk "Insert roam note")
+		"o n t" '(org-roam-buffer-toggle :wk "Toggle roam buffer")
+		"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
-	"g" '(:ignore t :wk "[g]it & more")
-	"g l" '(git-link :wk "Navigate to git forge [l]ink")
-	"g c c" '(comment-line :wk "[g]o [c]omment [c]urrent line")
-	"g c r" '(comment-or-uncomment-region :wk "[g]o [c]omment [r]egion")
-	"g g" '(magit-status :wk "Ma[g]it status"))
+		"g" '(:ignore t :wk "[g]it & more")
+		"g l" '(git-link :wk "Navigate to git forge [l]ink")
+		"g c c" '(comment-line :wk "[g]o [c]omment [c]urrent line")
+		"g c r" '(comment-or-uncomment-region :wk "[g]o [c]omment [r]egion")
+		"g g" '(magit-status :wk "Ma[g]it status"))
 
   (start/leader-keys
-	"h" '(:ignore t :wk "[h]elp") ;; To get more help use C-h commands (describe variable, function, etc.)
-	"h s" '(describe-symbol :wk "Get help for [s]ymbol")
-	"h v" '(describe-variable :wk "Get help for [v]ariable")
-	"h f" '(describe-function :wk "Get help for [f]unction")
-	"h r r" '((lambda () (interactive) (load-file user-init-file)) :wk "Reload Emacs config"))
+		"h" '(:ignore t :wk "[h]elp") ;; To get more help use C-h commands (describe variable, function, etc.)
+		"h s" '(describe-symbol :wk "Get help for [s]ymbol")
+		"h v" '(describe-variable :wk "Get help for [v]ariable")
+		"h f" '(describe-function :wk "Get help for [f]unction")
+		"h r r" '((lambda () (interactive) (load-file user-init-file)) :wk "Reload Emacs config"))
 
   (start/leader-keys
-	"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
-	"p g" '(consult-ripgrep :wk "[s]earch within project") ;; Maybe use something else here
-	"p s" '(project-shell :wk "Open [s]hell within project")
-	"p d" '(project-dired :wk "Open [d]ired in project root")
-	"p c" '(project-compile :wk "[c]ompile project")
-	"p k" '(project-kill-buffers :wk "[d]elete all project buffers")
-	"p r" '(project-query-replace-regexp :wk "[r]eplace in current project")
-	"p x" '(project-async-shell-command :wk "e[x]ecute shell command"))
+		"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
+		"p g" '(consult-ripgrep :wk "[s]earch within project") ;; Maybe use something else here
+		"p s" '(project-shell :wk "Open [s]hell within project")
+		"p d" '(project-dired :wk "Open [d]ired in project root")
+		"p c" '(project-compile :wk "[c]ompile project")
+		"p k" '(project-kill-buffers :wk "[d]elete all project buffers")
+		"p r" '(project-query-replace-regexp :wk "[r]eplace in current project")
+		"p x" '(project-async-shell-command :wk "e[x]ecute shell command"))
   
   (start/leader-keys
-	"s" '(:ignore t :wk "[s]earch/[s]pell")
-	"s c" '(jinx-correct :wk "[c]orrect spelling")
-	"s l" '(jinx-languages :wk "Jinx [l]anguages"))
+		"s" '(:ignore t :wk "[s]earch/[s]pell")
+		"s c" '(jinx-correct :wk "[c]orrect spelling")
+		"s l" '(jinx-languages :wk "Jinx [l]anguages"))
 
   (start/leader-keys
-	"t" '(:ignore t :wk "[t]abspaces")
-	"t s" '(tabspaces-save-session :wk "[s]ave session")
-	"t r" '(tabspaces-restore-session :wk "[r]estore session")
-	"t d" '(tabspaces-close-workspace :wk "[d]elete tabspace")
-	"t D" '(tabspaces-clear-buffers :wk "[D]elete tabspace except current buffer")
-	"t x" '(tabspaces-kill-buffers-close-workspace :wk "Delete tabspace and clear all open buffers"))
+		"t" '(:ignore t :wk "[t]abspaces")
+		"t s" '(tabspaces-save-session :wk "[s]ave session")
+		"t r" '(tabspaces-restore-session :wk "[r]estore session")
+		"t d" '(tabspaces-close-workspace :wk "[d]elete tabspace")
+		"t D" '(tabspaces-clear-buffers :wk "[D]elete tabspace except current buffer")
+		"t x" '(tabspaces-kill-buffers-close-workspace :wk "Delete tabspace and clear all open buffers"))
 
   (start/leader-keys
-	"q" '(:ignore t :wk "[q]uit")
-	"q q" '(kill-emacs :wk "[q][q]uit Emacs and Daemon")))
+		"q" '(:ignore t :wk "[q]uit")
+		"q q" '(kill-emacs :wk "[q][q]uit Emacs and Daemon")))
 
 (use-package which-key
   :diminish
@@ -338,8 +349,9 @@
 (use-package dired-x
   :ensure nil
   :commands (dired-omit-mode)
-	:bind (:map dired-mode-map ("o" . dired-omit-mode))
+	:bind (:map dired-mode-map ("\C-h" . dired-omit-mode))
   :config
+	(dired-omit-mode -1)
   (setq dired-omit-files
 				(concat dired-omit-files "\\|^\\..+$")))
 
@@ -526,6 +538,30 @@
   :after vertico
   :init
   (marginalia-mode))
+
+(use-package corfu
+  :custom
+  (corfu-cycle t)
+  (corfu-quit-at-boundary nil)
+  (corfu-preselect 'prompt)
+  (corfu-on-exact-match nil)
+  (corfu-quit-no-match nil)
+  :init
+  (global-corfu-mode))
+
+(use-package emacs
+  :custom
+  (tab-always-indent 'complete)
+  (text-mode-ispell-word-completion nil)
+  (read-extended-command-predicate #'command-completion-default-include-p))
+
+(use-package cape
+  :bind ("C-c p" . cape-prefix-map)
+	:init
+	(add-hook 'completion-at-point-functions #'cape-file)
+	(add-hook 'completion-at-point-functions #'cape-keyword)
+	(add-hook 'completion-at-point-functions #'cape-elisp-symbol)
+	(add-hook 'completion-at-point-functions #'cape-elisp-block))
 
 (use-package consult
   ;; Enable automatic preview at point in the *Completions* buffer. This is
