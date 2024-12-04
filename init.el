@@ -142,7 +142,7 @@
 	"SPC" '(project-find-file :wk "[f]ind a file in the project"))
 
   (start/leader-keys
-	"TAB" '(tabspaces-switch-or-create-workspace :wk "Open or create workspace with project"))
+	"TAB" '(tabspaces-open-or-create-project-and-workspace  :wk "Open or create workspace with project"))
 
   (start/leader-keys
 	"f" '(:ignore t :wk "[f]ind")
@@ -158,6 +158,7 @@
 
   (start/leader-keys
 	"b" '(:ignore t :wk "[b]uffers")
+	"b b" '(consult-buffer :wk "switch to [b]uffer")
 	"b d" '(kill-current-buffer :wk "[d]elete this buffer")
 	"b n" '(next-buffer :wk "[n]ext buffer")
 	"b p" '(previous-buffer :wk "[p]revious buffer")
@@ -178,7 +179,7 @@
 	"n" '(dired-jump :wk "ope[n] dired at current directory"))
 
   (start/leader-keys
-	"B" '(consult-buffer :wk "Show all [B]uffers"))
+	"B" '(tabspaces-switch-buffer-and-tab :wk "Show all [B]uffers and switch to project and buffer"))
 
   (start/leader-keys
 	"o" '(:ignore t :wk "[o]pen")
@@ -208,7 +209,6 @@
 
   (start/leader-keys
 	"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
-	"p p" '(tabspaces-open-or-create-project-and-workspace :wk "Switch to another [p]roject")
 	"p g" '(consult-ripgrep :wk "[s]earch within project") ;; Maybe use something else here
 	"p s" '(project-shell :wk "Open [s]hell within project")
 	"p d" '(project-dired :wk "Open [d]ired in project root")
@@ -262,7 +262,7 @@
   (blink-cursor-mode nil)
   
   ;; Configure the tab bar to work well with tabspaces.el
-  (tab-bar-mode 1)
+  (tab-bar-mode nil)
   (tab-bar-close-button-show nil)
   (tab-bar-new-button-show nil)
   (tab-bar-auto-width nil)
@@ -409,7 +409,7 @@
 (use-package doom-modeline
   :ensure t
   :custom
-  (doom-modeline-workspace-name nil)
+  (doom-modeline-workspace-name t)
   (doom-modeline-position-column-line-format '("%l:%c"))
   (doom-modeline-height 28)
   (doom-modeline-buffer-file-name-style 'relative-to-project)
