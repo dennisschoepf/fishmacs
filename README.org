@@ -335,6 +335,7 @@ These are some defaults to make Emacs look nicer initially.
   
   ;; Configure the tab bar to work well with tabspaces.el
   (tab-bar-mode nil)
+  (tab-bar-show nil)
   (tab-bar-close-button-show nil)
   (tab-bar-new-button-show nil)
   (tab-bar-auto-width nil)
@@ -477,13 +478,13 @@ Similar to my WezTerm setup I want one session per project. I am on the lookout 
              tabspaces-open-or-create-project-and-workspace)
   :custom
   (tabspaces-use-filtered-buffers-as-default t)
-  (tabspaces-default-tab "default")
+  (tabspaces-default-tab "main")
   (tabspaces-remove-to-default t)
   (tabspaces-include-buffers '("*scratch*"))
   (tabspaces-initialize-project-with-todo nil)
   (tabspaces-session t)
-  (tabspaces-session-auto-restore t)
-  (tab-bar-new-tab-choice "*scratch*"))
+  (tab-bar-new-tab-choice "*scratch*")
+	(tab-bar-mode nil))
 #+end_src
 
 ** Undo Functionality 
