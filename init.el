@@ -139,7 +139,7 @@
 	"." '(find-file :wk "Find file"))
 
   (start/leader-keys
-	"SPC" '(projectile-find-file :wk "[f]ind a file in the project"))
+	"SPC" '(project-find-file :wk "[f]ind a file in the project"))
 
   (start/leader-keys
 	"TAB" '(tabspaces-open-or-create-project-and-workspace :wk "Open or create workspace with project"))
@@ -208,24 +208,29 @@
 
   (start/leader-keys
 	"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
-	"p p" '(projectile-switch-project :wk "Switch to another [p]roject")
-	"p a" '(projectile-add-known-project :wk "[a]dd [p]roject")
-	"p g" '(projectile-ripgrep :wk "rip[g]rep within project") ;; Maybe use something else here
-	"p d" '(projectile-dired :wk "Open [d]ired within project")
-	"p s" '(projectile-run-vterm :wk "Open [s]hell in project root")
-	"p c" '(projectile-compile :wk "[c]ompile project")
-	"p b" '(projectile-switch-to-buffer :wk "Show project [b]uffers")
-	"p k" '(projectile-kill-buffers :wk "[k]ill all project buffers")
-	"p f" '(projectile-find-references :wk "[f]ind references in current project")
-	"p r" '(projectile-replace :wk "[r]eplace in current project")
-	"p o" '(projectile-find-other-file :wk "find [o]ther file in current project")
-	"p t" '(projectile-test-project :wk "[t]est current project")
-	"p x" '(projectile-run-async-shell-command-in-root :wk "e[x]ecute shell command"))
+	"p p" '(project-switch-project :wk "Switch to another [p]roject")
+	"p g" '(project-find-regexp :wk "[s]earch within project") ;; Maybe use something else here
+	"p s" '(project-shell :wk "Open [s]hell within project")
+	"p d" '(project-dired :wk "Open [d]ired in project root")
+	"p c" '(project-compile :wk "[c]ompile project")
+	"p b" '(project-list-buffers :wk "Show project [b]uffers")
+	"p k" '(project-kill-buffers :wk "[d]elete all project buffers")
+	"p r" '(project-query-replace-regexp :wk "[r]eplace in current project")
+	"p x" '(project-async-shell-command :wk "e[x]ecute shell command"))
   
   (start/leader-keys
 	"s" '(:ignore t :wk "[s]earch/[s]pell")
 	"s c" '(jinx-correct :wk "[c]orrect spelling")
 	"s l" '(jinx-languages :wk "Jinx [l]anguages"))
+
+  (start/leader-keys
+	"t" '(:ignore t :wk "[t]abspaces")
+	"t t" '(tabspaces-switch-or-create-workspace :wk "swi[t]ch workspace")
+	"t s" '(tabspaces-save-session :wk "[s]ave session")
+	"t r" '(tabspaces-restore-session :wk "[r]estore session")
+	"t d" '(tabspaces-close-workspace :wk "[d]elete tabspace")
+	"t D" '(tabspaces-clear-buffers :wk "[D]elete tabspace except current buffer")
+	"t x" '(tabspaces-kill-buffers-close-workspace :wk "Delete tabspace and clear all open buffers"))
 
   (start/leader-keys
 	"q" '(:ignore t :wk "[q]uit")
@@ -257,8 +262,13 @@
   (inhibit-startup-screen t)
   (ring-bell-function 'ignore)
   (blink-cursor-mode nil)
-  (tab-bar-mode nil)
   
+  ;; Configure the tab bar to work well with tabspaces.el
+  (tab-bar-mode 1)
+  (tab-bar-close-button-show nil)
+  (tab-bar-new-button-show nil)
+  (tab-bar-auto-width nil)
+	
 	;; Set scratch buffer message
 	(initial-scratch-message ";; Let's start ...\n")
 
@@ -343,6 +353,39 @@
   :config
   (setq uniquify-buffer-name-style 'forward))
 
+;; consult-buffer only shows workspace buffers unless 'b' is pressed
+(with-eval-after-load 'consult
+(consult-customize consult--source-buffer :hidden t :default nil)
+(defvar consult--source-workspace
+  (list :name     "Workspace Buffers"
+        :narrow   ?w
+        :history  'buffer-name-history
+        :category 'buffer
+        :state    #'consult--buffer-state
+        :default  t
+        :items    (lambda () (consult--buffer-query
+                         :predicate #'tabspaces--local-buffer-p
+                         :sort 'visibility
+                         :as #'buffer-name)))
+
+  "Set workspace buffer list for consult-buffer.")
+(add-to-list 'consult-buffer-sources 'consult--source-workspace))
+
+(use-package tabspaces
+  :ensure (:host github :repo "mclear-tools/tabspaces")
+  :hook (after-init . tabspaces-mode)
+  :commands (tabspaces-switch-or-create-workspace
+             tabspaces-open-or-create-project-and-workspace)
+  :custom
+  (tabspaces-use-filtered-buffers-as-default t)
+  (tabspaces-default-tab "default")
+  (tabspaces-remove-to-default t)
+  (tabspaces-include-buffers '("*scratch*"))
+  (tabspaces-initialize-project-with-todo nil)
+  (tabspaces-session t)
+  (tabspaces-session-auto-restore t)
+  (tab-bar-new-tab-choice "*scratch*"))
+
 (use-package undo-fu
   :ensure t
   :custom
@@ -377,23 +420,11 @@
   (doom-modeline-unicode-fallback t)
   :hook (after-init . doom-modeline-mode))
 
-(use-package projectile
-  :ensure t
-	:custom
-	(projectile-project-search-path '("~/dev"))
-  :init
-  (projectile-register-project-type 'npm '("package.json")
-                                    :project-file "package.json"
-                                    :compile "npm install"
-                                    :test "npm test"
-                                    :run "npm start"
-                                    :test-suffix ".spec")
-  (projectile-mode +1)
-  :bind (:map projectile-mode-map
-              ("s-p" . projectile-command-map)
-              ("C-c p" . projectile-command-map)))
-
-
+(use-package project
+  :ensure nil
+  :custom
+  (project-vc-ignores '("target/" "bin/" "out/" "node_modules/"))
+  (project-vc-extra-root-markers '(".project" "package.json" "Cargo.toml" "go.mod" "Gemfile")))
 
 (use-package modus-themes
 	:ensure t
