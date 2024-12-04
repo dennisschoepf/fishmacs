@@ -207,20 +207,15 @@
 	"h r r" '((lambda () (interactive) (load-file user-init-file)) :wk "Reload Emacs config"))
 
   (start/leader-keys
-	"p" '(:ignore t :wk "[p]rojects")
-	"p p" '(projectile-persp-switch-project :wk "Switch to another [p]roject")
-	"p P" '(persp-switch :wk "Switch/create another [P]erspective")
+	"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
+	"p p" '(projectile-switch-project :wk "Switch to another [p]roject")
 	"p a" '(projectile-add-known-project :wk "[a]dd [p]roject")
-	"p g" '(projectile-ripgrep :wk "rip[g]rep within project")
+	"p g" '(projectile-ripgrep :wk "rip[g]rep within project") ;; Maybe use something else here
 	"p d" '(projectile-dired :wk "Open [d]ired within project")
 	"p s" '(projectile-run-vterm :wk "Open [s]hell in project root")
-	"p S" '(persp-state-save :wk "[S]ave current perspectives")
-	"p R" '(persp-state-load :wk "[R]estore saved perspective")
 	"p c" '(projectile-compile :wk "[c]ompile project")
 	"p b" '(projectile-switch-to-buffer :wk "Show project [b]uffers")
-	"p B" '(persp-switch-to-buffer :wk "Show all project [B]uffers")
 	"p k" '(projectile-kill-buffers :wk "[k]ill all project buffers")
-	"p K" '(persp-kill :wk "[K]ill perspective")
 	"p f" '(projectile-find-references :wk "[f]ind references in current project")
 	"p r" '(projectile-replace :wk "[r]eplace in current project")
 	"p o" '(projectile-find-other-file :wk "find [o]ther file in current project")
@@ -386,7 +381,7 @@
   :ensure t
 	:custom
 	(projectile-project-search-path '("~/dev"))
-  :config
+  :init
   (projectile-register-project-type 'npm '("package.json")
                                     :project-file "package.json"
                                     :compile "npm install"
@@ -398,15 +393,7 @@
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
 
-(use-package perspective
-  :ensure t
-	:custom
-	(persp-mode-prefix-key (kbd "C-c M-p"))
-  :init
-  (persp-mode))
 
-(use-package persp-projectile
-	:ensure t)
 
 (use-package modus-themes
 	:ensure t
