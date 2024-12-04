@@ -411,6 +411,13 @@ I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This c
 				(concat dired-omit-files "\\|^\\..+$")))
 #+end_src
 
+*** TODO Add ~dired-peep~
+See [[https://gitlab.com/dwt1/configuring-emacs/-/blob/main/07-the-final-touches/config.org?ref_type=heads#backup][this]].
+
+*** TODO Add ~all-the-icons-dired~
+See [[https://gitlab.com/dwt1/configuring-emacs/-/blob/main/07-the-final-touches/config.org?ref_type=heads#backup
+][this]].
+
 ** Window Zoom
 I regularly use tmux's (or WezTerm for that matter) zoom feature, so naturally I want it in Emacs, too.
 
@@ -499,13 +506,19 @@ I've tried out ~project.el~ and ~tabspaces.el~, but ultimately came back to ~pro
 It works well with ~perspective.el~, so I am trying that out as well. [[https://github.com/nex3/perspective-el?tab=readme-ov-file#buffer-switchers][Here]] is the documentation for it.
 
 #+begin_src emacs-lisp
+(use-package perspective
+  :ensure t
+	:custom
+	(persp-mode-prefix-key (kbd "C-c M-p"))
+  :init
+  (persp-mode))
 
+(use-package persp-projectile
+	:ensure t)
 #+end_src
 
-** TODO Compilation & Tasks within a project
-This [[https://old.reddit.com/r/emacs/comments/104ud8k/how_do_you_use_the_terminal_during_a_coding/][reddit discussion]] has some thoughts on terminals within Emacs. An option might be to just spawn a new wezterm window besides Emacs and create a faster keybinding for that. Running code/writing/export-specific tasks could be done through Emacs itself.
-
-~compile~ was mentioned in the reddit discussion as a way to run ~compile~-Tasks. I should check for task runner plugins as well, as a way to run long-lived processes in a project. Maybe ~project.el~ or ~projectile~ has a way of natively handling this.
+** TODO Highlight Todos
+Use ~hl-todo~.
 
 * Appearance
 ** Theme
@@ -737,6 +750,10 @@ The actual magit/forge config can be found here:
               forge-add-pullreq-refspec nil))
 #+end_src
 
+*** TODO Add Magit keybindings
+See [[https://gitlab.com/dwt1/configuring-emacs/-/blob/main/07-the-final-touches/config.org?ref_type=heads#backup
+][this]].
+
 ** GitHub Permalinks
 I often visit and copy a link to a specific line for my colleagues. This functionality is provided by ~git-link~.
 
@@ -745,6 +762,10 @@ I often visit and copy a link to a specific line for my colleagues. This functio
   :custom
   (git-link-open-in-browser t))
 #+end_src
+
+** TODO Git Timemachine
+See [[https://gitlab.com/dwt1/configuring-emacs/-/blob/main/07-the-final-touches/config.org?ref_type=heads#backup
+][this]].
 
 * Org Mode
 ** Base Configuration
