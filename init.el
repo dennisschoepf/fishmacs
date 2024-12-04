@@ -550,6 +550,7 @@
   (global-corfu-mode))
 
 (use-package emacs
+  :ensure nil
   :custom
   (tab-always-indent 'complete)
   (text-mode-ispell-word-completion nil)
