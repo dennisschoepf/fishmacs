@@ -142,7 +142,7 @@
 	"SPC" '(project-find-file :wk "[f]ind a file in the project"))
 
   (start/leader-keys
-	"TAB" '(tabspaces-open-or-create-project-and-workspace :wk "Open or create workspace with project"))
+	"TAB" '(tabspaces-switch-or-create-workspace :wk "Open or create workspace with project"))
 
   (start/leader-keys
 	"f" '(:ignore t :wk "[f]ind")
@@ -208,7 +208,7 @@
 
   (start/leader-keys
 	"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
-	"p p" '(project-switch-project :wk "Switch to another [p]roject")
+	"p p" '(tabspaces-open-or-create-project-and-workspace :wk "Switch to another [p]roject")
 	"p g" '(project-find-regexp :wk "[s]earch within project") ;; Maybe use something else here
 	"p s" '(project-shell :wk "Open [s]hell within project")
 	"p d" '(project-dired :wk "Open [d]ired in project root")
@@ -225,7 +225,6 @@
 
   (start/leader-keys
 	"t" '(:ignore t :wk "[t]abspaces")
-	"t t" '(tabspaces-switch-or-create-workspace :wk "swi[t]ch workspace")
 	"t s" '(tabspaces-save-session :wk "[s]ave session")
 	"t r" '(tabspaces-restore-session :wk "[r]estore session")
 	"t d" '(tabspaces-close-workspace :wk "[d]elete tabspace")
