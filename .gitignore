@@ -21,3 +21,4 @@ elpaca/
 /tree-sitter/
 /.cache/
 /projectile-bookmarks.eld
+/.lsp-session-v1
