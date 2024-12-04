@@ -263,6 +263,7 @@
   
   ;; Configure the tab bar to work well with tabspaces.el
   (tab-bar-mode nil)
+  (tab-bar-show nil)
   (tab-bar-close-button-show nil)
   (tab-bar-new-button-show nil)
   (tab-bar-auto-width nil)
@@ -337,9 +338,23 @@
 (use-package dired-x
   :ensure nil
   :commands (dired-omit-mode)
+	:bind (:map dired-mode-map ("o" . dired-omit-mode))
   :config
   (setq dired-omit-files
 				(concat dired-omit-files "\\|^\\..+$")))
+
+(use-package all-the-icons
+	:ensure t)
+
+(use-package all-the-icons-dired
+	:ensure t
+	:hook
+	(dired-mode . all-the-icons-dired-mode))
+
+(use-package diredfl
+	:ensure t
+	:hook
+	(dired-mode . diredfl-mode))
 
 (use-package zoom-window
   :ensure t
@@ -376,13 +391,13 @@
              tabspaces-open-or-create-project-and-workspace)
   :custom
   (tabspaces-use-filtered-buffers-as-default t)
-  (tabspaces-default-tab "default")
+  (tabspaces-default-tab "main")
   (tabspaces-remove-to-default t)
   (tabspaces-include-buffers '("*scratch*"))
   (tabspaces-initialize-project-with-todo nil)
   (tabspaces-session t)
-  (tabspaces-session-auto-restore t)
-  (tab-bar-new-tab-choice "*scratch*"))
+  (tab-bar-new-tab-choice "*scratch*")
+	(tab-bar-mode nil))
 
 (use-package undo-fu
   :ensure t

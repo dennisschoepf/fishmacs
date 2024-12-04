@@ -415,17 +415,27 @@ I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This c
 (use-package dired-x
   :ensure nil
   :commands (dired-omit-mode)
+	:bind (:map dired-mode-map ("o" . dired-omit-mode))
   :config
   (setq dired-omit-files
 				(concat dired-omit-files "\\|^\\..+$")))
+
+(use-package all-the-icons
+	:ensure t)
+
+(use-package all-the-icons-dired
+	:ensure t
+	:hook
+	(dired-mode . all-the-icons-dired-mode))
+
+(use-package diredfl
+	:ensure t
+	:hook
+	(dired-mode . diredfl-mode))
 #+end_src
 
 *** TODO Add ~dired-peep~
 See [[https://gitlab.com/dwt1/configuring-emacs/-/blob/main/07-the-final-touches/config.org?ref_type=heads#backup][this]].
-
-*** TODO Add ~all-the-icons-dired~
-See [[https://gitlab.com/dwt1/configuring-emacs/-/blob/main/07-the-final-touches/config.org?ref_type=heads#backup
-][this]].
 
 ** Window Zoom
 I regularly use tmux's (or WezTerm for that matter) zoom feature, so naturally I want it in Emacs, too.
