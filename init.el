@@ -151,13 +151,13 @@
 	"f r" '(consult-recent-file :wk "Find [r]ecent files")
 	"f f" '(consult-fd :wk "Find [f]iles")
 	"f h" '(consult-org-heading :wk "Find [h]eadline")
+	"f y" '(consult-yank-from-kill-ring :wk "[y]ank from kill ring")
 	"f g" '(consult-ripgrep :wk "Find with rip[g]rep")
-	"f l" '(consult-line :wk "Find [l]ine")
+	"f l" '(consult-goto-line :wk "Find [l]ine")
 	"f i" '(consult-imenu :wk "Find [i]menu buffer locations"))
 
   (start/leader-keys
 	"b" '(:ignore t :wk "[b]uffers")
-	"b b" '(consult-buffer :wk "Switch [b]uffer")
 	"b d" '(kill-current-buffer :wk "[d]elete this buffer")
 	"b n" '(next-buffer :wk "[n]ext buffer")
 	"b p" '(previous-buffer :wk "[p]revious buffer")
@@ -209,11 +209,10 @@
   (start/leader-keys
 	"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
 	"p p" '(tabspaces-open-or-create-project-and-workspace :wk "Switch to another [p]roject")
-	"p g" '(project-find-regexp :wk "[s]earch within project") ;; Maybe use something else here
+	"p g" '(consult-ripgrep :wk "[s]earch within project") ;; Maybe use something else here
 	"p s" '(project-shell :wk "Open [s]hell within project")
 	"p d" '(project-dired :wk "Open [d]ired in project root")
 	"p c" '(project-compile :wk "[c]ompile project")
-	"p b" '(project-list-buffers :wk "Show project [b]uffers")
 	"p k" '(project-kill-buffers :wk "[d]elete all project buffers")
 	"p r" '(project-query-replace-regexp :wk "[r]eplace in current project")
 	"p x" '(project-async-shell-command :wk "e[x]ecute shell command"))
@@ -283,7 +282,7 @@
   ;; Set some text editing defaults
 	(electric-indent-mode t)
   (tab-width 2)
-  (fill-column 80)
+  (fill-column 100)
   (display-line-numbers-type 'relative)
   
   ;; Configure scroll behavior
