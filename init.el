@@ -555,7 +555,6 @@
   (corfu-popupinfo-delay 0.5)
   :bind
   (:map corfu-map
-				("RET" . corfu-complete)
         ("TAB" . corfu-next)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
@@ -851,6 +850,13 @@
 	:ensure t
 	:custom
 	(clojure-ts-comment-macro-font-lock-body t))
+
+(use-package cider
+  :ensure t
+	:custom
+	(cider-eldoc-display-for-symbol-at-point nil)
+	:hook
+	(clojure-ts-mode . cider-mode))
 
 (use-package jinx
   :hook (text-mode . jinx-mode))

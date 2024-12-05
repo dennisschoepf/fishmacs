@@ -712,7 +712,6 @@ For in-buffer completion, ~corfu~ is used.
   (corfu-popupinfo-delay 0.5)
   :bind
   (:map corfu-map
-				("RET" . corfu-complete)
         ("TAB" . corfu-next)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
@@ -1003,7 +1002,7 @@ This allows for desktop notifications on MacOS.
   (global-treesit-auto-mode))
 #+end_src
 
-** TODO LSP Mode
+** LSP Mode
 For better or worse I am working as a web developer. Due to the ecosystem I need to have multiple LSPs for a single buffer. ~eglot~ does not support that, so for now I am stuck with using ~lsp-mode~ together with ~lsp-booster~.
 
 #+begin_src emacs-lisp :tangle ./early-init.el
@@ -1083,6 +1082,9 @@ This sets up ~lsp-booster~ to speed it all up.
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 #+end_src
 
+** TODO LSP Mode keybindings
+gd, gr, Code Actions, ...
+
 ** Languages
 *** Javascript, JSX, Typescript & TSX
 https://www.ovistoica.com/blog/2024-7-05-modern-emacs-typescript-web-tsx-config#orgf6d33f7
@@ -1119,6 +1121,16 @@ This enables the Clojure Treesitter mode.
 #+end_src
 
 **** TODO CIDER
+
+#+begin_src emacs-lisp
+(use-package cider
+  :ensure t
+	:custom
+	(cider-eldoc-display-for-symbol-at-point nil)
+	:hook
+	(clojure-ts-mode . cider-mode))
+#+end_src
+
 ** TODO Formatter
 https://github.com/radian-software/apheleia
 
