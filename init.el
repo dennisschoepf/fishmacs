@@ -214,6 +214,7 @@
   (start/leader-keys
 		"h" '(:ignore t :wk "[h]elp") ;; To get more help use C-h commands (describe variable, function, etc.)
 		"h s" '(describe-symbol :wk "Get help for [s]ymbol")
+		"h k" '(describe-key :wk "Get help for [s]ymbol")
 		"h v" '(describe-variable :wk "Get help for [v]ariable")
 		"h f" '(describe-function :wk "Get help for [f]unction")
 		"h r r" '((lambda () (interactive) (load-file user-init-file)) :wk "Reload Emacs config"))
@@ -761,91 +762,6 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
-(use-package lsp-mode
-	:custom
-	(lsp-keymap-prefix "C-c l")
-	(lsp-use-plists t)
-	(lsp-log-io t)
-	(lsp-auto-configure t)
-  (lsp-enable-suggest-server-download t)
-	(lsp-completion-enable t)
-	(lsp-completion-show-kind t)
-	(lsp-enable-file-watchers nil)
-  (lsp-enable-folding nil)
-	(lsp-enable-indentation nil)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-enable-symbol-highlighting nil)
-  (lsp-enable-text-document-color nil) 
-	(lsp-enable-snippet nil)
-	(lsp-semantic-tokens-enable nil)
-	(lsp-headerline-breadcrumb-enable-diagnostics nil)
-  (lsp-completion-provider :none)
-  :init
-  (defun dnsc/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless)))
-	:hook (
-         (clojure-ts-mode . lsp)
-         (bash-ts-mode . lsp)
-         (typescript-ts-mode . lsp)
-         (tsx-ts-mode . lsp)
-         (js-ts-mode . lsp)
-         (html-mode . lsp)
-         (css-ts-mode . lsp)
-         (json-ts-mode . lsp)
-         (lsp-mode . lsp-enable-which-key-integration)
-				 (lsp-completion-mode . dnsc/lsp-mode-setup-completion))
-	:commands lsp)
-
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
-
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
-
-(use-package add-node-modules-path
-  :ensure t
-  :defer t
-  :custom
-  (eval-after-load 'typescript-ts-mode
-	'(add-hook 'typescript-ts-mode-hook #'add-node-modules-path))
-  (eval-after-load 'tsx-ts-mode
-	'(add-hook 'tsx-ts-mode-hook #'add-node-modules-path))
-  (eval-after-load 'typescriptreact-mode
-	'(add-hook 'typescriptreact-mode-hook #'add-node-modules-path))
-  (eval-after-load 'js-mode
-	'(add-hook 'js-mode-hook #'add-node-modules-path)))
-
-(use-package typescript-ts-mode
-	:ensure nil
-	:custom
-	(typescript-ts-mode-indent-offset 2))
-
 (use-package clojure-ts-mode
 	:ensure t
 	:custom
@@ -853,8 +769,6 @@
 
 (use-package cider
   :ensure t
-	:custom
-	(cider-eldoc-display-for-symbol-at-point nil)
 	:hook
 	(clojure-ts-mode . cider-mode))
 

@@ -6,5 +6,3 @@
 ;; And give the frame itself a little bit of opacity
 (set-frame-parameter (selected-frame) 'alpha 96)
 (add-to-list 'default-frame-alist '(alpha . 96))
-
-(setenv "LSP_USE_PLISTS" "true")
