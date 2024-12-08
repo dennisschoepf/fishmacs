@@ -136,6 +136,8 @@
 			(setq org-agenda-window-setup current-value))))
 
 (use-package general
+	:ensure t
+	:demand t
   :config
   (general-evil-setup)
   ;; Set up 'SPC' as the leader key
@@ -245,6 +247,8 @@
   (start/leader-keys
 		"q" '(:ignore t :wk "[q]uit")
 		"q q" '(kill-emacs :wk "[q][q]uit Emacs and Daemon")))
+;; Ensure that the :general keyword is available
+(elpaca-wait)
 
 (use-package which-key
   :diminish

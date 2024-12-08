@@ -197,6 +197,8 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 			(setq org-agenda-window-setup current-value))))
 
 (use-package general
+	:ensure t
+	:demand t
   :config
   (general-evil-setup)
   ;; Set up 'SPC' as the leader key
@@ -306,6 +308,8 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
   (start/leader-keys
 		"q" '(:ignore t :wk "[q]uit")
 		"q q" '(kill-emacs :wk "[q][q]uit Emacs and Daemon")))
+;; Ensure that the :general keyword is available
+(elpaca-wait)
 #+end_src
 
 ** Which-Key
