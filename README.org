@@ -1035,6 +1035,7 @@ And this installs ~cider.~
   (cider-overlays-use-font-lock t)
   (cider-print-options '(("length" 100)))
   (cider-prompt-for-symbol nil)
+	(cider-repl-display-in-current-window t)
   (cider-repl-history-display-duplicates nil)
   (cider-repl-history-display-style 'one-line)
   (cider-repl-history-highlight-current-entry t)
@@ -1048,14 +1049,20 @@ And this installs ~cider.~
 	(cider-show-error-buffer 'except-in-repl)
   (cider-stacktrace-default-filters '(tooling dup))
   (cider-repl-pop-to-buffer-on-connect 'display-only)
-	:general
+  :init
+  (defun dnsc/connect-to-cider-repl-on-the-side
+    (interactive)
+		(split-window-right 50)
+		(cider-connect-clj)
+		(windmove-right))
+  :general
 	(:states 'normal
 					 :keymaps 'cider-mode-map
 					 "gd" 'cider-find-var
 					 "gb" 'cider-pop-back
 					 "gr" 'cider-xref-fn-refs-select
 					 "SPC lr" 'cider-jack-in
-					 "SPC lc" 'cider-connect-clj
+					 "SPC lc" 'dnsc/connect-to-cider-repl-on-the-side
 					 "SPC lb" 'cider-load-buffer
 					 "SPC rs" 'cider-load-buffer-and-switch-to-repl-buffer
 					 "SPC rn" 'cider-repl-set-ns
