@@ -674,7 +674,7 @@
   (org-src-tab-acts-natively t)
   (org-edit-src-content-indentation 0)
   (org-edit-src-preserve-indentation nil)
-  (org-log-done 'note)
+  (org-log-done 'time)
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
@@ -696,7 +696,8 @@
   (org-agenda-custom-commands
    '(("p" "Personal" 
 	  ((agenda "")
-	  (todo "NEXT" ((org-agenda-overriding-header "Next Tasks"))))
+	  (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
+		(tags "+inbox" ((org-agenda-overriding-header "Uncategorized"))))
 	  ((org-agenda-tag-filter-preset '("-work"))))
 	 ("w" "Work"
 	  ((agenda "")
