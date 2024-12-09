@@ -792,15 +792,27 @@
   (cider-repl-use-clojure-font-lock t)
   (cider-repl-use-pretty-printing t)
   (cider-repl-wrap-history nil)
+	(cider-repl-display-help-banner nil)
 	(cider-show-error-buffer 'except-in-repl)
   (cider-stacktrace-default-filters '(tooling dup))
   (cider-repl-pop-to-buffer-on-connect 'display-only)
   :init
-  (defun dnsc/connect-to-cider-repl-on-the-side
+	(defun dnsc/start-babashka-repl-server ()
+		(interactive)
+		(let ((default-directory (project-root (project-current))))
+      (start-process "Babashka nrepl-server" "bb-nrepl" "bb" "nrepl-server")))
+
+  (defun dnsc/connect-to-cider-repl-on-the-side ()
     (interactive)
-		(split-window-right 50)
-		(cider-connect-clj)
+		(split-window-horizontally 90)
+		(cider-connect-clj '(:host "localhost" :port 1667))
 		(windmove-right))
+	
+	(defun dnsc/connect-and-open-bb-nrepl-server ()
+		(interactive)
+		(dnsc/start-babashka-repl-server)
+		(sleep-for 2)
+		(dnsc/connect-to-cider-repl-on-the-side))
   :general
 	(:states 'normal
 					 :keymaps 'cider-mode-map
@@ -810,7 +822,7 @@
 					 "SPC lr" 'cider-jack-in
 					 "SPC lc" 'dnsc/connect-to-cider-repl-on-the-side
 					 "SPC lb" 'cider-load-buffer
-					 "SPC rs" 'cider-load-buffer-and-switch-to-repl-buffer
+					 "SPC rb" 'dnsc/connect-and-open-bb-nrepl-server
 					 "SPC rn" 'cider-repl-set-ns
 					 "SPC ef" 'cider-eval-defun-at-point
 					 "SPC ee" 'cider-eval-last-sexp
