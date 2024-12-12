@@ -536,7 +536,7 @@ Similar to my WezTerm setup I want one session per project. I am on the lookout 
 #+end_src
 
 ** Modeline
-Using ~doom-modeline~ as I originally started with Doom Emacs. Might be switching to [[https://gitlab.com/jessieh/mood-line][mood-line]] or the built-in modeline.
+I am using ~mood-line~ as it is easily customizable and by default only uses ASCII symbols. Most segments of the modeline are only shown on the selected window. The code could be improved a lot but it works as is, so I roll with it. I might add some custom elements in the future for some third-party-packages like ~lsp-mode~.
 
 #+begin_src emacs-lisp
 (use-package evil-anzu)
