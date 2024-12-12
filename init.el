@@ -438,17 +438,41 @@
   :init
   (global-anzu-mode +1))
 
-(use-package doom-modeline
-  :ensure t
+(use-package mood-line
+	:ensure t
+	:config
+	(mood-line-mode)
   :custom
-  (doom-modeline-workspace-name t)
-  (doom-modeline-position-column-line-format '("%l:%c"))
-  (doom-modeline-height 28)
-  (doom-modeline-buffer-file-name-style 'relative-to-project)
-  (doom-modeline-major-mode-icon nil)
-  (doom-modeline-buffer-modification-icon nil)
-  (doom-modeline-unicode-fallback t)
-  :hook (after-init . doom-modeline-mode))
+	(mood-line-format (mood-line-defformat
+										 :left
+                     (((when (mode-line-window-selected-p)
+                         (mood-line-segment-modal)) . " ")
+                      ((when (mode-line-window-selected-p)
+                         (propertize "|" 'face 'modus-themes-fg-cyan-faint)) . " ")
+											((mood-line-segment-buffer-status) . " ")
+											((if (mode-line-window-selected-p)
+													 (mood-line-segment-buffer-name)
+												 (propertize (mood-line-segment-buffer-name) 'face 'mood-line-unimportant)) . "")
+                      ((propertize " (" 'face 'mood-line-unimportant) . "")
+                      ((propertize (mood-line-segment-major-mode) 'face 'mood-line-unimportant) . "")
+                      ((propertize ")" 'face 'mood-line-unimportant) . "")
+                      ((when (mode-line-window-selected-p)
+                         (propertize " |" 'face 'modus-themes-fg-cyan-faint)) . " ")
+                      ((when (mode-line-window-selected-p)
+                         (mood-line-segment-vc)) . " "))
+                     :right
+                     (((when (mode-line-window-selected-p)
+                         (mood-line-segment-checker)) . " ")
+											((when (mode-line-window-selected-p)
+                         (mood-line-segment-process)) . " ")
+                      ((mood-line-segment-anzu) . " ")
+                      ((when (mode-line-window-selected-p)
+                         (mood-line-segment-cursor-position)) . " ")
+                      ((when (mode-line-window-selected-p)
+                         (mood-line-segment-scroll)) . " ")
+                      (propertize "[" 'face 'modus-themes-fg-magenta-intense)
+											((propertize (mood-line-segment-project) 'face 'modus-themes-fg-magenta-intense) . "")
+                      (propertize "]" 'face 'modus-themes-fg-magenta-intense)))))
 
 (use-package project
   :ensure nil
