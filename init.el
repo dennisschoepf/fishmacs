@@ -194,8 +194,7 @@
 		"B" '(tabspaces-switch-buffer-and-tab :wk "Show all [B]uffers and switch to project and buffer"))
 
   (start/leader-keys
-		"o" '(:ignore t :wk "[o]pen")
-		"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
+		"o" '(:ignore t :wk "[o]rg")
 		"o l" '(org-agenda :wk "Open al[l] agenda views")
 		"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
 		"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
@@ -204,13 +203,23 @@
 		"o n n" '(org-roam-node-find :wk "Open roam note")
 		"o n i" '(org-roam-node-insert :wk "Insert roam note")
 		"o n t" '(org-roam-buffer-toggle :wk "Toggle roam buffer")
+		"o m t" '(org-todo :wk "Change todo state")
+		"o m c" '(org-toggle-checkbox :wk "Toggle [c]heckbox")
 		"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
 		"g" '(:ignore t :wk "[g]it & more")
+		"g b" '(magit-branch-checkout :wk "Switch [b]ranch")
+		"g c" '(:ignore t :wk "[c]reate")
+		"g c b" '(magit-branch-and-checkout :wk "[b]ranch and checkout")
+		"g c c" '(magit-commit-create :wk "[c]ommit")
+		"g f" '(:ignore t :wk "[f]ind")
+		"g f c" '(magit-show-commit :wk "[c]ommit")
+		"g f f" '(magit-find-file :wk "[f]ile")
+		"g F" '(magit-fetch :wk "[F]etch")
 		"g l" '(git-link :wk "Navigate to git forge [l]ink")
-		"g c c" '(comment-line :wk "[g]o [c]omment [c]urrent line")
-		"g c r" '(comment-or-uncomment-region :wk "[g]o [c]omment [r]egion")
+		"g t" '(git-timemachine :wk "Navigate to git forge [l]ink")
+		"g s" '(magit-stash :wk "[s]tash")
 		"g g" '(magit-status :wk "Ma[g]it status"))
 
   (start/leader-keys
@@ -689,6 +698,13 @@
 (use-package git-link
   :custom
   (git-link-open-in-browser t))
+
+(use-package git-timemachine
+	:ensure t
+	:hook (evil-normalize-keymaps . git-timemachine-hook)
+	:config
+	(evil-define-key 'normal git-timemachine-mode-map (kbd "C-j") 'git-timemachine-show-previous-revision)
+	(evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision))
 
 (use-package org
   :ensure nil

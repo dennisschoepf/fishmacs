@@ -255,8 +255,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 		"B" '(tabspaces-switch-buffer-and-tab :wk "Show all [B]uffers and switch to project and buffer"))
 
   (start/leader-keys
-		"o" '(:ignore t :wk "[o]pen")
-		"o d" '(dnsc/dired-open-to-side :wk "Open [d]ired on the side")
+		"o" '(:ignore t :wk "[o]rg")
 		"o l" '(org-agenda :wk "Open al[l] agenda views")
 		"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
 		"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
@@ -265,13 +264,23 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 		"o n n" '(org-roam-node-find :wk "Open roam note")
 		"o n i" '(org-roam-node-insert :wk "Insert roam note")
 		"o n t" '(org-roam-buffer-toggle :wk "Toggle roam buffer")
+		"o m t" '(org-todo :wk "Change todo state")
+		"o m c" '(org-toggle-checkbox :wk "Toggle [c]heckbox")
 		"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
 
   (start/leader-keys
 		"g" '(:ignore t :wk "[g]it & more")
+		"g b" '(magit-branch-checkout :wk "Switch [b]ranch")
+		"g c" '(:ignore t :wk "[c]reate")
+		"g c b" '(magit-branch-and-checkout :wk "[b]ranch and checkout")
+		"g c c" '(magit-commit-create :wk "[c]ommit")
+		"g f" '(:ignore t :wk "[f]ind")
+		"g f c" '(magit-show-commit :wk "[c]ommit")
+		"g f f" '(magit-find-file :wk "[f]ile")
+		"g F" '(magit-fetch :wk "[F]etch")
 		"g l" '(git-link :wk "Navigate to git forge [l]ink")
-		"g c c" '(comment-line :wk "[g]o [c]omment [c]urrent line")
-		"g c r" '(comment-or-uncomment-region :wk "[g]o [c]omment [r]egion")
+		"g t" '(git-timemachine :wk "Navigate to git forge [l]ink")
+		"g s" '(magit-stash :wk "[s]tash")
 		"g g" '(magit-status :wk "Ma[g]it status"))
 
   (start/leader-keys
@@ -885,9 +894,16 @@ I often visit and copy a link to a specific line for my colleagues. This functio
   (git-link-open-in-browser t))
 #+end_src
 
-** TODO Git Timemachine
-See [[https://gitlab.com/dwt1/configuring-emacs/-/blob/main/07-the-final-touches/config.org?ref_type=heads#backup
-][this]].
+** Git Timemachine
+
+#+begin_src emacs-lisp
+(use-package git-timemachine
+	:ensure t
+	:hook (evil-normalize-keymaps . git-timemachine-hook)
+	:config
+	(evil-define-key 'normal git-timemachine-mode-map (kbd "C-j") 'git-timemachine-show-previous-revision)
+	(evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision))
+#+end_src
 
 * Org Mode
 ** Base Configuration
@@ -1032,7 +1048,7 @@ This allows for desktop notifications on MacOS.
   (global-treesit-auto-mode))
 #+end_src
 
-** LSP Integration
+** TODO LSP Integration
 ** TODO LSP keybindings
 gd, gr, Code Actions, ...
 
@@ -1134,7 +1150,7 @@ I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple
 * TODO Presentations
 I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
 
-* TODO Writing
+* Writing
 ** Spell Checker
 The [[https://github.com/minad/jinx][JINX package]] provides a performant option for spell checking (see its README for details). To be able to use it a spell checker and dictionaries have to be installed. I use ~nuspell~ and added the dictionaries on my mac by following the instructions on [[https://github.com/wooorm/dictionaries/tree/main][wooorm/dictionaries]]. To compile ~jinx~ it is also necessary to do: ~brew install enchant pkgconf~.
 
@@ -1143,7 +1159,6 @@ The [[https://github.com/minad/jinx][JINX package]] provides a performant option
   :hook (text-mode . jinx-mode))
 #+end_src
 
-** TODO Markdown Mode
 ** Typst Mode
 The syntax highlighting and indentation is handled by [[https://codeberg.org/meow_king/typst-ts-mode][typst-ts-mode]].
 
