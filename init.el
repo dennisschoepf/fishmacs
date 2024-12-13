@@ -800,12 +800,104 @@
    :ensure t 
    :config (setq alert-default-style 'osx-notifier))
 
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
 (use-package treesit-auto
   :custom
   (treesit-auto-install 'prompt)
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
+
+(use-package lsp-mode
+  :ensure t
+  :hook ((lsp-mode . lsp-diagnostics-mode)
+         (lsp-mode . lsp-enable-which-key-integration)
+         ((tsx-ts-mode
+           typescript-ts-mode
+           js-ts-mode
+					 astro-ts-mode) . lsp-deferred))
+  :custom
+  (lsp-keymap-prefix "C-c l")           ; Prefix for LSP actions
+  (lsp-completion-provider :none)       ; Using Corfu as the provider
+  (lsp-diagnostics-provider :flycheck)
+  (lsp-session-file (locate-user-emacs-file ".lsp-session"))
+  (lsp-log-io nil)
+  (lsp-keep-workspace-alive nil)
+  (lsp-idle-delay 0.1)
+  (lsp-enable-xref t)
+  (lsp-auto-configure nil)
+  (lsp-eldoc-enable-hover nil)
+  (lsp-enable-dap-auto-configure nil)
+  (lsp-enable-file-watchers nil)
+  (lsp-enable-folding nil)
+  (lsp-enable-imenu nil)
+  (lsp-enable-indentation nil)
+  (lsp-enable-links nil)
+  (lsp-enable-on-type-formatting nil)
+  (lsp-enable-suggest-server-download t)
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-enable-text-document-color nil)
+  (lsp-ui-sideline-show-hover nil)
+  (lsp-ui-sideline-diagnostic-max-lines 20)
+	(lsp-ui-sideline-show-diagnostics nil)
+	(lsp-ui-sideline-show-code-actions nil)
+  (lsp-completion-enable t)
+  (lsp-completion-enable-additional-text-edit nil)
+  (lsp-completion-show-kind t)
+	(lsp-completion-show-detail nil)
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-modeline-code-actions-enable nil)
+  (lsp-modeline-diagnostics-enable nil)
+  (lsp-modeline-workspace-status-enable nil)
+  (lsp-signature-doc-lines 1)
+	(lsp-signature-auto-activate nil)
+	(lsp-signature-render-documentation nil)
+  (lsp-ui-doc-use-childframe t)
+  (lsp-eldoc-render-all nil)
+  (lsp-lens-enable nil)
+  (lsp-semantic-tokens-enable nil)
+  :init
+  (setq lsp-use-plists t)
+	:config
+	(add-to-list 'lsp-language-id-configuration '(".*\\.astro" . "astro")))
+
+(use-package lsp-completion
+  :ensure nil
+  :hook ((lsp-mode . lsp-completion-mode)))
+
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
+
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
 (use-package clojure-ts-mode
 	:ensure t
@@ -878,6 +970,13 @@
 					 "SPC dj" 'cider-javadoc)
 	:hook
 	(clojure-ts-mode . cider-mode))
+
+(use-package astro-ts-mode
+	:ensure t
+	:init
+	(add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode))
+	:hook
+	(astro-ts-mode . display-line-numbers-mode))
 
 (use-package jinx
   :hook (text-mode . jinx-mode))
