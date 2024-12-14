@@ -122,6 +122,173 @@ Make sure to have the same ~PATH~ as in my shell.
   (exec-path-from-shell-initialize)))
 #+end_src
 
+* Built-Ins & General Editing
+** UI Elements
+This disables unwanted UI elements before Emacs has a chance to draw them on the screen.
+
+#+begin_src emacs-lisp :tangle ./early-init.el
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(blink-cursor-mode -1)
+(tab-bar-mode -1)
+(pixel-scroll-precision-mode 1)
+
+(setq inhibit-splash-screen t
+      use-file-dialog nil
+			tab-bar-show nil
+      tab-bar-new-button-show nil
+      tab-bar-close-button-show nil
+			tab-bar-auto-width nil
+      tab-line-close-button-show nil
+			initial-scratch-message ";; Let's start ...\n")
+#+end_src
+
+** Better Defaults
+Adapts some emacs settings for a better out-of-the-box experience.
+
+#+begin_src emacs-lisp
+(use-package emacs
+  :ensure nil
+  :custom
+  ;; Set some global modes
+  (global-visual-line-mode t)
+  (delete-selection-mode t)
+  (electric-pair-mode t)
+  (global-auto-revert-mode t)
+  (recentf-mode t)
+  (visible-bell t)
+  
+  ;; Set some text editing defaults
+	(electric-indent-mode t)
+	(indent-tabs-mode nil)
+  (tab-width 2)
+  (fill-column 100)
+  (display-line-numbers-type 'relative)
+  (ring-bell-function 'ignore)
+  
+  ;; Configure scroll behavior
+  (mouse-wheel-progressive-speed nil)
+  (scroll-conservatively 10)
+  (scroll-margin 8)
+  
+  ;; Undo behavior
+  (undo-limit 67108864)
+  (undo-strong-limit 100663296)
+  (undo-outer-limit 1006632960)
+  
+  ;; Use encrypted authinfo file for auth-sources
+  (auth-sources '("~/.authinfo.gpg"))
+
+	;; keep backup and save files in a dedicated directory
+	(create-lockfiles nil)
+  (backup-directory-alist
+          `((".*" . ,(concat user-emacs-directory "backups")))
+          auto-save-file-name-transforms
+          `((".*" ,(concat user-emacs-directory "backups") t)))
+  
+	;; Do not show native comp warning
+	(native-comp-async-report-warnings-errors nil)
+  :hook
+  (prog-mode . display-line-numbers-mode)
+  (prog-mode . hl-line-mode)
+  (prog-mode . (lambda () (hs-minor-mode t)))
+  :init
+	;; Shorten those questions
+	(defalias 'yes-or-no-p 'y-or-n-p)
+
+  ;; MacOS specfic configuration
+  (when (eq system-type 'darwin)
+		(setq mac-right-option-modifier "none")
+		(setq insert-directory-program "/opt/homebrew/bin/gls"))
+
+  ;; Move customized variables to separate file
+  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
+  (load custom-file 'noerror 'nomessage)
+  
+	;; utf-8 everywhere
+	(set-charset-priority 'unicode)
+  (setq locale-coding-system 'utf-8
+          coding-system-for-read 'utf-8
+          coding-system-for-write 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+  (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+  :bind
+  (([escape] . keyboard-escape-quit)))
+#+end_src
+
+** Dired
+I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This configuration will probably be extended as I am growing accustomed to it. Currently it is configured to just hide dot files.
+
+#+begin_src emacs-lisp
+(use-package dired
+	:ensure nil
+	:custom
+	(dired-listing-switches "-lah --group-directories-first")
+	(dired-dwim-target t)
+	(dired-kill-when-opening-new-dired-buffer t))
+
+(use-package dired-narrow
+	:ensure t
+	:bind (:map dired-mode-map ("\C-s" . dired-narrow)))
+
+(use-package dired-x
+  :ensure nil
+	:bind (:map dired-mode-map ("\C-h" . dired-omit-mode))
+  :config
+  (setq dired-omit-files
+				(concat dired-omit-files "\\|^\\..+$"))
+	:hook
+	(dired-mode . dired-omit-mode))
+
+(use-package all-the-icons
+	:ensure t)
+
+(use-package all-the-icons-dired
+	:ensure t
+	:hook
+	(dired-mode . all-the-icons-dired-mode))
+
+(use-package diredfl
+	:ensure t
+	:hook
+	(dired-mode . diredfl-mode))
+#+end_src
+
+** Undo Functionality 
+~undo-fu~ (together with ~undo-fu-session~) allows me to have persistent undo/redo over multiple sessions and undo/redo in a region. ~vundo~ enhances the functionality by visualizing undo/redo steps in a tree structure.
+
+#+begin_src emacs-lisp
+(use-package undo-fu
+  :ensure t
+  :custom
+  (undo-fu-allow-undo-in-region t))
+
+(use-package undo-fu-session
+  :ensure t
+  :config
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
+	(undo-fu-session-global-mode t))
+
+(use-package vundo
+  :ensure t
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols))
+#+end_src
+
+** Unique Buffer Names
+This makes sure that each buffer name is unique.
+
+#+begin_src emacs-lisp
+(use-package uniquify
+  :ensure nil
+  :config
+  (setq uniquify-buffer-name-style 'forward))
+#+end_src
+
 * Keybindings
 ** Evil Mode
 An extensible vi/vim layer for Emacs. Because…let’s face it. The Vim keybindings are just plain better.
@@ -136,13 +303,13 @@ Notes:
   (setq evil-want-C-i-jump nil)
   :config ;; Execute code After a package is loaded
   (evil-set-initial-state 'eat-mode 'insert) ;; Set initial state in eat terminal to insert mode
+	(evil-set-initial-state 'magit-diff-mode 'insert)
   :custom ;; Customization of package custom variables
   (evil-want-keybinding nil)    ;; Disable evil bindings in other modes (It's not consistent and not good)
   (evil-want-C-u-scroll t)      ;; Set C-u to scroll up
   (evil-want-C-i-jump nil)      ;; Disables C-i jump
   (evil-undo-system 'undo-fu) 
   (org-return-follows-link t)   ;; Sets RETURN key in org-mode to follow links
-  ;; Unmap keys in 'evil-maps. If not done, org-return-follows-link will not work
   :bind (:map evil-motion-state-map
 			  ("SPC" . nil)
 			  ("RET" . nil)
@@ -158,10 +325,7 @@ Notes:
 (use-package evil-goggles
   :after evil
   :config
-  (setq evil-goggles-duration 0.100)
-  (setq evil-goggles-enable-delete nil)
-  (setq evil-goggles-enable-paste nil)
-  (setq evil-goggles-enable-change nil)
+  (setq evil-goggles-duration 0.200)
   (evil-goggles-mode)
   (evil-goggles-use-diff-faces))
 
@@ -340,150 +504,9 @@ I am still learning all the keybindings that Emacs provides (including the ones 
   (which-key-allow-imprecise-window-fit nil)) 
 #+end_src
 
-* General
-** Better Defaults
-These are some defaults to make Emacs look nicer initially.
-
-#+begin_src emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
-
-(use-package emacs
-  :ensure nil
-  :custom
-  ;; Disable unwanted elements
-  (menu-bar-mode nil)
-  (scroll-bar-mode nil)
-  (tool-bar-mode nil)
-  (inhibit-startup-screen t)
-  (ring-bell-function 'ignore)
-  (blink-cursor-mode nil)
-  
-  ;; Configure the tab bar to work well with tabspaces.el
-  (tab-bar-mode nil)
-  (tab-bar-show nil)
-  (tab-bar-close-button-show nil)
-  (tab-bar-new-button-show nil)
-  (tab-bar-auto-width nil)
-	
-	;; Set scratch buffer message
-	(initial-scratch-message ";; Let's start ...\n")
-
-  ;; Set some global modes
-  (global-visual-line-mode t)
-  (delete-selection-mode t)
-  (electric-pair-mode t)
-  (global-auto-revert-mode t)
-  (recentf-mode t)
-  (visible-bell t)
-	(pixel-scroll-precision-mode t)
-  
-  ;; Set some text editing defaults
-	(electric-indent-mode t)
-  (tab-width 2)
-  (fill-column 100)
-  (display-line-numbers-type 'relative)
-  
-  ;; Configure scroll behavior
-  (mouse-wheel-progressive-speed nil)
-  (scroll-conservatively 10)
-  (scroll-margin 8)
-  
-  ;; Undo behavior
-  (undo-limit 67108864)
-  (undo-strong-limit 100663296)
-  (undo-outer-limit 1006632960)
-  
-  ;; Use encrypted authinfo file for auth-sources
-  (auth-sources '("~/.authinfo.gpg"))
-  
-	;; Do not show native comp warning
-	(native-comp-async-report-warnings-errors nil)
-  :hook
-  (prog-mode . display-line-numbers-mode)
-  (prog-mode . hl-line-mode)
-  (prog-mode . (lambda () (hs-minor-mode t)))
-  :init
-  ;; MacOS specfic configuration
-  (when (eq system-type 'darwin)
-		(setq mac-right-option-modifier "none")
-		(setq insert-directory-program "/opt/homebrew/bin/gls"))
-
-  ;; Move customized variables to separate file
-  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-  (load custom-file 'noerror 'nomessage)
-  :bind
-  (([escape] . keyboard-escape-quit)))
-#+end_src
-
-** File & Folder Management
-I aim to manage all my files and folders only with ~dired~ and ~dired-x~. This configuration will probably be extended as I am growing accustomed to it. Currently it is configured to just hide dot files.
-
-#+begin_src emacs-lisp
-(use-package emacs
-  :ensure nil
-  :custom
-  (wdired-allow-to-change-permissions t)
-  (wdired-use-interactive-rename t)
-  (wdired-confirm-overwrite t))
-
-(use-package dired
-	:ensure nil
-	:custom
-	(dired-listing-switches "-lah --group-directories-first")
-	(dired-dwim-target t)
-	(dired-kill-when-opening-new-dired-buffer t))
-
-(use-package dired-narrow
-	:ensure t
-	:bind (:map dired-mode-map ("\C-s" . dired-narrow)))
-
-(use-package dired-x
-  :ensure nil
-	:bind (:map dired-mode-map ("\C-h" . dired-omit-mode))
-  :config
-  (setq dired-omit-files
-				(concat dired-omit-files "\\|^\\..+$"))
-	:hook
-	(dired-mode . dired-omit-mode))
-
-(use-package all-the-icons
-	:ensure t)
-
-(use-package all-the-icons-dired
-	:ensure t
-	:hook
-	(dired-mode . all-the-icons-dired-mode))
-
-(use-package diredfl
-	:ensure t
-	:hook
-	(dired-mode . diredfl-mode))
-#+end_src
-
-*** TODO Add ~dired-peep~
-See [[https://gitlab.com/dwt1/configuring-emacs/-/blob/main/07-the-final-touches/config.org?ref_type=heads#backup][this]].
-
-** Window Zoom
-I regularly use tmux's (or WezTerm for that matter) zoom feature, so naturally I want it in Emacs, too.
-
-#+begin_src emacs-lisp
-(use-package zoom-window
-  :ensure t
-  :custom
-  (zoom-window-mode-line-color "DarkSlateGray"))
-#+end_src
-
-** Unique Buffer Names
-This package makes sure that each buffer name is unique.
-
-#+begin_src emacs-lisp
-(use-package uniquify
-  :ensure nil
-  :config
-  (setq uniquify-buffer-name-style 'forward))
-#+end_src
-
-** Workspace Management
+* Workspaces & Projects
+** TODO Session Management
+** TODO Workspace Management
 Similar to my WezTerm setup I want one session per project. I am on the lookout on how to achieve this with project.el and packages like easysession.el. [[https://github.com/nex3/perspective-el][perspective.el]] might be what I need regarding the buffer setup.
 
 *UPDATE:* After consideration of a number of packages [[https://github.com/mclear-tools/tabspaces][tabspaces.el]] seems to do all that is necessary (project-specific buffers per tab, automatic sessions, easy project/tab switching). I need to add [[https://github.com/mclear-tools/tabspaces?tab=readme-ov-file#consult][additional configuration]] to make it work well with ~consult~ though.
@@ -523,25 +546,45 @@ Similar to my WezTerm setup I want one session per project. I am on the lookout 
 	(tab-bar-mode nil))
 #+end_src
 
-** Undo Functionality 
-~undo-fu~ (together with ~undo-fu-session~) allows me to have persistent undo/redo over multiple sessions and undo/redo in a region. ~vundo~ enhances the functionality by visualizing undo/redo steps in a tree structure.
+** TODO Project Management
+
+* Appearance
+** Theme
+Coming from Neovim and TUI-based tools in general I mainly used widely available color themes on all platforms (e.g. ~catppuccin~ or ~rose-pine~). After trying it out for a few minutes the built-in modus-themes won me over, though. The exceptional support of Emacs' faces as well as the ergonomic overrides and options for [[https://protesilaos.com/emacs/modus-themes#h:f4651d55-8c07-46aa-b52b-bed1e53463bb][advanced customization]] is just that good.
 
 #+begin_src emacs-lisp
-(use-package undo-fu
-  :ensure t
-  :custom
-  (undo-fu-allow-undo-in-region t))
-
-(use-package undo-fu-session
-  :ensure t
+(use-package modus-themes
+	:ensure t
   :config
-  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
-	(undo-fu-session-global-mode t))
 
-(use-package vundo
-  :ensure t
-  :custom
-  (vundo-glyph-alist vundo-unicode-symbols))
+  (custom-set-faces
+   '(tab-bar ((t (:height 0.85))))
+   '(tab-bar-tab-inactive
+     ((t (:slant italic :foreground "#606270")))))
+  
+  (setq modus-themes-common-palette-overrides
+		'((border-mode-line-active bg-mode-line-active)
+          (border-mode-line-inactive bg-mode-line-inactive)
+		  (fg-heading-1 blue-cooler)
+		  (prose-done fg-dim)
+		  (prose-done fg-dim)
+		  (fringe unspecified)
+		  (bg-line-number-inactive unspecified)
+          (bg-line-number-active bg-dim)
+          (bg-hl-line bg-dim)
+		  (bg-prose-block-delimiter unspecified)
+		  (bg-tab-bar bg-main)
+		  (bg-tab-current bg-main)
+		  (bg-tab-other bg-main)
+		  (comment fg-dim)))
+
+  (setq modus-themes-fringes nil)
+  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-bold-constructs t)
+  (setq modus-themes-mixed-fonts t)
+  (setq modus-themes-custom-auto-reload t)
+
+  (load-theme 'modus-vivendi-tinted))
 #+end_src
 
 ** Modeline
@@ -591,59 +634,6 @@ I am using ~mood-line~ as it is easily customizable and by default only uses ASC
                       (propertize "]" 'face 'modus-themes-fg-magenta-intense)))))
 #+end_src
 
-* Projects
-For better or worse I do work with monorepos. Thus I need the option to narrow down projects within a single vc-backed directory. Luckily ~project.el~ allows me to customize ~project-vc-extra-root-markers~ with additional markers. I've added some root markers for the languages I currently work with. To manually add a non-vc-backed directory a ~.project~ file can be added to any directory. If the project is not recognized right away by ~project.el~ I can run ~M-x project-remember-projects-under RET ./parent-dir-or-project-dir~.
-
-#+begin_src emacs-lisp
-(use-package project
-  :ensure nil
-  :custom
-  (project-vc-ignores '("target/" "bin/" "out/" "node_modules/"))
-  (project-vc-extra-root-markers '(".project" "package.json" "Cargo.toml" "go.mod" "Gemfile")))
-#+end_src
-
-** TODO Highlight Todos
-Use ~hl-todo~.
-
-* Appearance
-** Theme
-Coming from Neovim and TUI-based tools in general I mainly used widely available color themes on all platforms (e.g. ~catppuccin~ or ~rose-pine~). After trying it out for a few minutes the built-in modus-themes won me over, though. The exceptional support of Emacs' faces as well as the ergonomic overrides and options for [[https://protesilaos.com/emacs/modus-themes#h:f4651d55-8c07-46aa-b52b-bed1e53463bb][advanced customization]] is just that good.
-
-#+begin_src emacs-lisp
-(use-package modus-themes
-	:ensure t
-  :config
-
-  (custom-set-faces
-   '(tab-bar ((t (:height 0.85))))
-   '(tab-bar-tab-inactive
-     ((t (:slant italic :foreground "#606270")))))
-  
-  (setq modus-themes-common-palette-overrides
-		'((border-mode-line-active bg-mode-line-active)
-          (border-mode-line-inactive bg-mode-line-inactive)
-		  (fg-heading-1 blue-cooler)
-		  (prose-done fg-dim)
-		  (prose-done fg-dim)
-		  (fringe unspecified)
-		  (bg-line-number-inactive unspecified)
-          (bg-line-number-active bg-dim)
-          (bg-hl-line bg-dim)
-		  (bg-prose-block-delimiter unspecified)
-		  (bg-tab-bar bg-main)
-		  (bg-tab-current bg-main)
-		  (bg-tab-other bg-main)
-		  (comment fg-dim)))
-
-  (setq modus-themes-fringes nil)
-  (setq modus-themes-italic-constructs t)
-  (setq modus-themes-bold-constructs t)
-  (setq modus-themes-mixed-fonts t)
-  (setq modus-themes-custom-auto-reload t)
-
-  (load-theme 'modus-vivendi-tinted))
-#+end_src
-
 ** Fonts
 Defining the fonts I am using. Currently only ~VictorMono as a nerd font~.
 
@@ -677,7 +667,7 @@ Defining the fonts I am using. Currently only ~VictorMono as a nerd font~.
 (setq-default line-spacing 0.12)
 #+end_src
 
-** Delimiters
+** Rainbow Delimiters
 To make it easier to spot delimiter issues I am using rainbow-delimiters.
 
 #+begin_src emacs-lisp
@@ -698,16 +688,19 @@ You can use the bindings C-+ C-- for zooming in/out. You can also use CTRL plus 
   ("<C-wheel-down>" . text-scale-decrease))
 #+end_src
 
+** TODO Highlight Todos
+Use ~hl-todo~.
+
 * Completion
 ** Completion Style
 The ~orderless~ completion style seems to be what everyone is using now. Trying it out currently.
 
 #+begin_src emacs-lisp
 (use-package orderless
-  :custom
-  (completion-styles '(orderless partial-completion basic))
-  (completion-category-defaults nil)
-  (completion-category-overrides nil))
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
 ** Mini-buffer
@@ -779,7 +772,7 @@ For in-buffer completion, ~corfu~ is used.
 	(add-hook 'completion-at-point-functions #'cape-elisp-block))
 #+end_src
 
-* Consult
+** Consult
 Provides search and navigation commands based on the Emacs completion function.
 Check out their [[https://github.com/minad/consult][git repository]] for more awesome functions.
 
@@ -832,11 +825,9 @@ Check out their [[https://github.com/minad/consult][git repository]] for more aw
   ;;(autoload 'projectile-project-root "projectile")
   ;;(setq consult-project-function (lambda (_) (projectile-project-root)))
    ;;;; 5. No project support
-  (setq consult-project-function nil)
+  ;;(setq consult-project-function nil)
   )
 #+end_src
-
-** TODO Change consult project to projectile after configuring it
 
 * Git
 ** Diff in Gutter
@@ -905,8 +896,9 @@ I often visit and copy a link to a specific line for my colleagues. This functio
 	(evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision))
 #+end_src
 
-* Org Mode
-** Base Configuration
+* Writing
+** Org Mode
+*** Base Configuration
 My org mode specific configuration.
 
 #+begin_src emacs-lisp
@@ -959,7 +951,7 @@ My org mode specific configuration.
                                (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c)))))))
       #+end_src
 
-** Beautify Org Mode
+*** Beautify Org Mode
 I am using [[https://github.com/minad/org-modern?tab=readme-ov-file][org-modern]] to make org-mode a bit more pleasant to the eye.
 
 #+begin_src emacs-lisp
@@ -985,7 +977,7 @@ Additionally [[https://codeberg.org/joostkremers/visual-fill-column][Visual-Fill
   (org-mode . visual-fill-column-mode))
 #+end_src
 
-** Source Code Block Tag Expansion
+*** Source Code Block Tag Expansion
 Org-tempo is not a separate package but a module within org that can be enabled.
 Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 
@@ -995,15 +987,7 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
   :after org)
 #+end_src
 
-** Org Drill
-I am currently learning Spanish and was looking for a spaced repetition system similar to Anki cards for Emacs/Org Mode. I've found [[https://gitlab.com/phillord/org-drill][org-drill]] for that. Using it is as simple as creating a ~.org~ file that conforms to the [[https://gitlab.com/phillord/org-drill/#writing-the-questions][specifications]], visiting that ~.org~ file and running ~org-drill~.
-
-#+begin_src emacs-lisp
-(use-package org-drill
-  :ensure t)
-#+end_src
-
-** Org Roam
+*** Org Roam
 No note taking sticked for me as well as ~org-roam~ did.
 
 #+begin_src emacs-lisp
@@ -1016,7 +1000,7 @@ No note taking sticked for me as well as ~org-roam~ did.
   (org-roam-setup))
 #+end_src
 
-** Desktop Notifications
+*** Desktop Notifications
 This allows for desktop notifications on MacOS.
 
 #+begin_src emacs-lisp
@@ -1035,15 +1019,29 @@ This allows for desktop notifications on MacOS.
    :config (setq alert-default-style 'osx-notifier))
 #+end_src
 
-* TODO Programming
-** Flycheck
+** Spell Checker
+The [[https://github.com/minad/jinx][JINX package]] provides a performant option for spell checking (see its README for details). To be able to use it a spell checker and dictionaries have to be installed. I use ~nuspell~ and added the dictionaries on my mac by following the instructions on [[https://github.com/wooorm/dictionaries/tree/main][wooorm/dictionaries]]. To compile ~jinx~ it is also necessary to do: ~brew install enchant pkgconf~.
 
 #+begin_src emacs-lisp
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
+(use-package jinx
+  :hook (text-mode . jinx-mode))
 #+end_src
 
+** Typst Mode
+The syntax highlighting and indentation is handled by [[https://codeberg.org/meow_king/typst-ts-mode][typst-ts-mode]].
+
+#+begin_src emacs-lisp
+(use-package typst-ts-mode
+  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"
+                 :files (:defaults "*.el"))
+  :custom
+	(typst-ts-mode-indent-offset 2)
+  (typst-ts-watch-options "--open")
+  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.dylib" user-emacs-directory))
+  (typst-ts-mode-enable-raw-blocks-highlight t))
+  #+end_src
+
+* Programming
 ** Treesitter
 [[https://github.com/renzmann/treesit-auto][Treesit-auto]] greatly simplifies Treesitter usage within Emacs. Besides prompting for (and automatically installing) new grammars, it also sets the major mode for a language to its Treesitter mode, if one exists.
 
@@ -1055,105 +1053,6 @@ This allows for desktop notifications on MacOS.
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 #+end_src
-
-** LSP Mode
-
-#+begin_src emacs-lisp
-(use-package lsp-mode
-  :ensure t
-  :hook ((lsp-mode . lsp-diagnostics-mode)
-         (lsp-mode . lsp-enable-which-key-integration)
-         ((tsx-ts-mode
-           typescript-ts-mode
-           js-ts-mode
-					 astro-ts-mode) . lsp-deferred))
-  :custom
-  (lsp-keymap-prefix "C-c l")           ; Prefix for LSP actions
-  (lsp-completion-provider :none)       ; Using Corfu as the provider
-  (lsp-diagnostics-provider :flycheck)
-  (lsp-session-file (locate-user-emacs-file ".lsp-session"))
-  (lsp-log-io nil)
-  (lsp-keep-workspace-alive nil)
-  (lsp-idle-delay 0.1)
-  (lsp-enable-xref t)
-  (lsp-auto-configure nil)
-  (lsp-eldoc-enable-hover nil)
-  (lsp-enable-dap-auto-configure nil)
-  (lsp-enable-file-watchers nil)
-  (lsp-enable-folding nil)
-  (lsp-enable-imenu nil)
-  (lsp-enable-indentation nil)
-  (lsp-enable-links nil)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-enable-suggest-server-download t)
-  (lsp-enable-symbol-highlighting nil)
-  (lsp-enable-text-document-color nil)
-  (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-sideline-diagnostic-max-lines 20)
-	(lsp-ui-sideline-show-diagnostics nil)
-	(lsp-ui-sideline-show-code-actions nil)
-  (lsp-completion-enable t)
-  (lsp-completion-enable-additional-text-edit nil)
-  (lsp-completion-show-kind t)
-	(lsp-completion-show-detail nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-modeline-code-actions-enable nil)
-  (lsp-modeline-diagnostics-enable nil)
-  (lsp-modeline-workspace-status-enable nil)
-  (lsp-signature-doc-lines 1)
-	(lsp-signature-auto-activate nil)
-	(lsp-signature-render-documentation nil)
-  (lsp-ui-doc-use-childframe t)
-  (lsp-eldoc-render-all nil)
-  (lsp-lens-enable nil)
-  (lsp-semantic-tokens-enable nil)
-  :init
-  (setq lsp-use-plists t)
-	:config
-	(add-to-list 'lsp-language-id-configuration '(".*\\.astro" . "astro")))
-
-(use-package lsp-completion
-  :ensure nil
-  :hook ((lsp-mode . lsp-completion-mode)))
-#+end_src
-
-** LSP Booster
-
-#+begin_src emacs-lisp
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
-
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
-#+end_src
-
-** TODO LSP keybindings
-gd, gr, Code Actions, ...
 
 ** Languages & Frameworks
 *** Clojure
@@ -1250,7 +1149,7 @@ And this installs ~cider.~
 	(astro-ts-mode . display-line-numbers-mode))
   #+end_src
 
-*** TODO Tailwind
+** TODO LSP Mode
 ** TODO Formatter
 https://github.com/radian-software/apheleia
 
@@ -1265,29 +1164,6 @@ I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple
 
 * TODO Presentations
 I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
-
-* Writing
-** Spell Checker
-The [[https://github.com/minad/jinx][JINX package]] provides a performant option for spell checking (see its README for details). To be able to use it a spell checker and dictionaries have to be installed. I use ~nuspell~ and added the dictionaries on my mac by following the instructions on [[https://github.com/wooorm/dictionaries/tree/main][wooorm/dictionaries]]. To compile ~jinx~ it is also necessary to do: ~brew install enchant pkgconf~.
-
-#+begin_src emacs-lisp
-(use-package jinx
-  :hook (text-mode . jinx-mode))
-#+end_src
-
-** Typst Mode
-The syntax highlighting and indentation is handled by [[https://codeberg.org/meow_king/typst-ts-mode][typst-ts-mode]].
-
-#+begin_src emacs-lisp
-(use-package typst-ts-mode
-  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"
-                 :files (:defaults "*.el"))
-  :custom
-	(typst-ts-mode-indent-offset 2)
-  (typst-ts-watch-options "--open")
-  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.dylib" user-emacs-directory))
-  (typst-ts-mode-enable-raw-blocks-highlight t))
-  #+end_src
 
 * Misc
 ** Diminish

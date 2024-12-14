@@ -76,19 +76,144 @@
   (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize)))
 
+(use-package emacs
+  :ensure nil
+  :custom
+  ;; Set some global modes
+  (global-visual-line-mode t)
+  (delete-selection-mode t)
+  (electric-pair-mode t)
+  (global-auto-revert-mode t)
+  (recentf-mode t)
+  (visible-bell t)
+  
+  ;; Set some text editing defaults
+	(electric-indent-mode t)
+	(indent-tabs-mode nil)
+  (tab-width 2)
+  (fill-column 100)
+  (display-line-numbers-type 'relative)
+  (ring-bell-function 'ignore)
+  
+  ;; Configure scroll behavior
+  (mouse-wheel-progressive-speed nil)
+  (scroll-conservatively 10)
+  (scroll-margin 8)
+  
+  ;; Undo behavior
+  (undo-limit 67108864)
+  (undo-strong-limit 100663296)
+  (undo-outer-limit 1006632960)
+  
+  ;; Use encrypted authinfo file for auth-sources
+  (auth-sources '("~/.authinfo.gpg"))
+
+	;; keep backup and save files in a dedicated directory
+	(create-lockfiles nil)
+  (backup-directory-alist
+          `((".*" . ,(concat user-emacs-directory "backups")))
+          auto-save-file-name-transforms
+          `((".*" ,(concat user-emacs-directory "backups") t)))
+  
+	;; Do not show native comp warning
+	(native-comp-async-report-warnings-errors nil)
+  :hook
+  (prog-mode . display-line-numbers-mode)
+  (prog-mode . hl-line-mode)
+  (prog-mode . (lambda () (hs-minor-mode t)))
+  :init
+	;; Shorten those questions
+	(defalias 'yes-or-no-p 'y-or-n-p)
+
+  ;; MacOS specfic configuration
+  (when (eq system-type 'darwin)
+		(setq mac-right-option-modifier "none")
+		(setq insert-directory-program "/opt/homebrew/bin/gls"))
+
+  ;; Move customized variables to separate file
+  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
+  (load custom-file 'noerror 'nomessage)
+  
+	;; utf-8 everywhere
+	(set-charset-priority 'unicode)
+  (setq locale-coding-system 'utf-8
+          coding-system-for-read 'utf-8
+          coding-system-for-write 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+  (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+  :bind
+  (([escape] . keyboard-escape-quit)))
+
+(use-package dired
+	:ensure nil
+	:custom
+	(dired-listing-switches "-lah --group-directories-first")
+	(dired-dwim-target t)
+	(dired-kill-when-opening-new-dired-buffer t))
+
+(use-package dired-narrow
+	:ensure t
+	:bind (:map dired-mode-map ("\C-s" . dired-narrow)))
+
+(use-package dired-x
+  :ensure nil
+	:bind (:map dired-mode-map ("\C-h" . dired-omit-mode))
+  :config
+  (setq dired-omit-files
+				(concat dired-omit-files "\\|^\\..+$"))
+	:hook
+	(dired-mode . dired-omit-mode))
+
+(use-package all-the-icons
+	:ensure t)
+
+(use-package all-the-icons-dired
+	:ensure t
+	:hook
+	(dired-mode . all-the-icons-dired-mode))
+
+(use-package diredfl
+	:ensure t
+	:hook
+	(dired-mode . diredfl-mode))
+
+(use-package undo-fu
+  :ensure t
+  :custom
+  (undo-fu-allow-undo-in-region t))
+
+(use-package undo-fu-session
+  :ensure t
+  :config
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
+	(undo-fu-session-global-mode t))
+
+(use-package vundo
+  :ensure t
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols))
+
+(use-package uniquify
+  :ensure nil
+  :config
+  (setq uniquify-buffer-name-style 'forward))
+
 (use-package evil
   :init ;; Execute code Before a package is loaded
   (evil-mode)
   (setq evil-want-C-i-jump nil)
   :config ;; Execute code After a package is loaded
   (evil-set-initial-state 'eat-mode 'insert) ;; Set initial state in eat terminal to insert mode
+	(evil-set-initial-state 'magit-diff-mode 'insert)
   :custom ;; Customization of package custom variables
   (evil-want-keybinding nil)    ;; Disable evil bindings in other modes (It's not consistent and not good)
   (evil-want-C-u-scroll t)      ;; Set C-u to scroll up
   (evil-want-C-i-jump nil)      ;; Disables C-i jump
   (evil-undo-system 'undo-fu) 
   (org-return-follows-link t)   ;; Sets RETURN key in org-mode to follow links
-  ;; Unmap keys in 'evil-maps. If not done, org-return-follows-link will not work
   :bind (:map evil-motion-state-map
 			  ("SPC" . nil)
 			  ("RET" . nil)
@@ -104,10 +229,7 @@
 (use-package evil-goggles
   :after evil
   :config
-  (setq evil-goggles-duration 0.100)
-  (setq evil-goggles-enable-delete nil)
-  (setq evil-goggles-enable-paste nil)
-  (setq evil-goggles-enable-change nil)
+  (setq evil-goggles-duration 0.200)
   (evil-goggles-mode)
   (evil-goggles-use-diff-faces))
 
@@ -273,125 +395,6 @@
   (which-key-max-description-length 35)
   (which-key-allow-imprecise-window-fit nil))
 
-(fset 'yes-or-no-p 'y-or-n-p)
-
-(use-package emacs
-  :ensure nil
-  :custom
-  ;; Disable unwanted elements
-  (menu-bar-mode nil)
-  (scroll-bar-mode nil)
-  (tool-bar-mode nil)
-  (inhibit-startup-screen t)
-  (ring-bell-function 'ignore)
-  (blink-cursor-mode nil)
-  
-  ;; Configure the tab bar to work well with tabspaces.el
-  (tab-bar-mode nil)
-  (tab-bar-show nil)
-  (tab-bar-close-button-show nil)
-  (tab-bar-new-button-show nil)
-  (tab-bar-auto-width nil)
-	
-	;; Set scratch buffer message
-	(initial-scratch-message ";; Let's start ...\n")
-
-  ;; Set some global modes
-  (global-visual-line-mode t)
-  (delete-selection-mode t)
-  (electric-pair-mode t)
-  (global-auto-revert-mode t)
-  (recentf-mode t)
-  (visible-bell t)
-	(pixel-scroll-precision-mode t)
-  
-  ;; Set some text editing defaults
-	(electric-indent-mode t)
-  (tab-width 2)
-  (fill-column 100)
-  (display-line-numbers-type 'relative)
-  
-  ;; Configure scroll behavior
-  (mouse-wheel-progressive-speed nil)
-  (scroll-conservatively 10)
-  (scroll-margin 8)
-  
-  ;; Undo behavior
-  (undo-limit 67108864)
-  (undo-strong-limit 100663296)
-  (undo-outer-limit 1006632960)
-  
-  ;; Use encrypted authinfo file for auth-sources
-  (auth-sources '("~/.authinfo.gpg"))
-  
-	;; Do not show native comp warning
-	(native-comp-async-report-warnings-errors nil)
-  :hook
-  (prog-mode . display-line-numbers-mode)
-  (prog-mode . hl-line-mode)
-  (prog-mode . (lambda () (hs-minor-mode t)))
-  :init
-  ;; MacOS specfic configuration
-  (when (eq system-type 'darwin)
-		(setq mac-right-option-modifier "none")
-		(setq insert-directory-program "/opt/homebrew/bin/gls"))
-
-  ;; Move customized variables to separate file
-  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-  (load custom-file 'noerror 'nomessage)
-  :bind
-  (([escape] . keyboard-escape-quit)))
-
-(use-package emacs
-  :ensure nil
-  :custom
-  (wdired-allow-to-change-permissions t)
-  (wdired-use-interactive-rename t)
-  (wdired-confirm-overwrite t))
-
-(use-package dired
-	:ensure nil
-	:custom
-	(dired-listing-switches "-lah --group-directories-first")
-	(dired-dwim-target t)
-	(dired-kill-when-opening-new-dired-buffer t))
-
-(use-package dired-narrow
-	:ensure t
-	:bind (:map dired-mode-map ("\C-s" . dired-narrow)))
-
-(use-package dired-x
-  :ensure nil
-	:bind (:map dired-mode-map ("\C-h" . dired-omit-mode))
-  :config
-  (setq dired-omit-files
-				(concat dired-omit-files "\\|^\\..+$"))
-	:hook
-	(dired-mode . dired-omit-mode))
-
-(use-package all-the-icons
-	:ensure t)
-
-(use-package all-the-icons-dired
-	:ensure t
-	:hook
-	(dired-mode . all-the-icons-dired-mode))
-
-(use-package diredfl
-	:ensure t
-	:hook
-	(dired-mode . diredfl-mode))
-
-(use-package zoom-window
-  :ensure t
-  :custom
-  (zoom-window-mode-line-color "DarkSlateGray"))
-
-(use-package uniquify
-  :ensure nil
-  :config
-  (setq uniquify-buffer-name-style 'forward))
-
 ;; consult-buffer only shows workspace buffers unless 'b' is pressed
 (with-eval-after-load 'consult
 (consult-customize consult--source-buffer :hidden t :default nil)
@@ -425,21 +428,38 @@
   (tab-bar-new-tab-choice "*scratch*")
 	(tab-bar-mode nil))
 
-(use-package undo-fu
-  :ensure t
-  :custom
-  (undo-fu-allow-undo-in-region t))
-
-(use-package undo-fu-session
-  :ensure t
+(use-package modus-themes
+	:ensure t
   :config
-  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
-	(undo-fu-session-global-mode t))
 
-(use-package vundo
-  :ensure t
-  :custom
-  (vundo-glyph-alist vundo-unicode-symbols))
+  (custom-set-faces
+   '(tab-bar ((t (:height 0.85))))
+   '(tab-bar-tab-inactive
+     ((t (:slant italic :foreground "#606270")))))
+  
+  (setq modus-themes-common-palette-overrides
+		'((border-mode-line-active bg-mode-line-active)
+          (border-mode-line-inactive bg-mode-line-inactive)
+		  (fg-heading-1 blue-cooler)
+		  (prose-done fg-dim)
+		  (prose-done fg-dim)
+		  (fringe unspecified)
+		  (bg-line-number-inactive unspecified)
+          (bg-line-number-active bg-dim)
+          (bg-hl-line bg-dim)
+		  (bg-prose-block-delimiter unspecified)
+		  (bg-tab-bar bg-main)
+		  (bg-tab-current bg-main)
+		  (bg-tab-other bg-main)
+		  (comment fg-dim)))
+
+  (setq modus-themes-fringes nil)
+  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-bold-constructs t)
+  (setq modus-themes-mixed-fonts t)
+  (setq modus-themes-custom-auto-reload t)
+
+  (load-theme 'modus-vivendi-tinted))
 
 (use-package evil-anzu)
 
@@ -483,45 +503,6 @@
 											((propertize (mood-line-segment-project) 'face 'modus-themes-fg-magenta-intense) . "")
                       (propertize "]" 'face 'modus-themes-fg-magenta-intense)))))
 
-(use-package project
-  :ensure nil
-  :custom
-  (project-vc-ignores '("target/" "bin/" "out/" "node_modules/"))
-  (project-vc-extra-root-markers '(".project" "package.json" "Cargo.toml" "go.mod" "Gemfile")))
-
-(use-package modus-themes
-	:ensure t
-  :config
-
-  (custom-set-faces
-   '(tab-bar ((t (:height 0.85))))
-   '(tab-bar-tab-inactive
-     ((t (:slant italic :foreground "#606270")))))
-  
-  (setq modus-themes-common-palette-overrides
-		'((border-mode-line-active bg-mode-line-active)
-          (border-mode-line-inactive bg-mode-line-inactive)
-		  (fg-heading-1 blue-cooler)
-		  (prose-done fg-dim)
-		  (prose-done fg-dim)
-		  (fringe unspecified)
-		  (bg-line-number-inactive unspecified)
-          (bg-line-number-active bg-dim)
-          (bg-hl-line bg-dim)
-		  (bg-prose-block-delimiter unspecified)
-		  (bg-tab-bar bg-main)
-		  (bg-tab-current bg-main)
-		  (bg-tab-other bg-main)
-		  (comment fg-dim)))
-
-  (setq modus-themes-fringes nil)
-  (setq modus-themes-italic-constructs t)
-  (setq modus-themes-bold-constructs t)
-  (setq modus-themes-mixed-fonts t)
-  (setq modus-themes-custom-auto-reload t)
-
-  (load-theme 'modus-vivendi-tinted))
-
 (set-face-attribute 'default nil
 					:font "VictorMono Nerd Font"
 					:height 180
@@ -562,10 +543,10 @@
   ("<C-wheel-down>" . text-scale-decrease))
 
 (use-package orderless
-  :custom
-  (completion-styles '(orderless partial-completion basic))
-  (completion-category-defaults nil)
-  (completion-category-overrides nil))
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package vertico
   :init
@@ -669,7 +650,7 @@
   ;;(autoload 'projectile-project-root "projectile")
   ;;(setq consult-project-function (lambda (_) (projectile-project-root)))
    ;;;; 5. No project support
-  (setq consult-project-function nil)
+  ;;(setq consult-project-function nil)
   )
 
 (use-package diff-hl
@@ -775,9 +756,6 @@
   :ensure nil
   :after org)
 
-(use-package org-drill
-  :ensure t)
-
 (use-package org-roam
   :ensure t
   :custom
@@ -800,9 +778,17 @@
    :ensure t 
    :config (setq alert-default-style 'osx-notifier))
 
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
+(use-package jinx
+  :hook (text-mode . jinx-mode))
+
+(use-package typst-ts-mode
+  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"
+                 :files (:defaults "*.el"))
+  :custom
+	(typst-ts-mode-indent-offset 2)
+  (typst-ts-watch-options "--open")
+  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.dylib" user-emacs-directory))
+  (typst-ts-mode-enable-raw-blocks-highlight t))
 
 (use-package treesit-auto
   :custom
@@ -810,94 +796,6 @@
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
-
-(use-package lsp-mode
-  :ensure t
-  :hook ((lsp-mode . lsp-diagnostics-mode)
-         (lsp-mode . lsp-enable-which-key-integration)
-         ((tsx-ts-mode
-           typescript-ts-mode
-           js-ts-mode
-					 astro-ts-mode) . lsp-deferred))
-  :custom
-  (lsp-keymap-prefix "C-c l")           ; Prefix for LSP actions
-  (lsp-completion-provider :none)       ; Using Corfu as the provider
-  (lsp-diagnostics-provider :flycheck)
-  (lsp-session-file (locate-user-emacs-file ".lsp-session"))
-  (lsp-log-io nil)
-  (lsp-keep-workspace-alive nil)
-  (lsp-idle-delay 0.1)
-  (lsp-enable-xref t)
-  (lsp-auto-configure nil)
-  (lsp-eldoc-enable-hover nil)
-  (lsp-enable-dap-auto-configure nil)
-  (lsp-enable-file-watchers nil)
-  (lsp-enable-folding nil)
-  (lsp-enable-imenu nil)
-  (lsp-enable-indentation nil)
-  (lsp-enable-links nil)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-enable-suggest-server-download t)
-  (lsp-enable-symbol-highlighting nil)
-  (lsp-enable-text-document-color nil)
-  (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-sideline-diagnostic-max-lines 20)
-	(lsp-ui-sideline-show-diagnostics nil)
-	(lsp-ui-sideline-show-code-actions nil)
-  (lsp-completion-enable t)
-  (lsp-completion-enable-additional-text-edit nil)
-  (lsp-completion-show-kind t)
-	(lsp-completion-show-detail nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-modeline-code-actions-enable nil)
-  (lsp-modeline-diagnostics-enable nil)
-  (lsp-modeline-workspace-status-enable nil)
-  (lsp-signature-doc-lines 1)
-	(lsp-signature-auto-activate nil)
-	(lsp-signature-render-documentation nil)
-  (lsp-ui-doc-use-childframe t)
-  (lsp-eldoc-render-all nil)
-  (lsp-lens-enable nil)
-  (lsp-semantic-tokens-enable nil)
-  :init
-  (setq lsp-use-plists t)
-	:config
-	(add-to-list 'lsp-language-id-configuration '(".*\\.astro" . "astro")))
-
-(use-package lsp-completion
-  :ensure nil
-  :hook ((lsp-mode . lsp-completion-mode)))
-
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
-
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
 (use-package clojure-ts-mode
 	:ensure t
@@ -977,18 +875,6 @@
 	(add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode))
 	:hook
 	(astro-ts-mode . display-line-numbers-mode))
-
-(use-package jinx
-  :hook (text-mode . jinx-mode))
-
-(use-package typst-ts-mode
-  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"
-                 :files (:defaults "*.el"))
-  :custom
-	(typst-ts-mode-indent-offset 2)
-  (typst-ts-watch-options "--open")
-  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.dylib" user-emacs-directory))
-  (typst-ts-mode-enable-raw-blocks-highlight t))
 
 (use-package diminish)
 
