@@ -406,11 +406,11 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 		"w s" '(split-window-vertically :wk "[s]plit window horizontally")
 		"w v" '(split-window-horizontally :wk "Split window [v]ertically")
 		"w d" '(delete-window :wk "[d]elete window")
+		"w D" '(delete-other-windows :wk "[d]elete window")
 		"w h" '(windmove-left :wk "Move to left window")
 		"w k" '(windmove-up :wk "Move to upper window")
 		"w j" '(windmove-down :wk "Move to lower window")
-		"w l" '(windmove-right :wk "Move to right window")
-		"w z" '(zoom-window-zoom :wk "Toggle [z]oom for current window"))
+		"w l" '(windmove-right :wk "Move to right window"))
 
   (start/leader-keys
 		"n" '(dired-jump :wk "ope[n] dired at current directory"))
@@ -457,6 +457,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 
   (start/leader-keys
 		"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
+		"p p" '(project-switch-project :wk "[s]earch within project") ;; Maybe use something else here
 		"p g" '(consult-ripgrep :wk "[s]earch within project") ;; Maybe use something else here
 		"p s" '(project-shell :wk "Open [s]hell within project")
 		"p d" '(project-dired :wk "Open [d]ired in project root")
@@ -505,48 +506,32 @@ I am still learning all the keybindings that Emacs provides (including the ones 
 #+end_src
 
 * TODO Workspaces & Projects
-** TODO Session Management
-** TODO Workspace Management
-Similar to my WezTerm setup I want one session per project. I am on the lookout on how to achieve this with project.el and packages like easysession.el. [[https://github.com/nex3/perspective-el][perspective.el]] might be what I need regarding the buffer setup.
-
-*UPDATE:* After consideration of a number of packages [[https://github.com/mclear-tools/tabspaces][tabspaces.el]] seems to do all that is necessary (project-specific buffers per tab, automatic sessions, easy project/tab switching). I need to add [[https://github.com/mclear-tools/tabspaces?tab=readme-ov-file#consult][additional configuration]] to make it work well with ~consult~ though.
+** TODO Activities
+This package: https://github.com/alphapapa/activities.el might be very interesting. It provides a solution for both workspace & session management.
 
 #+begin_src emacs-lisp
-;; consult-buffer only shows workspace buffers unless 'b' is pressed
-(with-eval-after-load 'consult
-(consult-customize consult--source-buffer :hidden t :default nil)
-(defvar consult--source-workspace
-  (list :name     "Workspace Buffers"
-        :narrow   ?w
-        :history  'buffer-name-history
-        :category 'buffer
-        :state    #'consult--buffer-state
-        :default  t
-        :items    (lambda () (consult--buffer-query
-                         :predicate #'tabspaces--local-buffer-p
-                         :sort 'visibility
-                         :as #'buffer-name)))
+;; TODO Add config
+#+end_src
 
-  "Set workspace buffer list for consult-buffer.")
-(add-to-list 'consult-buffer-sources 'consult--source-workspace))
+As the author described the intended workflow is not really "Create a new activity and start work from there" but rather "this configuration seems to matter, let's save it". I do like the idea of starting a new activity (e.g. for a new project) from scratch, thus I have to setup a function that does that.
 
-(use-package tabspaces
-  :ensure (:host github :repo "mclear-tools/tabspaces")
-  :hook (after-init . tabspaces-mode)
-  :commands (tabspaces-switch-or-create-workspace
-             tabspaces-open-or-create-project-and-workspace)
-  :custom
-  (tabspaces-use-filtered-buffers-as-default t)
-  (tabspaces-default-tab "main")
-  (tabspaces-remove-to-default t)
-  (tabspaces-include-buffers '("*scratch*"))
-  (tabspaces-initialize-project-with-todo nil)
-  (tabspaces-session t)
-  (tab-bar-new-tab-choice "*scratch*")
-	(tab-bar-mode nil))
+#+begin_src emacs-lisp
+;; TODO Add function, that includes the following
+;; 0. Get directory for activity, e.g. with consult
+;; 1. Create new tab: (tab-new)
+;; 2. Switch to new tab
+;; 3. Create initial buffer, e.g. scratch-buffer, or open dired in directory
+;; 4. Switch to project if there is one at this directory
+;; 5. Rename buffer to project name: (tab-rename)
+;; 6. Save as new activity
 #+end_src
 
 ** TODO Project Management
+
+#+begin_src emacs-lisp
+;; TODO How does it work with activities?
+;; TODO What could be the project markers?
+#+end_src
 
 * Appearance
 ** Theme

@@ -303,11 +303,11 @@
 		"w s" '(split-window-vertically :wk "[s]plit window horizontally")
 		"w v" '(split-window-horizontally :wk "Split window [v]ertically")
 		"w d" '(delete-window :wk "[d]elete window")
+		"w D" '(delete-other-windows :wk "[d]elete window")
 		"w h" '(windmove-left :wk "Move to left window")
 		"w k" '(windmove-up :wk "Move to upper window")
 		"w j" '(windmove-down :wk "Move to lower window")
-		"w l" '(windmove-right :wk "Move to right window")
-		"w z" '(zoom-window-zoom :wk "Toggle [z]oom for current window"))
+		"w l" '(windmove-right :wk "Move to right window"))
 
   (start/leader-keys
 		"n" '(dired-jump :wk "ope[n] dired at current directory"))
@@ -354,6 +354,7 @@
 
   (start/leader-keys
 		"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
+		"p p" '(project-switch-project :wk "[s]earch within project") ;; Maybe use something else here
 		"p g" '(consult-ripgrep :wk "[s]earch within project") ;; Maybe use something else here
 		"p s" '(project-shell :wk "Open [s]hell within project")
 		"p d" '(project-dired :wk "Open [d]ired in project root")
@@ -395,38 +396,19 @@
   (which-key-max-description-length 35)
   (which-key-allow-imprecise-window-fit nil))
 
-;; consult-buffer only shows workspace buffers unless 'b' is pressed
-(with-eval-after-load 'consult
-(consult-customize consult--source-buffer :hidden t :default nil)
-(defvar consult--source-workspace
-  (list :name     "Workspace Buffers"
-        :narrow   ?w
-        :history  'buffer-name-history
-        :category 'buffer
-        :state    #'consult--buffer-state
-        :default  t
-        :items    (lambda () (consult--buffer-query
-                         :predicate #'tabspaces--local-buffer-p
-                         :sort 'visibility
-                         :as #'buffer-name)))
+;; TODO Add config
 
-  "Set workspace buffer list for consult-buffer.")
-(add-to-list 'consult-buffer-sources 'consult--source-workspace))
+;; TODO Add function, that includes the following
+;; 0. Get directory for activity, e.g. with consult
+;; 1. Create new tab: (tab-new)
+;; 2. Switch to new tab
+;; 3. Create initial buffer, e.g. scratch-buffer, or open dired in directory
+;; 4. Switch to project if there is one at this directory
+;; 5. Rename buffer to project name: (tab-rename)
+;; 6. Save as new activity
 
-(use-package tabspaces
-  :ensure (:host github :repo "mclear-tools/tabspaces")
-  :hook (after-init . tabspaces-mode)
-  :commands (tabspaces-switch-or-create-workspace
-             tabspaces-open-or-create-project-and-workspace)
-  :custom
-  (tabspaces-use-filtered-buffers-as-default t)
-  (tabspaces-default-tab "main")
-  (tabspaces-remove-to-default t)
-  (tabspaces-include-buffers '("*scratch*"))
-  (tabspaces-initialize-project-with-todo nil)
-  (tabspaces-session t)
-  (tab-bar-new-tab-choice "*scratch*")
-	(tab-bar-mode nil))
+;; TODO How does it work with activities?
+;; TODO What could be the project markers?
 
 (use-package modus-themes
 	:ensure t
