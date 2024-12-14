@@ -504,7 +504,7 @@ I am still learning all the keybindings that Emacs provides (including the ones 
   (which-key-allow-imprecise-window-fit nil)) 
 #+end_src
 
-* Workspaces & Projects
+* TODO Workspaces & Projects
 ** TODO Session Management
 ** TODO Workspace Management
 Similar to my WezTerm setup I want one session per project. I am on the lookout on how to achieve this with project.el and packages like easysession.el. [[https://github.com/nex3/perspective-el][perspective.el]] might be what I need regarding the buffer setup.
@@ -896,6 +896,9 @@ I often visit and copy a link to a specific line for my colleagues. This functio
 	(evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision))
 #+end_src
 
+** TODO Diff View
+~ediff~ or ~smerge~?
+
 * Writing
 ** Org Mode
 *** Base Configuration
@@ -1041,7 +1044,7 @@ The syntax highlighting and indentation is handled by [[https://codeberg.org/meo
   (typst-ts-mode-enable-raw-blocks-highlight t))
   #+end_src
 
-* Programming
+* TODO Programming
 ** Treesitter
 [[https://github.com/renzmann/treesit-auto][Treesit-auto]] greatly simplifies Treesitter usage within Emacs. Besides prompting for (and automatically installing) new grammars, it also sets the major mode for a language to its Treesitter mode, if one exists.
 
@@ -1150,6 +1153,17 @@ And this installs ~cider.~
   #+end_src
 
 ** TODO LSP Mode
+
+#+begin_src emacs-lisp
+;; If needed for lsp-mode:
+;; :custom
+;;   (lsp-completion-provider :none) ;; we use corfu!
+;;   :init
+;;   (defun patrl/lsp-mode-setup-completion ()
+;;     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+;;           '(orderless)))
+#+end_src
+
 ** TODO Formatter
 https://github.com/radian-software/apheleia
 

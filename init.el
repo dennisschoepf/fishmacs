@@ -876,6 +876,14 @@
 	:hook
 	(astro-ts-mode . display-line-numbers-mode))
 
+;; If needed for lsp-mode:
+;; :custom
+;;   (lsp-completion-provider :none) ;; we use corfu!
+;;   :init
+;;   (defun patrl/lsp-mode-setup-completion ()
+;;     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+;;           '(orderless)))
+
 (use-package diminish)
 
 (setq elpaca-after-init-time (or elpaca-after-init-time (current-time)))
