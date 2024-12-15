@@ -229,7 +229,7 @@
 (use-package evil-goggles
   :after evil
   :config
-  (setq evil-goggles-duration 0.200)
+  (setq evil-goggles-duration 0.100)
   (evil-goggles-mode)
   (evil-goggles-use-diff-faces))
 
@@ -276,7 +276,18 @@
 		"SPC" '(project-find-file :wk "[f]ind a file in the project"))
 
   (start/leader-keys
-		"TAB" '(tabspaces-open-or-create-project-and-workspace  :wk "Open or create workspace with project"))
+		"TAB" '(activities-switch  :wk "Switch activity"))
+
+  (start/leader-keys
+		"a" '(:ignore t :wk "[a]ctivities")
+    "a n" '(activities-new :wk "[n]ew activity")
+    "a c" '(activities-define :wk "[c]reate activity from current tab layout")
+    "a r" '(activities-resume :wk "[r]esume activity")
+    "a l" '(activities-list :wk "[l]ist activities")
+    "a s" '(activities-suspend :wk "[s]uspend activity")
+    "a b" '(activities-switch-buffer :wk "switch activity [b]uffer")
+    "a R" '(activities-revert :wk "[R]evert activity to default state")
+    "a d" '(activities-kill :wk "[d]elete activity"))
 
   (start/leader-keys
 		"f" '(:ignore t :wk "[f]ind")
@@ -369,12 +380,11 @@
 		"s l" '(jinx-languages :wk "Jinx [l]anguages"))
 
   (start/leader-keys
-		"t" '(:ignore t :wk "[t]abspaces")
-		"t s" '(tabspaces-save-session :wk "[s]ave session")
-		"t r" '(tabspaces-restore-session :wk "[r]estore session")
-		"t d" '(tabspaces-close-workspace :wk "[d]elete tabspace")
-		"t D" '(tabspaces-clear-buffers :wk "[D]elete tabspace except current buffer")
-		"t x" '(tabspaces-kill-buffers-close-workspace :wk "Delete tabspace and clear all open buffers"))
+		"t" '(:ignore t :wk "[t]abs")
+		"t d" '(tab-close :wk "[d]elete tab")
+		"t n" '(tab-next :wk "[n]ext tab")
+		"t p" '(tab-previous :wk "[p]revious tab")
+		"t t" '(tab-switch :wk "[s]witch tabs"))
 
   (start/leader-keys
 		"q" '(:ignore t :wk "[q]uit")
@@ -396,16 +406,13 @@
   (which-key-max-description-length 35)
   (which-key-allow-imprecise-window-fit nil))
 
-;; TODO Add config
-
-;; TODO Add function, that includes the following
-;; 0. Get directory for activity, e.g. with consult
-;; 1. Create new tab: (tab-new)
-;; 2. Switch to new tab
-;; 3. Create initial buffer, e.g. scratch-buffer, or open dired in directory
-;; 4. Switch to project if there is one at this directory
-;; 5. Rename buffer to project name: (tab-rename)
-;; 6. Save as new activity
+(use-package activities
+  :ensure t
+  :init
+  (activities-mode)
+  (activities-tabs-mode)
+  ;; TODO How would I automatically switch project as well?
+  (setq edebug-inhibit-emacs-lisp-mode-bindings t))
 
 ;; TODO How does it work with activities?
 ;; TODO What could be the project markers?
