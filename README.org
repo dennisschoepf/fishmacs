@@ -505,7 +505,7 @@ I am still learning all the keybindings that Emacs provides (including the ones 
   (which-key-allow-imprecise-window-fit nil)) 
 #+end_src
 
-* TODO Workspaces & Projects
+* TODO Workspaces, Projects & Buffer Management
 ** TODO Activities
 This package: https://github.com/alphapapa/activities.el might be very interesting. It provides a solution for both workspace & session management.
 
@@ -532,6 +532,9 @@ As the author described the intended workflow is not really "Create a new activi
 ;; TODO How does it work with activities?
 ;; TODO What could be the project markers?
 #+end_src
+
+** TODO Pop-Up Buffers
+https://github.com/karthink/popper
 
 * Appearance
 ** Theme
@@ -1126,7 +1129,8 @@ And this installs ~cider.~
 
 **** TODO Set local keybindings for cider
 *** Astro
-[[https://edmundmiller.dev/posts/emacs-astro/][This]] describes how to set up ~astro-ts-mode~ for Doom Emacs. I've adapted it for standard Emacs.
+[[https://edmundmiller.dev/posts/emacs-astro/][This]] describes how to set up ~astro-ts-mode~ for Doom Emacs. I've adapted it for standard Emacs. [[https://medium.com/@jrmjrm/configuring-emacs-and-eglot-to-work-with-astro-language-server-9408eb709ab0
+][Here]] is a tutorial for standard emacs with eglot, that might help as well.
 
 #+begin_src emacs-lisp
 (use-package astro-ts-mode
