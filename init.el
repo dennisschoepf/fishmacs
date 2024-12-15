@@ -324,9 +324,6 @@
 		"n" '(dired-jump :wk "ope[n] dired at current directory"))
 
   (start/leader-keys
-		"B" '(tabspaces-switch-buffer-and-tab :wk "Show all [B]uffers and switch to project and buffer"))
-
-  (start/leader-keys
 		"o" '(:ignore t :wk "[o]rg")
 		"o l" '(org-agenda :wk "Open al[l] agenda views")
 		"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
@@ -356,7 +353,7 @@
 		"g g" '(magit-status :wk "Ma[g]it status"))
 
   (start/leader-keys
-		"h" '(:ignore t :wk "[h]elp") ;; To get more help use C-h commands (describe variable, function, etc.)
+		"h" '(:ignore t :wk "[h]elp")
 		"h s" '(describe-symbol :wk "Get help for [s]ymbol")
 		"h k" '(describe-key :wk "Get help for [s]ymbol")
 		"h v" '(describe-variable :wk "Get help for [v]ariable")
@@ -364,9 +361,10 @@
 		"h r r" '((lambda () (interactive) (load-file user-init-file)) :wk "Reload Emacs config"))
 
   (start/leader-keys
-		"p" '(:ignore t :wk "[p]rojects") ;; To get more help use C-h commands (describe variable, function, etc.)
-		"p p" '(project-switch-project :wk "[s]earch within project") ;; Maybe use something else here
-		"p g" '(consult-ripgrep :wk "[s]earch within project") ;; Maybe use something else here
+		"p" '(:ignore t :wk "[p]rojects")
+		"p p" '(project-switch-project :wk "switch [p]rojects")
+		"p b" '(consult-project-buffer :wk "switch [b]uffers within project")
+		"p g" '(consult-ripgrep :wk "[s]earch within project")
 		"p s" '(project-shell :wk "Open [s]hell within project")
 		"p d" '(project-dired :wk "Open [d]ired in project root")
 		"p c" '(project-compile :wk "[c]ompile project")
@@ -389,7 +387,6 @@
   (start/leader-keys
 		"q" '(:ignore t :wk "[q]uit")
 		"q q" '(kill-emacs :wk "[q][q]uit Emacs and Daemon")))
-;; Ensure that the :general keyword is available
 (elpaca-wait)
 
 (use-package which-key
