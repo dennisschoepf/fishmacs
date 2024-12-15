@@ -549,7 +549,7 @@
   (marginalia-mode))
 
 (use-package corfu
-	:ensure t
+  :ensure t
   :custom
   (corfu-cycle t)
   (corfu-quit-at-boundary nil)

@@ -720,7 +720,7 @@ For in-buffer completion, ~corfu~ is used.
 
 #+begin_src emacs-lisp
 (use-package corfu
-	:ensure t
+  :ensure t
   :custom
   (corfu-cycle t)
   (corfu-quit-at-boundary nil)
