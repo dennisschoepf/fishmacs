@@ -1162,7 +1162,8 @@ I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple
 - [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
 
 * TODO Presentations
-I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up.
+I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up. Another option, that popped up recently is [[https://github.com/positron-solutions/dslide
+][dslide]]. Could be an option as well.
 
 * Misc
 ** Diminish
