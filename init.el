@@ -762,7 +762,7 @@
   :custom
   (denote-directory (expand-file-name "~/orgnzr/notes/"))
   (denote-save-buffers nil)
-  (denote-known-keywords '("writing" "dev" "ux" "design" "collection" "fleeting" "meet" "project-management"))
+  (denote-known-keywords '("writing" "dev" "ux" "design" "collection" "fleeting" "meet" "projectmanagement"))
   (denote-infer-keywords t) 
   (denote-sort-keywords t) 
   (denote-date-prompt-use-org-read-date t)
