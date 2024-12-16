@@ -324,15 +324,22 @@
 		"n" '(dired-jump :wk "ope[n] dired at current directory"))
 
   (start/leader-keys
+		"d" '(:ignore t :wk "[d]enote")
+		"d n" '(denote :wk "[n]ew denote")
+		"d b" '(denote-backlinks :wk "show [b]acklinks for current denote")
+		"d r" '(denote-rename-file :wk "[r]ename current denote")
+		"d i" '(denote-link-or-create :wk "[i]nsert link to existing denote or create new")
+		"d f" '(consult-denote-find :wk "[f]ind denote")
+		"d s" '(consult-denote-grep :wk "[s]earch in denotes")
+		"d l" '(denote-menu-list-notes :wk "[l]ist denotes"))
+
+  (start/leader-keys
 		"o" '(:ignore t :wk "[o]rg")
 		"o l" '(org-agenda :wk "Open al[l] agenda views")
 		"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
 		"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
 		"o w f" '(dnsc/open-agenda-only-window :wk "Open work [a]genda")
 		"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
-		"o n n" '(org-roam-node-find :wk "Open roam note")
-		"o n i" '(org-roam-node-insert :wk "Insert roam note")
-		"o n t" '(org-roam-buffer-toggle :wk "Toggle roam buffer")
 		"o m t" '(org-todo :wk "Change todo state")
 		"o m c" '(org-toggle-checkbox :wk "Toggle [c]heckbox")
 		"o c" '(org-capture :wk "[o]rg-[c]apture a new task"))
@@ -698,21 +705,28 @@
       "* TODO %?\n %i\n")
      ("l" "Task  line" entry (file "~/orgnzr/inbox.org")
       "* TODO %?\n Relevant line: [[file://%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n")
-	 ("w" "Work Task" entry (file+olp+datetree "~/orgnzr/work.org")
-    "* TODO %?\n")))
+     ("w" "Work Task" entry (file+olp+datetree "~/orgnzr/work.org")
+      "* TODO %?\n")
+     ("n" "New note" plain
+      (file denote-last-path)
+      #'denote-org-capture
+      :no-save t
+      :immediate-finish nil
+      :kill-buffer t
+      :jump-to-captured t)))
   (org-agenda-custom-commands
    '(("p" "Personal" 
-	  ((agenda "")
-	  (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
-		(tags "+inbox" ((org-agenda-overriding-header "Uncategorized"))))
-	  ((org-agenda-tag-filter-preset '("-work"))))
-	 ("w" "Work"
-	  ((agenda "")
-	  (tags "+work+TODO=\"NEXT\"" ((org-agenda-overriding-header "Time-Insensitive Tasks")))
-	  (tags "+work+TODO=\"TODO\""
-			((org-agenda-overriding-header "Unscheduled Tasks")
-			 (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
-	  ((org-agenda-tag-filter-preset '("+work"))))))
+	    ((agenda "")
+	     (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
+		   (tags "+inbox" ((org-agenda-overriding-header "Uncategorized"))))
+	    ((org-agenda-tag-filter-preset '("-work"))))
+	   ("w" "Work"
+	    ((agenda "")
+	     (tags "+work+TODO=\"NEXT\"" ((org-agenda-overriding-header "Time-Insensitive Tasks")))
+	     (tags "+work+TODO=\"TODO\""
+			       ((org-agenda-overriding-header "Unscheduled Tasks")
+			        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
+	    ((org-agenda-tag-filter-preset '("+work"))))))
   :hook
   (org-mode . org-indent-mode)
   (org-mode . (lambda() (electric-indent-local-mode -1)))
@@ -742,13 +756,40 @@
   :ensure nil
   :after org)
 
-(use-package org-roam
+(use-package denote
   :ensure t
   :custom
-  (org-roam-directory "~/orgnzr/notes")
-  (org-roam-completion-everywhere t)
+  (denote-directory (expand-file-name "~/orgnzr/notes/"))
+  (denote-save-buffers nil)
+  (denote-known-keywords '("writing" "dev" "ux" "design" "collection" "fleeting" "meet"))
+  (denote-infer-keywords t) 
+  (denote-sort-keywords t) 
+  (denote-date-prompt-use-org-read-date t)
+  (denote-dired-directories
+      (list denote-directory
+            (thread-last denote-directory (expand-file-name "attachments"))))
+  :hook
+  (dired-mode . denote-dired-mode)
   :config
-  (org-roam-setup))
+  (denote-rename-buffer-mode 1))
+
+(use-package consult-denote
+  :ensure t
+  :after denote
+  :config
+  (consult-denote-mode 1))
+
+(use-package denote-menu
+  :ensure t
+  :after denote
+  :general
+	(:states 'normal
+					 :keymaps 'denote-menu-mode-map
+					 "r" 'denote-menu-filter
+					 "o" 'denote-menu-filter-out-keyword
+					 "k" 'denote-menu-filter-by-keyword
+					 "d" 'denote-menu-export-to-dired
+					 "c" 'denote-menu-clear-filters))
 
 (use-package org-alert
    :ensure t 
