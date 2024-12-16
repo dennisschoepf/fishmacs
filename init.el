@@ -279,6 +279,9 @@
 		"TAB" '(activities-switch  :wk "Switch activity"))
 
   (start/leader-keys
+		"-" '(dired-jump :wk "open dired at current directory"))
+
+  (start/leader-keys
 		"a" '(:ignore t :wk "[a]ctivities")
     "a n" '(activities-new :wk "[n]ew activity")
     "a c" '(activities-define :wk "[c]reate activity from current tab layout")
@@ -321,20 +324,18 @@
 		"w l" '(windmove-right :wk "Move to right window"))
 
   (start/leader-keys
-		"n" '(dired-jump :wk "ope[n] dired at current directory"))
+		"n" '(:ignore t :wk "[n]otes")
+		"n n" '(denote :wk "[n]ew denote")
+		"n b" '(denote-backlinks :wk "show [b]acklinks for current denote")
+		"n r" '(denote-rename-file :wk "[r]ename current denote")
+		"n i" '(denote-link-or-create :wk "[i]nsert link to existing denote or create new")
+		"n f" '(consult-denote-find :wk "[f]ind denote")
+		"n s" '(consult-denote-grep :wk "[s]earch in denotes")
+		"n l" '(denote-menu-list-notes :wk "[l]ist denotes"))
 
   (start/leader-keys
-		"d" '(:ignore t :wk "[d]enote")
-		"d n" '(denote :wk "[n]ew denote")
-		"d b" '(denote-backlinks :wk "show [b]acklinks for current denote")
-		"d r" '(denote-rename-file :wk "[r]ename current denote")
-		"d i" '(denote-link-or-create :wk "[i]nsert link to existing denote or create new")
-		"d f" '(consult-denote-find :wk "[f]ind denote")
-		"d s" '(consult-denote-grep :wk "[s]earch in denotes")
-		"d l" '(denote-menu-list-notes :wk "[l]ist denotes"))
-
-  (start/leader-keys
-		"o" '(:ignore t :wk "[o]rg")
+		"o" '(:ignore t :wk "[o]rg/[o]pen")
+		"o d" '(dired :wk "Open [d]ired")
 		"o l" '(org-agenda :wk "Open al[l] agenda views")
 		"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
 		"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
