@@ -1325,9 +1325,6 @@ Because I need Emacs to work for web development with typescript I need to confi
 ** TODO AI Integration
  [[https://github.com/karthink/gptel][gptel]] together with ChatGPT-4o or Claude Sonnet 3.5 seems to be the best option. It should also work with Copilot. [[https://github.com/lanceberge/elysium][elysium]] is a package that automatically integrates generated code in the current buffer.
 
-** TODO Run external services
-I am trying [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage multiple external services in an easy to use interface.
-
 ** TODO Terminal/Shell commands
 - [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
 
