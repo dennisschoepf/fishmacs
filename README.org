@@ -1305,8 +1305,22 @@ Because I need Emacs to work for web development with typescript I need to confi
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 #+end_src
 
-** TODO Formatter
-https://github.com/radian-software/apheleia
+** Formatter
+~apheleia~ is a formatter that is extremely easy to initially setup and mostly works out of the box for what I use it for.
+
+#+begin_src emacs-lisp
+(use-package apheleia
+  :ensure t
+  :config
+  (add-to-list 'apheleia-formatters
+               '(prettier-astro
+                 . ("apheleia-npx" "prettier" "--stdin-filepath" filepath
+                    "--parser=astro"
+                    (apheleia-formatters-js-indent "--use-tabs" "--tab-width"))))
+  (add-to-list 'apheleia-mode-alist '(astro-ts-mode . prettier-astro))
+  :init
+  (apheleia-global-mode +1))
+#+end_src
 
 ** TODO AI Integration
  [[https://github.com/karthink/gptel][gptel]] together with ChatGPT-4o or Claude Sonnet 3.5 seems to be the best option. It should also work with Copilot. [[https://github.com/lanceberge/elysium][elysium]] is a package that automatically integrates generated code in the current buffer.

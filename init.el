@@ -1005,6 +1005,18 @@
       orig-result)))
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
+(use-package apheleia
+  :ensure t
+  :config
+  (add-to-list 'apheleia-formatters
+               '(prettier-astro
+                 . ("apheleia-npx" "prettier" "--stdin-filepath" filepath
+                    "--parser=astro"
+                    (apheleia-formatters-js-indent "--use-tabs" "--tab-width"))))
+  (add-to-list 'apheleia-mode-alist '(astro-ts-mode . prettier-astro))
+  :init
+  (apheleia-global-mode +1))
+
 (use-package diminish)
 
 (setq elpaca-after-init-time (or elpaca-after-init-time (current-time)))
