@@ -317,7 +317,8 @@
 		"w s" '(split-window-vertically :wk "[s]plit window horizontally")
 		"w v" '(split-window-horizontally :wk "Split window [v]ertically")
 		"w d" '(delete-window :wk "[d]elete window")
-		"w D" '(delete-other-windows :wk "[d]elete window")
+		"w z" '(delete-other-windows :wk "[z]oom to window")
+		"w x" '(kill-buffer-and-window :wk "E[x]terminate buffer and window")
 		"w h" '(windmove-left :wk "Move to left window")
 		"w k" '(windmove-up :wk "Move to upper window")
 		"w j" '(windmove-down :wk "Move to lower window")
@@ -332,6 +333,12 @@
 		"n f" '(consult-denote-find :wk "[f]ind denote")
 		"n s" '(consult-denote-grep :wk "[s]earch in denotes")
 		"n l" '(denote-menu-list-notes :wk "[l]ist denotes"))
+
+  (start/leader-keys
+		"j" '(:ignore t :wk "popups")
+		"j j" '(popper-toggle :wk "Open popup")
+		"j c" '(popper-cycle :wk "Cycle popups")
+		"j t" '(popper-toggle-type :wk "Convert current buffer to popup buffer"))
 
   (start/leader-keys
 		"o" '(:ignore t :wk "[o]rg/[o]pen")
@@ -421,6 +428,19 @@
 
 ;; TODO How does it work with activities?
 ;; TODO What could be the project markers?
+
+(use-package popper
+  :ensure t
+  :init
+  (setq popper-group-function #'popper-group-by-directory)
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          help-mode
+          compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))
 
 (use-package modus-themes
 	:ensure t
@@ -538,9 +558,9 @@
 
 (use-package orderless
   :init
-  (setq completion-styles '(orderless)
+  (setq completion-styles '(orderless partial-completion basic)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+        completion-category-overrides nil))
 
 (use-package vertico
   :init
@@ -557,7 +577,6 @@
   :ensure t
   :custom
   (corfu-cycle t)
-  (corfu-quit-at-boundary nil)
   (corfu-preselect 'prompt)
   (corfu-on-exact-match nil)
   (corfu-quit-no-match nil)
@@ -591,6 +610,7 @@
 	:ensure t
   :bind ("C-c p" . cape-prefix-map)
 	:init
+	(add-hook 'completion-at-point-functions #'cape-dabbrev)
 	(add-hook 'completion-at-point-functions #'cape-file)
 	(add-hook 'completion-at-point-functions #'cape-keyword)
 	(add-hook 'completion-at-point-functions #'cape-elisp-symbol)
@@ -807,7 +827,7 @@
    :config (setq alert-default-style 'osx-notifier))
 
 (use-package jinx
-  :hook (text-mode . jinx-mode))
+  :ensure t)
 
 (use-package typst-ts-mode
   :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"
@@ -897,6 +917,15 @@
 	:hook
 	(clojure-ts-mode . cider-mode))
 
+(use-package add-node-modules-path
+  :ensure t
+  :hook
+  (astro-ts-mode . add-node-modules-path)
+  (js-jsx-mode . add-node-modules-path)
+  (tsx-ts-mode . add-node-modules-path)
+  (typescript-ts-mode . add-node-modules-path)
+  (js-ts-mode . add-node-modules-path))
+
 (use-package astro-ts-mode
 	:ensure t
 	:init
@@ -904,13 +933,77 @@
 	:hook
 	(astro-ts-mode . display-line-numbers-mode))
 
-;; If needed for lsp-mode:
-;; :custom
-;;   (lsp-completion-provider :none) ;; we use corfu!
-;;   :init
-;;   (defun patrl/lsp-mode-setup-completion ()
-;;     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-;;           '(orderless)))
+(use-package lsp-tailwindcss
+  :ensure t
+  :custom
+  (lsp-tailwindcss-add-on-mode t)
+  :config
+  (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode))
+
+(use-package lsp-mode
+  :ensure t
+  :custom
+  (lsp-completion-provider :none)
+  (lsp-enable-folding nil)
+  (lsp-enable-indentation nil)
+  (lsp-enable-on-type-formatting nil)
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-enable-text-document-color nil)
+  (lsp-enable-snippet nil)
+  (lsp-eldoc-enable-hover nil)
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-lens-enable nil)
+  (lsp-modeline-code-actions-enable nil)
+  (lsp-modeline-code-action-icons-enable nil)
+  (lsp-modeline-diagnostics-enable nil)
+  (lsp-log-io nil)
+  :init
+  (defun dnsc/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
+  :hook
+  (typescript-ts-mode . lsp-deferred)
+  (astro-ts-mode . lsp-deferred)
+  (lsp-mode . lsp-enable-which-key-integration)
+  (lsp-completion-mode . dnsc/lsp-mode-setup-completion)
+  :commands
+  (lsp lsp-deferred)
+  :general
+  ('normal "SPC c a" 'lsp-execute-code-action)
+  ('normal "K" 'lsp-describe-thing-at-point)
+  ('normal "g d" 'lsp-find-definition)
+  ('normal "g r" 'lsp-find-references))
+
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
+
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
 (use-package diminish)
 
