@@ -426,8 +426,10 @@
   ;; TODO How would I automatically switch project as well?
   (setq edebug-inhibit-emacs-lisp-mode-bindings t))
 
-;; TODO How does it work with activities?
-;; TODO What could be the project markers?
+(use-package project
+  :ensure nil
+  :custom
+  (project-vc-extra-root-markers '(".project" "go.mod" "package.json" "deps.edn" "bb.edn")))
 
 (use-package popper
   :ensure t

@@ -541,11 +541,13 @@ This package: https://github.com/alphapapa/activities.el might be very interesti
   (setq edebug-inhibit-emacs-lisp-mode-bindings t))
 #+end_src
 
-** TODO Project Management
+** Project Management
 
 #+begin_src emacs-lisp
-;; TODO How does it work with activities?
-;; TODO What could be the project markers?
+(use-package project
+  :ensure nil
+  :custom
+  (project-vc-extra-root-markers '(".project" "go.mod" "package.json" "deps.edn" "bb.edn")))
 #+end_src
 
 ** Pop-Up Buffers
