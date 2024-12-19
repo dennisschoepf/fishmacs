@@ -535,7 +535,7 @@ I am still learning all the keybindings that Emacs provides (including the ones 
   (which-key-allow-imprecise-window-fit nil)) 
 #+end_src
 
-* TODO Workspaces, Projects & Buffer Management
+* Workspaces, Projects & Buffer Management
 ** Activities
 This package: https://github.com/alphapapa/activities.el might be very interesting. It provides a solution for both workspace & session management.
 
@@ -550,6 +550,7 @@ This package: https://github.com/alphapapa/activities.el might be very interesti
 #+end_src
 
 ** Project Management
+Using ~project.el~ as it does enough of what I need. Might extend it in the future based on my requirements.
 
 #+begin_src emacs-lisp
 (use-package project
