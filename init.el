@@ -134,6 +134,11 @@
   (setq custom-file (locate-user-emacs-file "custom-vars.el"))
   (load custom-file 'noerror 'nomessage)
   
+  ;; File/folder navigation/operation settings
+  (setq delete-by-moving-to-trash t)
+  (file-name-shadow-mode 1)
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+  
 	;; utf-8 everywhere
 	(set-charset-priority 'unicode)
   (setq locale-coding-system 'utf-8
@@ -152,7 +157,10 @@
 	:custom
 	(dired-listing-switches "-lah --group-directories-first")
 	(dired-dwim-target t)
-	(dired-kill-when-opening-new-dired-buffer t))
+	(dired-kill-when-opening-new-dired-buffer t)
+  (wdired-allow-to-change-permissions t)
+  (wdired-use-interactive-rename t)
+  (wdired-confirm-overwrite t))
 
 (use-package dired-narrow
 	:ensure t
