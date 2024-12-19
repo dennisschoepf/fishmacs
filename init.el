@@ -349,6 +349,12 @@
 		"j t" '(popper-toggle-type :wk "Convert current buffer to popup buffer"))
 
   (start/leader-keys
+		"d" '(:ignore t :wk "AI")
+		"d s" '(gptel-send :wk "Send to gptel")
+		"d c" '(gptel-send :wk "Open gptel chat")
+		"d m" '(gptel-menu :wk "Open gptel menu"))
+
+  (start/leader-keys
 		"o" '(:ignore t :wk "[o]rg/[o]pen")
 		"o d" '(dired :wk "Open [d]ired")
 		"o l" '(org-agenda :wk "Open al[l] agenda views")
@@ -516,8 +522,8 @@
                      :right
                      (((when (mode-line-window-selected-p)
                          (mood-line-segment-checker)) . " ")
-											((when (mode-line-window-selected-p)
-                         (mood-line-segment-process)) . " ")
+											;; ((when (mode-line-window-selected-p)
+                      ;;    (mood-line-segment-process)) . " ")
                       ((mood-line-segment-anzu) . " ")
                       ((when (mode-line-window-selected-p)
                          (mood-line-segment-cursor-position)) . " ")
@@ -1026,6 +1032,14 @@
   (add-to-list 'apheleia-mode-alist '(astro-ts-mode . prettier-astro))
   :init
   (apheleia-global-mode +1))
+
+(use-package gptel
+  :ensure t
+  :config
+  (setq gptel-model 'claude-3-sonnet-20240229)
+  (setq gptel-backend (gptel-make-anthropic "Claude"
+                        :stream t
+                        :key #'gptel-api-key-from-auth-source)))
 
 (use-package diminish)
 

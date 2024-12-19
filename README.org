@@ -452,6 +452,12 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 		"j t" '(popper-toggle-type :wk "Convert current buffer to popup buffer"))
 
   (start/leader-keys
+		"d" '(:ignore t :wk "AI")
+		"d s" '(gptel-send :wk "Send to gptel")
+		"d c" '(gptel-send :wk "Open gptel chat")
+		"d m" '(gptel-menu :wk "Open gptel menu"))
+
+  (start/leader-keys
 		"o" '(:ignore t :wk "[o]rg/[o]pen")
 		"o d" '(dired :wk "Open [d]ired")
 		"o l" '(org-agenda :wk "Open al[l] agenda views")
@@ -651,8 +657,8 @@ I am using ~mood-line~ as it is easily customizable and by default only uses ASC
                      :right
                      (((when (mode-line-window-selected-p)
                          (mood-line-segment-checker)) . " ")
-											((when (mode-line-window-selected-p)
-                         (mood-line-segment-process)) . " ")
+											;; ((when (mode-line-window-selected-p)
+                      ;;    (mood-line-segment-process)) . " ")
                       ((mood-line-segment-anzu) . " ")
                       ((when (mode-line-window-selected-p)
                          (mood-line-segment-cursor-position)) . " ")
@@ -1333,8 +1339,18 @@ Because I need Emacs to work for web development with typescript I need to confi
   (apheleia-global-mode +1))
 #+end_src
 
-** TODO AI Integration
- [[https://github.com/karthink/gptel][gptel]] together with ChatGPT-4o or Claude Sonnet 3.5 seems to be the best option. It should also work with Copilot. [[https://github.com/lanceberge/elysium][elysium]] is a package that automatically integrates generated code in the current buffer.
+** AI Integration
+ [[https://github.com/karthink/gptel][gptel]] together with ChatGPT-4o or Claude Sonnet 3.5 seems to be the best option. It should also work with Copilot.
+ 
+ #+begin_src emacs-lisp
+(use-package gptel
+  :ensure t
+  :config
+  (setq gptel-model 'claude-3-sonnet-20240229)
+  (setq gptel-backend (gptel-make-anthropic "Claude"
+                        :stream t
+                        :key #'gptel-api-key-from-auth-source)))
+ #+end_src
 
 ** TODO Terminal/Shell commands
 - [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
