@@ -824,7 +824,7 @@
 					 :keymaps 'denote-menu-mode-map
 					 "r" 'denote-menu-filter
 					 "o" 'denote-menu-filter-out-keyword
-					 "k" 'denote-menu-filter-by-keyword
+					 "y" 'denote-menu-filter-by-keyword
 					 "d" 'denote-menu-export-to-dired
 					 "c" 'denote-menu-clear-filters))
 
