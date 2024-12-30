@@ -1387,3 +1387,17 @@ We also increase Read Process Output Max so Emacs can read more data.
 ;; Increase the amount of data which Emacs reads from the process
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 #+end_src
+
+* Trying out
+These are some packages and snippets I have not yet incorporated into my config. Nonetheless I want to save them for possible future use.
+
+** ovistoica/js-pkg-mode at d2a609a6cfa0a00d6a96e53e124542e464ccc192
+https://github.com/ovistoica/js-pkg-mode/tree/d2a609a6cfa0a00d6a96e53e124542e464ccc192?tab=readme-ov-file
+
+** The Emacs Window Management Almanac | Karthinks
+https://karthinks.com/software/emacs-window-management-almanac/
+Try out ace-window
+
+** To manually pin a position to jump back to later, there is point-to-register (C-x r SPC) and jump-to-register (C-x r j). Again, this switches windows as a side-effect.
+** Wilfred/deadgrep: fast, friendly searching with ripgrep and Emacs
+https://github.com/Wilfred/deadgrep?tab=readme-ov-file
