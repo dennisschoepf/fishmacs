@@ -823,10 +823,12 @@
 	(:states 'normal
 					 :keymaps 'denote-menu-mode-map
 					 "r" 'denote-menu-filter
+					 "q" 'kill-current-buffer
 					 "o" 'denote-menu-filter-out-keyword
 					 "y" 'denote-menu-filter-by-keyword
 					 "d" 'denote-menu-export-to-dired
-					 "c" 'denote-menu-clear-filters))
+					 "c" 'denote-menu-clear-filters
+					 "k" nil))
 
 (use-package org-alert
    :ensure t 
