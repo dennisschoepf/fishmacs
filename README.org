@@ -1210,7 +1210,6 @@ And this installs ~cider.~
 	(clojure-ts-mode . cider-mode))
 #+end_src
 
-**** TODO Set local keybindings for cider
 *** Web
 Some overall web-specific settings to ease web development. Starting with adding this ~node_modules~ helper to add the project-local installed binaries to the path:
 
