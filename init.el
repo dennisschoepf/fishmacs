@@ -15,12 +15,12 @@
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'start/org-babel-tangle-config)))
 
-(defvar elpaca-installer-version 0.8)
+(defvar elpaca-installer-version 0.11)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil :depth 1
+                              :ref nil :depth 1 :inherit ignore
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
                               :build (:not elpaca--activate-package)))
 (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
@@ -30,45 +30,35 @@
   (add-to-list 'load-path (if (file-exists-p build) build repo))
   (unless (file-exists-p repo)
     (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
+    (when (<= emacs-major-version 28) (require 'subr-x))
     (condition-case-unless-debug err
-        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                 ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
-                                                 ,@(when-let ((depth (plist-get order :depth)))
-                                                     (list (format "--depth=%d" depth) "--no-single-branch"))
-                                                 ,(plist-get order :repo) ,repo))))
-                 ((zerop (call-process "git" nil buffer t "checkout"
-                                       (or (plist-get order :ref) "--"))))
-                 (emacs (concat invocation-directory invocation-name))
-                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                 ((require 'elpaca))
-                 ((elpaca-generate-autoloads "elpaca" repo)))
+        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                  ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                  ,@(when-let* ((depth (plist-get order :depth)))
+                                                      (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                  ,(plist-get order :repo) ,repo))))
+                  ((zerop (call-process "git" nil buffer t "checkout"
+                                        (or (plist-get order :ref) "--"))))
+                  (emacs (concat invocation-directory invocation-name))
+                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                  ((require 'elpaca))
+                  ((elpaca-generate-autoloads "elpaca" repo)))
             (progn (message "%s" (buffer-string)) (kill-buffer buffer))
           (error "%s" (with-current-buffer buffer (buffer-string))))
       ((error) (warn "%s" err) (delete-directory repo 'recursive))))
   (unless (require 'elpaca-autoloads nil t)
     (require 'elpaca)
     (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
+    (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-;; Install use-package support
 (elpaca elpaca-use-package
-  ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode)
   (setq elpaca-use-package-by-default t))
 
-;; Block until current queue processed.
 (elpaca-wait)
-
-;;When installing a package which modifies a form used at the top-level
-;;(e.g. a package which adds a use-package key word),
-;;use `elpaca-wait' to block until that package has been installed/configured.
-;;For example:
-;;(use-package general :ensure t :demand t)
-;;(elpaca-wait)
 
 (use-package exec-path-from-shell
   :ensure t
@@ -127,8 +117,9 @@
 
   ;; MacOS specfic configuration
   (when (eq system-type 'darwin)
-		(setq mac-right-option-modifier "none")
-		(setq insert-directory-program "/opt/homebrew/bin/gls"))
+		(setq mac-option-modifier 'meta)
+		(setq mac-right-option-modifier 'none)
+		(setq insert-directory-program "/run/current-system/sw/bin/gls"))
 
   ;; Move customized variables to separate file
   (setq custom-file (locate-user-emacs-file "custom-vars.el"))
@@ -210,6 +201,7 @@
   (setq uniquify-buffer-name-style 'forward))
 
 (use-package evil
+  :ensure t
   :init ;; Execute code Before a package is loaded
   (evil-mode)
   (setq evil-want-C-i-jump nil)
@@ -846,202 +838,6 @@
 
 (use-package jinx
   :ensure t)
-
-(use-package typst-ts-mode
-  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"
-                 :files (:defaults "*.el"))
-  :custom
-	(typst-ts-mode-indent-offset 2)
-  (typst-ts-watch-options "--open")
-  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.dylib" user-emacs-directory))
-  (typst-ts-mode-enable-raw-blocks-highlight t))
-
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install 'prompt)
-  :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
-
-(use-package clojure-ts-mode
-	:ensure t
-	:custom
-	(clojure-ts-comment-macro-font-lock-body t))
-
-(use-package cider
-  :ensure t
-	:custom
-	(nrepl-hide-special-buffers t)
-  (nrepl-log-messages nil)
-  (cider-font-lock-dynamically '(macro core function var deprecated))
-  (cider-overlays-use-font-lock t)
-  (cider-print-options '(("length" 100)))
-  (cider-prompt-for-symbol nil)
-	(cider-repl-display-in-current-window t)
-  (cider-repl-history-display-duplicates nil)
-  (cider-repl-history-display-style 'one-line)
-  (cider-repl-history-highlight-current-entry t)
-  (cider-repl-history-quit-action 'delete-and-restore)
-  (cider-repl-history-highlight-inserted-item t)
-  (cider-repl-history-size 1000)
-  (cider-repl-result-prefix ";; => ")
-  (cider-repl-use-clojure-font-lock t)
-  (cider-repl-use-pretty-printing t)
-  (cider-repl-wrap-history nil)
-	(cider-repl-display-help-banner nil)
-	(cider-show-error-buffer 'except-in-repl)
-  (cider-stacktrace-default-filters '(tooling dup))
-  (cider-repl-pop-to-buffer-on-connect 'display-only)
-  :init
-	(defun dnsc/start-babashka-repl-server ()
-		(interactive)
-		(let ((default-directory (project-root (project-current))))
-      (start-process "Babashka nrepl-server" "bb-nrepl" "bb" "nrepl-server")))
-
-  (defun dnsc/connect-to-cider-repl-on-the-side ()
-    (interactive)
-		(split-window-horizontally 90)
-		(cider-connect-clj '(:host "localhost" :port 1667))
-		(windmove-right))
-	
-	(defun dnsc/connect-and-open-bb-nrepl-server ()
-		(interactive)
-		(dnsc/start-babashka-repl-server)
-		(sleep-for 2)
-		(dnsc/connect-to-cider-repl-on-the-side))
-  :general
-	(:states 'normal
-					 :keymaps 'cider-mode-map
-					 "gd" 'cider-find-var
-					 "gb" 'cider-pop-back
-					 "gr" 'cider-xref-fn-refs-select
-					 "SPC lr" 'cider-jack-in
-					 "SPC lc" 'dnsc/connect-to-cider-repl-on-the-side
-					 "SPC lb" 'cider-load-buffer
-					 "SPC rb" 'dnsc/connect-and-open-bb-nrepl-server
-					 "SPC rn" 'cider-repl-set-ns
-					 "SPC ef" 'cider-eval-defun-at-point
-					 "SPC ee" 'cider-eval-last-sexp
-					 "SPC en" 'cider-ns-refresh
-					 "SPC etr" 'cider-test-run-test
-					 "SPC etn" 'cider-test-run-ns-tests
-					 "SPC etp" 'cider-test-run-project-tests
-					 "SPC etf" 'cider-test-rerun-failed-tests
-					 "SPC etr" 'cider-test-show-report
-					 "SPC da" 'cider-apropos
-					 "SPC dd" 'cider-doc
-					 "SPC dc" 'cider-clojuredocs
-					 "SPC dj" 'cider-javadoc)
-	:hook
-	(clojure-ts-mode . cider-mode))
-
-(use-package add-node-modules-path
-  :ensure t
-  :hook
-  (astro-ts-mode . add-node-modules-path)
-  (js-jsx-mode . add-node-modules-path)
-  (tsx-ts-mode . add-node-modules-path)
-  (typescript-ts-mode . add-node-modules-path)
-  (js-ts-mode . add-node-modules-path))
-
-(use-package astro-ts-mode
-	:ensure t
-	:init
-	(add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode))
-	:hook
-	(astro-ts-mode . display-line-numbers-mode))
-
-(use-package lsp-tailwindcss
-  :ensure t
-  :custom
-  (lsp-tailwindcss-add-on-mode t)
-  :config
-  (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode))
-
-(use-package lsp-mode
-  :ensure t
-  :custom
-  (lsp-completion-provider :none)
-  (lsp-enable-folding nil)
-  (lsp-enable-indentation nil)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-enable-symbol-highlighting nil)
-  (lsp-enable-text-document-color nil)
-  (lsp-enable-snippet nil)
-  (lsp-eldoc-enable-hover nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-lens-enable nil)
-  (lsp-modeline-code-actions-enable nil)
-  (lsp-modeline-code-action-icons-enable nil)
-  (lsp-modeline-diagnostics-enable nil)
-  (lsp-log-io nil)
-  :init
-  (defun dnsc/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless)))
-  :hook
-  (typescript-ts-mode . lsp-deferred)
-  (astro-ts-mode . lsp-deferred)
-  (lsp-mode . lsp-enable-which-key-integration)
-  (lsp-completion-mode . dnsc/lsp-mode-setup-completion)
-  :commands
-  (lsp lsp-deferred)
-  :general
-  ('normal "SPC c a" 'lsp-execute-code-action)
-  ('normal "K" 'lsp-describe-thing-at-point)
-  ('normal "g d" 'lsp-find-definition)
-  ('normal "g r" 'lsp-find-references))
-
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
-
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
-
-(use-package apheleia
-  :ensure t
-  :config
-  (add-to-list 'apheleia-formatters
-               '(prettier-astro
-                 . ("apheleia-npx" "prettier" "--stdin-filepath" filepath
-                    "--parser=astro"
-                    (apheleia-formatters-js-indent "--use-tabs" "--tab-width"))))
-  (add-to-list 'apheleia-mode-alist '(astro-ts-mode . prettier-astro))
-  :init
-  (apheleia-global-mode +1))
-
-(use-package gptel
-  :ensure t
-  :config
-  (setq gptel-model 'claude-3-sonnet-20240229)
-  (setq gptel-backend (gptel-make-anthropic "Claude"
-                        :stream t
-                        :key #'gptel-api-key-from-auth-source)))
 
 (use-package diminish)
 

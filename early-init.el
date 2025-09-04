@@ -7,10 +7,7 @@
 (set-frame-parameter (selected-frame) 'alpha 96)
 (add-to-list 'default-frame-alist '(alpha . 96))
 
-;; And open emacs in fullscreen
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
-(menu-bar-mode -1)
+(menu-bar-mode t)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (blink-cursor-mode -1)
