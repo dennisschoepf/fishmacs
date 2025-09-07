@@ -929,9 +929,8 @@ I often visit and copy a link to a specific line for my colleagues. This functio
 ** TODO Diff View
 ~ediff~ or ~smerge~?
 
-* Writing
-** Org Mode
-*** Base Configuration
+* Org Mode
+** Base Configuration
 My org mode specific configuration.
 
 #+begin_src emacs-lisp
@@ -949,7 +948,7 @@ My org mode specific configuration.
   (org-todo-keywords
    '((sequence "PROJECT(p)" "TODO(t)" "NEXT(n)" "|" "DONE(d)")))
   (org-default-notes-file "~/orgnzr/inbox.org")
-  (org-agenda-files '("~/orgnzr"))
+  (org-agenda-files '("~/orgnzr/"))
   (org-hide-emphasis-markers t)
   (org-pretty-entities t)
   (org-refile-targets
@@ -973,7 +972,9 @@ My org mode specific configuration.
    '(("p" "Personal" 
 	    ((agenda "")
 	     (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
-		   (tags "+inbox" ((org-agenda-overriding-header "Uncategorized")))))))
+       (alltodo "" (
+                   (org-agenda-files '("~/orgnzr/inbox.org"))
+                   (org-agenda-overriding-header "Uncategorized")))))))
   :hook
   (org-mode . org-indent-mode)
   (org-mode . (lambda() (electric-indent-local-mode -1)))
@@ -983,7 +984,7 @@ My org mode specific configuration.
                                (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c)))))))
       #+end_src
 
-*** Beautify Org Mode
+** Beautify Org Mode
 I am using [[https://github.com/minad/org-modern?tab=readme-ov-file][org-modern]] to make org-mode a bit more pleasant to the eye.
 
 #+begin_src emacs-lisp
@@ -1009,7 +1010,7 @@ Additionally [[https://codeberg.org/joostkremers/visual-fill-column][Visual-Fill
   (org-mode . visual-fill-column-mode))
 #+end_src
 
-*** Source Code Block Tag Expansion
+** Source Code Block Tag Expansion
 Org-tempo is not a separate package but a module within org that can be enabled.
 Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
 
@@ -1019,7 +1020,7 @@ Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.
   :after org)
 #+end_src
 
-*** Denote
+** Denote
 Currently using ~denote~ as it is way simpler than ~org-roam~.
 
 #+begin_src emacs-lisp
@@ -1061,7 +1062,7 @@ Currently using ~denote~ as it is way simpler than ~org-roam~.
 					 "k" nil))
 #+end_src
 
-*** Desktop Notifications
+** Desktop Notifications
 This allows for desktop notifications on MacOS.
 
 #+begin_src emacs-lisp

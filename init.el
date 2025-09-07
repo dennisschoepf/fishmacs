@@ -728,7 +728,7 @@
   (org-todo-keywords
    '((sequence "PROJECT(p)" "TODO(t)" "NEXT(n)" "|" "DONE(d)")))
   (org-default-notes-file "~/orgnzr/inbox.org")
-  (org-agenda-files '("~/orgnzr"))
+  (org-agenda-files '("~/orgnzr/"))
   (org-hide-emphasis-markers t)
   (org-pretty-entities t)
   (org-refile-targets
@@ -752,7 +752,9 @@
    '(("p" "Personal" 
 	    ((agenda "")
 	     (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
-		   (tags "+inbox" ((org-agenda-overriding-header "Uncategorized")))))))
+       (alltodo "" (
+                   (org-agenda-files '("~/orgnzr/inbox.org"))
+                   (org-agenda-overriding-header "Uncategorized")))))))
   :hook
   (org-mode . org-indent-mode)
   (org-mode . (lambda() (electric-indent-local-mode -1)))
