@@ -427,11 +427,11 @@
 
 (use-package activities
   :ensure t
+  :custom
+  (setq edebug-inhibit-emacs-lisp-mode-bindings t)
   :init
   (activities-mode)
-  (activities-tabs-mode)
-  ;; TODO How would I automatically switch project as well?
-  (setq edebug-inhibit-emacs-lisp-mode-bindings t))
+  (activities-tabs-mode))
 
 (use-package project
   :ensure nil
@@ -457,8 +457,10 @@
 
   (custom-set-faces
    '(tab-bar ((t (:height 0.85))))
+   '(activities-tabs
+     ((t (:slant italic :foreground "#c6daff" :background "#0d0e1c"))))
    '(tab-bar-tab-inactive
-     ((t (:slant italic :foreground "#606270")))))
+     ((t (:slant italic :foreground "#c6daff" :background "#0d0e1c")))))
   
   (setq modus-themes-common-palette-overrides
 		'((border-mode-line-active bg-mode-line-active)
@@ -473,7 +475,9 @@
 		  (bg-prose-block-delimiter unspecified)
 		  (bg-tab-bar bg-main)
 		  (bg-tab-current bg-main)
+		  (fg-tab-current bg-main)
 		  (bg-tab-other bg-main)
+		  (fg-tab-other bg-main)
 		  (comment fg-dim)))
 
   (setq modus-themes-fringes nil)

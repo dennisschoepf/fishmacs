@@ -542,11 +542,11 @@ This package: https://github.com/alphapapa/activities.el might be very interesti
 #+begin_src emacs-lisp
 (use-package activities
   :ensure t
+  :custom
+  (setq edebug-inhibit-emacs-lisp-mode-bindings t)
   :init
   (activities-mode)
-  (activities-tabs-mode)
-  ;; TODO How would I automatically switch project as well?
-  (setq edebug-inhibit-emacs-lisp-mode-bindings t))
+  (activities-tabs-mode))
 #+end_src
 
 ** Project Management
@@ -588,8 +588,10 @@ Coming from Neovim and TUI-based tools in general I mainly used widely available
 
   (custom-set-faces
    '(tab-bar ((t (:height 0.85))))
+   '(activities-tabs
+     ((t (:slant italic :foreground "#c6daff" :background "#0d0e1c"))))
    '(tab-bar-tab-inactive
-     ((t (:slant italic :foreground "#606270")))))
+     ((t (:slant italic :foreground "#c6daff" :background "#0d0e1c")))))
   
   (setq modus-themes-common-palette-overrides
 		'((border-mode-line-active bg-mode-line-active)
@@ -604,7 +606,9 @@ Coming from Neovim and TUI-based tools in general I mainly used widely available
 		  (bg-prose-block-delimiter unspecified)
 		  (bg-tab-bar bg-main)
 		  (bg-tab-current bg-main)
+		  (fg-tab-current bg-main)
 		  (bg-tab-other bg-main)
+		  (fg-tab-other bg-main)
 		  (comment fg-dim)))
 
   (setq modus-themes-fringes nil)
