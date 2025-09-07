@@ -123,6 +123,7 @@ This disables unwanted UI elements before Emacs has a chance to draw them on the
 (pixel-scroll-precision-mode 1)
 
 (setq inhibit-splash-screen t
+      frame-resize-pixelwise t
       use-file-dialog nil
       tab-bar-new-button-show nil
       tab-bar-close-button-show nil

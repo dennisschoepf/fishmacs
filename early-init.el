@@ -14,6 +14,7 @@
 (pixel-scroll-precision-mode 1)
 
 (setq inhibit-splash-screen t
+      frame-resize-pixelwise t
       use-file-dialog nil
       tab-bar-new-button-show nil
       tab-bar-close-button-show nil
