@@ -1,6 +1,6 @@
 #+Title: DNSC Emacs Config
 #+Author: Dennis Schoepf
-#+Description: My emacs config based
+#+Description: My emacs config
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 
 * Important to load first
