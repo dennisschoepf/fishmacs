@@ -358,7 +358,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 		(unwind-protect
 				(progn
 					(setq org-agenda-window-setup 'only-window)
-					(org-agenda nil "w"))
+					(org-agenda nil "p"))
 			(setq org-agenda-window-setup current-value))))
 
 (use-package general
@@ -456,7 +456,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 		"o l" '(org-agenda :wk "Open al[l] agenda views")
 		"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
 		"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
-		"o w f" '(dnsc/open-agenda-only-window :wk "Open work [a]genda")
+		"o w f" '(dnsc/open-agenda-only-window :wk "Open personal [a]genda")
 		"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
 		"o m t" '(org-todo :wk "Change todo state")
 		"o m c" '(org-toggle-checkbox :wk "Toggle [c]heckbox")
@@ -470,6 +470,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 		"g c c" '(magit-commit-create :wk "[c]ommit")
 		"g f" '(:ignore t :wk "[f]ind")
 		"g f c" '(magit-show-commit :wk "[c]ommit")
+		"g f l" '(magit-log :wk "[l]og")
 		"g f f" '(magit-find-file :wk "[f]ile")
 		"g F" '(magit-fetch :wk "[F]etch")
 		"g l" '(git-link :wk "Navigate to git forge [l]ink")
@@ -490,7 +491,7 @@ To search and replace, use query-replace-regexp to replace one by one C-M-% (SPC
 		"p p" '(project-switch-project :wk "switch [p]rojects")
 		"p b" '(consult-project-buffer :wk "switch [b]uffers within project")
 		"p g" '(consult-ripgrep :wk "[s]earch within project")
-		"p s" '(project-shell :wk "Open [s]hell within project")
+		"p s" '(project-shell :wk "Opeommitn [s]hell within project")
 		"p d" '(project-dired :wk "Open [d]ired in project root")
 		"p c" '(project-compile :wk "[c]ompile project")
 		"p k" '(project-kill-buffers :wk "[d]elete all project buffers")
@@ -716,9 +717,6 @@ You can use the bindings C-+ C-- for zooming in/out. You can also use CTRL plus 
   ("<C-wheel-down>" . text-scale-decrease))
 #+end_src
 
-** TODO Highlight Todos
-Use ~hl-todo~.
-
 * Completion
 ** Completion Style
 The ~orderless~ completion style seems to be what everyone is using now. Trying it out currently.
@@ -941,7 +939,7 @@ My org mode specific configuration.
   (org-src-tab-acts-natively t)
   (org-edit-src-content-indentation 0)
   (org-edit-src-preserve-indentation nil)
-  (org-log-done 'time)
+  ;; (org-log-done 'time)
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
@@ -971,15 +969,7 @@ My org mode specific configuration.
    '(("p" "Personal" 
 	    ((agenda "")
 	     (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
-		   (tags "+inbox" ((org-agenda-overriding-header "Uncategorized"))))
-	    ((org-agenda-tag-filter-preset '("-work"))))
-	   ("w" "Work"
-	    ((agenda "")
-	     (tags "+work+TODO=\"NEXT\"" ((org-agenda-overriding-header "Time-Insensitive Tasks")))
-	     (tags "+work+TODO=\"TODO\""
-			       ((org-agenda-overriding-header "Unscheduled Tasks")
-			        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
-	    ((org-agenda-tag-filter-preset '("+work"))))))
+		   (tags "+inbox" ((org-agenda-overriding-header "Uncategorized")))))))
   :hook
   (org-mode . org-indent-mode)
   (org-mode . (lambda() (electric-indent-local-mode -1)))
@@ -1034,7 +1024,7 @@ Currently using ~denote~ as it is way simpler than ~org-roam~.
   :custom
   (denote-directory (expand-file-name "~/orgnzr/notes/"))
   (denote-save-buffers nil)
-  (denote-known-keywords '("writing" "dev" "ux" "design" "collection" "fleeting" "meet" "projectmanagement"))
+  (denote-known-keywords '("dev" "ux" "design" "list" "fleeting" "meeting"))
   (denote-infer-keywords t) 
   (denote-sort-keywords t) 
   (denote-date-prompt-use-org-read-date t)
@@ -1096,15 +1086,11 @@ The [[https://github.com/minad/jinx][JINX package]] provides a performant option
 
 *** TODO Use Nix to install jinx with dictionaries
 * TODO Programming
-** TODO LSP
+** TODO LSP (eglot)
 ** TODO Nix
 ** TODO Golang
 ** TODO Terminal/Shell commands
 - [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
-
-* TODO Presentations
-I want to emulate [[https://systemcrafters.net/emacs-tips/presentations-with-org-present/][Systemcrafter Presentations]] setup, so I am going to follow the respective blog post for setting this up. Another option, that popped up recently is [[https://github.com/positron-solutions/dslide
-][dslide]]. Could be an option as well.
 
 * Misc
 ** Diminish
@@ -1135,16 +1121,3 @@ We also increase Read Process Output Max so Emacs can read more data.
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 #+end_src
 
-* Trying out
-These are some packages and snippets I have not yet incorporated into my config. Nonetheless I want to save them for possible future use.
-
-** ovistoica/js-pkg-mode at d2a609a6cfa0a00d6a96e53e124542e464ccc192
-https://github.com/ovistoica/js-pkg-mode/tree/d2a609a6cfa0a00d6a96e53e124542e464ccc192?tab=readme-ov-file
-
-** The Emacs Window Management Almanac | Karthinks
-https://karthinks.com/software/emacs-window-management-almanac/
-Try out ace-window
-
-** To manually pin a position to jump back to later, there is point-to-register (C-x r SPC) and jump-to-register (C-x r j). Again, this switches windows as a side-effect.
-** Wilfred/deadgrep: fast, friendly searching with ripgrep and Emacs
-https://github.com/Wilfred/deadgrep?tab=readme-ov-file

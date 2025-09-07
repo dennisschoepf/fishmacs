@@ -254,7 +254,7 @@
 		(unwind-protect
 				(progn
 					(setq org-agenda-window-setup 'only-window)
-					(org-agenda nil "w"))
+					(org-agenda nil "p"))
 			(setq org-agenda-window-setup current-value))))
 
 (use-package general
@@ -352,7 +352,7 @@
 		"o l" '(org-agenda :wk "Open al[l] agenda views")
 		"o a" '((lambda () (interactive) (org-agenda nil "p")) :wk "Open personal [a]genda")
 		"o w a" '((lambda () (interactive) (org-agenda nil "w")) :wk "Open work [a]genda")
-		"o w f" '(dnsc/open-agenda-only-window :wk "Open work [a]genda")
+		"o w f" '(dnsc/open-agenda-only-window :wk "Open personal [a]genda")
 		"o w n" '((lambda () (interactive) (find-file "~/orgnzr/work.org")) :wk "Open work [n]ote")
 		"o m t" '(org-todo :wk "Change todo state")
 		"o m c" '(org-toggle-checkbox :wk "Toggle [c]heckbox")
@@ -366,6 +366,7 @@
 		"g c c" '(magit-commit-create :wk "[c]ommit")
 		"g f" '(:ignore t :wk "[f]ind")
 		"g f c" '(magit-show-commit :wk "[c]ommit")
+		"g f l" '(magit-log :wk "[l]og")
 		"g f f" '(magit-find-file :wk "[f]ile")
 		"g F" '(magit-fetch :wk "[F]etch")
 		"g l" '(git-link :wk "Navigate to git forge [l]ink")
@@ -386,7 +387,7 @@
 		"p p" '(project-switch-project :wk "switch [p]rojects")
 		"p b" '(consult-project-buffer :wk "switch [b]uffers within project")
 		"p g" '(consult-ripgrep :wk "[s]earch within project")
-		"p s" '(project-shell :wk "Open [s]hell within project")
+		"p s" '(project-shell :wk "Opeommitn [s]hell within project")
 		"p d" '(project-dired :wk "Open [d]ired in project root")
 		"p c" '(project-compile :wk "[c]ompile project")
 		"p k" '(project-kill-buffers :wk "[d]elete all project buffers")
@@ -717,7 +718,7 @@
   (org-src-tab-acts-natively t)
   (org-edit-src-content-indentation 0)
   (org-edit-src-preserve-indentation nil)
-  (org-log-done 'time)
+  ;; (org-log-done 'time)
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
@@ -747,15 +748,7 @@
    '(("p" "Personal" 
 	    ((agenda "")
 	     (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
-		   (tags "+inbox" ((org-agenda-overriding-header "Uncategorized"))))
-	    ((org-agenda-tag-filter-preset '("-work"))))
-	   ("w" "Work"
-	    ((agenda "")
-	     (tags "+work+TODO=\"NEXT\"" ((org-agenda-overriding-header "Time-Insensitive Tasks")))
-	     (tags "+work+TODO=\"TODO\""
-			       ((org-agenda-overriding-header "Unscheduled Tasks")
-			        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
-	    ((org-agenda-tag-filter-preset '("+work"))))))
+		   (tags "+inbox" ((org-agenda-overriding-header "Uncategorized")))))))
   :hook
   (org-mode . org-indent-mode)
   (org-mode . (lambda() (electric-indent-local-mode -1)))
@@ -790,7 +783,7 @@
   :custom
   (denote-directory (expand-file-name "~/orgnzr/notes/"))
   (denote-save-buffers nil)
-  (denote-known-keywords '("writing" "dev" "ux" "design" "collection" "fleeting" "meet" "projectmanagement"))
+  (denote-known-keywords '("dev" "ux" "design" "list" "fleeting" "meeting"))
   (denote-infer-keywords t) 
   (denote-sort-keywords t) 
   (denote-date-prompt-use-org-read-date t)
