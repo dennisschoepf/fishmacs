@@ -741,8 +741,11 @@
   (org-archive-location "~/orgnzr/archive.org::* From %s")
   (org-startup-folded t)
   (org-startup-indented t)
+  (org-priority-highest ?A)
+  (org-priority-lowest ?D)
+  (org-default-priority ?D)
   (org-todo-keywords
-   '((sequence "PROJECT(p)" "TODO(t)" "NEXT(n)" "|" "DONE(d)")))
+   '((sequence "TODO(t)" "PROJECT(p)" "|" "DONE(d)")))
   (org-default-notes-file "~/orgnzr/inbox.org")
   (org-agenda-files '("~/orgnzr/"))
   (org-hide-emphasis-markers t)
@@ -767,10 +770,11 @@
   (org-agenda-custom-commands
    '(("p" "Personal" 
 	    ((agenda "")
-	     (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
-       (alltodo "" (
-                   (org-agenda-files '("~/orgnzr/inbox.org"))
-                   (org-agenda-overriding-header "Uncategorized")))))))
+	     (tags-todo "PRIORITY=\"A\"|PRIORITY=\"B\"|PRIORITY=\"C\""
+                  ((org-agenda-overriding-header "Next Tasks")))
+       (alltodo ""
+                ((org-agenda-files '("~/orgnzr/inbox.org"))
+                 (org-agenda-overriding-header "Uncategorized")))))))
   :hook
   (org-mode . org-indent-mode)
   (org-mode . (lambda() (electric-indent-local-mode -1)))
