@@ -864,6 +864,18 @@
     (insert text)
     (save-buffer)))
 
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
+(use-package nix-ts-mode
+  :ensure t
+  :mode "\\.nix\\'")
+
 (use-package diminish)
 
 (setq elpaca-after-init-time (or elpaca-after-init-time (current-time)))

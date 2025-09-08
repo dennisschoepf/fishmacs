@@ -118,6 +118,7 @@ This disables unwanted UI elements before Emacs has a chance to draw them on the
 #+begin_src emacs-lisp :tangle ./early-init.el
 (menu-bar-mode t)
 (tool-bar-mode -1)
+(tab-bar-mode -1)
 (scroll-bar-mode -1)
 (blink-cursor-mode -1)
 (pixel-scroll-precision-mode 1)
@@ -1128,6 +1129,28 @@ Some helper functions to e.g. call externally via ~emacsclient --eval~.
     (save-buffer)))
 #+end_src
 
+* Treesitter
+As of September 2025 Treesitter is still not really plug-and-play in Emacs. Therefore I am using ~treesit-auto~ to simplify installing and setting up the ~-ts~ modes.
+
+#+begin_src emacs-lisp
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+#+end_src
+
+* Language-Specific-Modes
+** Nix
+
+#+begin_src emacs-lisp
+(use-package nix-ts-mode
+  :ensure t
+  :mode "\\.nix\\'")
+#+end_src
+
 * Misc
 ** Diminish
 This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.
@@ -1170,3 +1193,4 @@ My use Cases for terminals within emacs are:
 - General CLI tasks, run TUIs from the project root or current directory
 - Run shell commands for current projects/files (see ~project-compile~ or ~async-shell-command~)
 
+  

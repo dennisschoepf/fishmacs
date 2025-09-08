@@ -9,6 +9,7 @@
 
 (menu-bar-mode t)
 (tool-bar-mode -1)
+(tab-bar-mode -1)
 (scroll-bar-mode -1)
 (blink-cursor-mode -1)
 (pixel-scroll-precision-mode 1)
