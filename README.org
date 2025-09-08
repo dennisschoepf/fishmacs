@@ -1113,6 +1113,21 @@ The [[https://github.com/minad/jinx][JINX package]] provides a performant option
 #+end_src
 
 *** TODO Use Nix to install jinx with dictionaries
+** Helpers
+Some helper functions to e.g. call externally via ~emacsclient --eval~.
+
+#+begin_src emacs-lisp
+;; Works in conjunction with a raycast script
+;; so that I can add tasks to my inbox directly from raycast
+(defun dnsc/add-to-inbox (text)
+  (save-window-excursion
+    (find-file (concat org-directory "/inbox.org"))
+    (goto-char (point-max))
+    (insert "\n")
+    (insert text)
+    (save-buffer)))
+#+end_src
+
 * Misc
 ** Diminish
 This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.

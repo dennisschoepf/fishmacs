@@ -854,6 +854,16 @@
 (use-package jinx
   :ensure t)
 
+;; Works in conjunction with a raycast script
+;; so that I can add tasks to my inbox directly from raycast
+(defun dnsc/add-to-inbox (text)
+  (save-window-excursion
+    (find-file (concat org-directory "/inbox.org"))
+    (goto-char (point-max))
+    (insert "\n")
+    (insert text)
+    (save-buffer)))
+
 (use-package diminish)
 
 (setq elpaca-after-init-time (or elpaca-after-init-time (current-time)))
