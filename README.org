@@ -286,15 +286,12 @@ This makes sure that each buffer name is unique.
   (setq uniquify-buffer-name-style 'forward))
 #+end_src
 
-* Keybindings
+* Keybindings & Motions
 ** Evil Mode
 An extensible vi/vim layer for Emacs. Because…let’s face it. The Vim keybindings are just plain better.
 Notes:
 - You can toggle evil mode with C-z.
 - To paste without copy (yank) select the text and use P (shift-p).
-
-*** TODO Evil Exchange
-*** TODO avy-goto
 
 #+begin_src emacs-lisp
 (use-package evil
@@ -533,6 +530,31 @@ I am still learning all the keybindings that Emacs provides (including the ones 
   (which-key-idle-delay 0.5)       ;; Set the time delay (in seconds) for the which-key popup to appear
   (which-key-max-description-length 35)
   (which-key-allow-imprecise-window-fit nil)) 
+#+end_src
+
+** Avy
+I am used to ~flash.nvim~, which seems to be inspired by ~avy~, so I am using that. The only keybinding I use is ~RET~ in normal mode to trigger ~(avy-goto-char-2)~
+
+#+begin_src emacs-lisp
+(use-package avy
+  :ensure t
+  :after evil
+  :custom
+  (avy-background nil)
+  (avy-all-windows nil)
+  :bind
+  (:map evil-normal-state-map ("RET" . avy-goto-char-2)))
+#+end_src
+
+** Replace with register
+One of my most used plugins in Neovim is ~substitute.nvim~. This is a replacement for ~evil-mode~.
+
+#+begin_src emacs-lisp
+(use-package evil-replace-with-register
+  :ensure t
+  :bind
+  (:map evil-normal-state-map ("s" . evil-replace-with-register))
+  (:map evil-visual-state-map ("s" . evil-replace-with-register)))
 #+end_src
 
 * Workspaces, Projects & Buffer Management
@@ -943,6 +965,7 @@ My org mode specific configuration.
   (org-edit-src-content-indentation 0)
   (org-edit-src-preserve-indentation nil)
   ;; (org-log-done 'time)
+  (org-archive-location "~/orgnzr/archive.org::* From %s")
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
@@ -1027,7 +1050,7 @@ Currently using ~denote~ as it is way simpler than ~org-roam~.
 (use-package denote
   :ensure t
   :custom
-  (denote-directory (expand-file-name "~/orgnzr/notes/"))
+  (denote-directory (expand-file-name "~/orgnzr"))
   (denote-save-buffers nil)
   (denote-known-keywords '("dev" "ux" "design" "list" "fleeting" "meeting"))
   (denote-infer-keywords t) 
@@ -1090,13 +1113,6 @@ The [[https://github.com/minad/jinx][JINX package]] provides a performant option
 #+end_src
 
 *** TODO Use Nix to install jinx with dictionaries
-* TODO Programming
-** TODO LSP (eglot)
-** TODO Nix
-** TODO Golang
-** TODO Terminal/Shell commands
-- [ ] Terminal: https://codeberg.org/akib/emacs-eat or libvterm
-
 * Misc
 ** Diminish
 This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.
@@ -1125,4 +1141,17 @@ We also increase Read Process Output Max so Emacs can read more data.
 ;; Increase the amount of data which Emacs reads from the process
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 #+end_src
+
+* TODO Desired Functionality
+** Project-wide search and replace
+~deadgrep~ might be an option
+
+** LSP
+I want to have an LSP configured for at least Nix and Golang. Eglot might be an option as these two languages only require a single language server to run.
+
+** Terminal Multiplexing
+My use Cases for terminals within emacs are:
+
+- General CLI tasks, run TUIs from the project root or current directory
+- Run shell commands for current projects/files (see ~project-compile~ or ~async-shell-command~)
 

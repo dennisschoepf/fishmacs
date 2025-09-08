@@ -425,6 +425,21 @@
   (which-key-max-description-length 35)
   (which-key-allow-imprecise-window-fit nil))
 
+(use-package avy
+  :ensure t
+  :after evil
+  :custom
+  (avy-background nil)
+  (avy-all-windows nil)
+  :bind
+  (:map evil-normal-state-map ("RET" . avy-goto-char-2)))
+
+(use-package evil-replace-with-register
+  :ensure t
+  :bind
+  (:map evil-normal-state-map ("s" . evil-replace-with-register))
+  (:map evil-visual-state-map ("s" . evil-replace-with-register)))
+
 (use-package activities
   :ensure t
   :custom
@@ -723,6 +738,7 @@
   (org-edit-src-content-indentation 0)
   (org-edit-src-preserve-indentation nil)
   ;; (org-log-done 'time)
+  (org-archive-location "~/orgnzr/archive.org::* From %s")
   (org-startup-folded t)
   (org-startup-indented t)
   (org-todo-keywords
@@ -787,7 +803,7 @@
 (use-package denote
   :ensure t
   :custom
-  (denote-directory (expand-file-name "~/orgnzr/notes/"))
+  (denote-directory (expand-file-name "~/orgnzr"))
   (denote-save-buffers nil)
   (denote-known-keywords '("dev" "ux" "design" "list" "fleeting" "meeting"))
   (denote-infer-keywords t) 
