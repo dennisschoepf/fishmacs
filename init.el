@@ -200,6 +200,124 @@
   :config
   (setq uniquify-buffer-name-style 'forward))
 
+(set-face-attribute 'default nil
+					:font "VictorMono Nerd Font"
+					:height 180
+					:weight 'normal)
+(set-face-attribute 'variable-pitch nil
+					:font "VictorMono Nerd Font"
+					:height 180
+					:weight 'normal)
+(set-face-attribute 'fixed-pitch nil
+					:font "VictorMono Nerd Font"
+					:height 180
+					:weight 'normal)
+;; Makes commented text and keywords italics.
+;; This is working in emacsclient but not emacs.
+;; Your font must have an italic face available.
+(set-face-attribute 'font-lock-comment-face nil
+					:slant 'italic)
+(set-face-attribute 'font-lock-keyword-face nil
+					:slant 'italic)
+
+;; This sets the default font on all graphical frames created after restarting Emacs.
+;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
+;; are not right unless I also add this method of setting the default font.
+(add-to-list 'default-frame-alist '(font . "VictorMono Nerd Font-18"))
+
+;; Uncomment the following line if line spacing needs adjusting.
+(setq-default line-spacing 0.12)
+
+(use-package modus-themes
+	:ensure t
+  :config
+
+  (custom-set-faces
+   '(tab-bar ((t (:height 0.85))))
+   '(activities-tabs
+     ((t (:slant italic :foreground "#c6daff" :background "#0d0e1c"))))
+   '(tab-bar-tab-inactive
+     ((t (:slant italic :foreground "#c6daff" :background "#0d0e1c")))))
+  
+  (setq modus-themes-common-palette-overrides
+		'((border-mode-line-active bg-mode-line-active)
+          (border-mode-line-inactive bg-mode-line-inactive)
+		  (fg-heading-1 blue-cooler)
+		  (prose-done fg-dim)
+		  (prose-done fg-dim)
+		  (fringe unspecified)
+		  (bg-line-number-inactive unspecified)
+          (bg-line-number-active bg-dim)
+          (bg-hl-line bg-dim)
+		  (bg-prose-block-delimiter unspecified)
+		  (bg-tab-bar bg-main)
+		  (bg-tab-current bg-main)
+		  (fg-tab-current bg-main)
+		  (bg-tab-other bg-main)
+		  (fg-tab-other bg-main)
+		  (comment fg-dim)))
+
+  (setq modus-themes-fringes nil)
+  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-bold-constructs t)
+  (setq modus-themes-mixed-fonts t)
+  (setq modus-themes-custom-auto-reload t)
+
+  (load-theme 'modus-vivendi-tinted))
+
+(use-package evil-anzu)
+
+(use-package anzu
+  :init
+  (global-anzu-mode +1))
+
+(use-package mood-line
+	:ensure t
+	:config
+	(mood-line-mode)
+  :custom
+	(mood-line-format (mood-line-defformat
+										 :left
+                     (((when (mode-line-window-selected-p)
+                         (mood-line-segment-modal)) . " ")
+                      ((when (mode-line-window-selected-p)
+                         (propertize "|" 'face 'modus-themes-fg-cyan-faint)) . " ")
+											((mood-line-segment-buffer-status) . " ")
+											((if (mode-line-window-selected-p)
+													 (mood-line-segment-buffer-name)
+												 (propertize (mood-line-segment-buffer-name) 'face 'mood-line-unimportant)) . "")
+                      ((propertize " (" 'face 'mood-line-unimportant) . "")
+                      ((propertize (mood-line-segment-major-mode) 'face 'mood-line-unimportant) . "")
+                      ((propertize ")" 'face 'mood-line-unimportant) . "")
+                      ((when (mode-line-window-selected-p)
+                         (propertize " |" 'face 'modus-themes-fg-cyan-faint)) . " ")
+                      ((when (mode-line-window-selected-p)
+                         (mood-line-segment-vc)) . " "))
+                     :right
+                     (((when (mode-line-window-selected-p)
+                         (mood-line-segment-checker)) . " ")
+											;; ((when (mode-line-window-selected-p)
+                      ;;    (mood-line-segment-process)) . " ")
+                      ((mood-line-segment-anzu) . " ")
+                      ((when (mode-line-window-selected-p)
+                         (mood-line-segment-cursor-position)) . " ")
+                      ((when (mode-line-window-selected-p)
+                         (mood-line-segment-scroll)) . " ")
+                      (propertize "[" 'face 'modus-themes-fg-magenta-intense)
+											((propertize (mood-line-segment-project) 'face 'modus-themes-fg-magenta-intense) . "")
+                      (propertize "]" 'face 'modus-themes-fg-magenta-intense)))))
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package emacs
+  :ensure nil
+  :bind
+  ("C-+" . text-scale-increase)
+  ("C--" . text-scale-decrease)
+  ("<C-wheel-up>" . text-scale-increase)
+  ("<C-wheel-down>" . text-scale-decrease))
+
 (use-package evil
   :ensure t
   :init ;; Execute code Before a package is loaded
@@ -440,23 +558,26 @@
   (:map evil-normal-state-map ("s" . evil-replace-with-register))
   (:map evil-visual-state-map ("s" . evil-replace-with-register)))
 
-(use-package activities
-  :ensure t
-  :custom
-  (setq edebug-inhibit-emacs-lisp-mode-bindings t)
-  :init
-  (activities-mode)
-  (activities-tabs-mode))
+(defun dnsc/project-compilation-buffer-name (mode)
+  (format "*compilation: %s" (project-name (project-current))))
 
 (use-package project
   :ensure nil
   :custom
-  (project-vc-extra-root-markers '(".project" "go.mod" "package.json" "deps.edn" "bb.edn")))
+  (project-compilation-buffer-name-function #'dnsc/project-compilation-buffer-name)
+  (project-vc-extra-root-markers '(".project" "go.mod" "package.json" "deps.edn" "bb.edn"))
+  (project-switch-commands
+   '((project-find-file "find" "f")
+    (project-find-regexp "regex" "r")
+    (magit-project-status "magit" "g")
+    (project-compile "compile" "c")
+    (project-shell "shell" "s"))))
 
 (use-package popper
   :ensure t
   :init
   (setq popper-group-function #'popper-group-by-directory)
+  (setq popper-window-height 40)
   (setq popper-reference-buffers
         '("\\*Messages\\*"
           "Output\\*$"
@@ -465,124 +586,6 @@
           compilation-mode))
   (popper-mode +1)
   (popper-echo-mode +1))
-
-(use-package modus-themes
-	:ensure t
-  :config
-
-  (custom-set-faces
-   '(tab-bar ((t (:height 0.85))))
-   '(activities-tabs
-     ((t (:slant italic :foreground "#c6daff" :background "#0d0e1c"))))
-   '(tab-bar-tab-inactive
-     ((t (:slant italic :foreground "#c6daff" :background "#0d0e1c")))))
-  
-  (setq modus-themes-common-palette-overrides
-		'((border-mode-line-active bg-mode-line-active)
-          (border-mode-line-inactive bg-mode-line-inactive)
-		  (fg-heading-1 blue-cooler)
-		  (prose-done fg-dim)
-		  (prose-done fg-dim)
-		  (fringe unspecified)
-		  (bg-line-number-inactive unspecified)
-          (bg-line-number-active bg-dim)
-          (bg-hl-line bg-dim)
-		  (bg-prose-block-delimiter unspecified)
-		  (bg-tab-bar bg-main)
-		  (bg-tab-current bg-main)
-		  (fg-tab-current bg-main)
-		  (bg-tab-other bg-main)
-		  (fg-tab-other bg-main)
-		  (comment fg-dim)))
-
-  (setq modus-themes-fringes nil)
-  (setq modus-themes-italic-constructs t)
-  (setq modus-themes-bold-constructs t)
-  (setq modus-themes-mixed-fonts t)
-  (setq modus-themes-custom-auto-reload t)
-
-  (load-theme 'modus-vivendi-tinted))
-
-(use-package evil-anzu)
-
-(use-package anzu
-  :init
-  (global-anzu-mode +1))
-
-(use-package mood-line
-	:ensure t
-	:config
-	(mood-line-mode)
-  :custom
-	(mood-line-format (mood-line-defformat
-										 :left
-                     (((when (mode-line-window-selected-p)
-                         (mood-line-segment-modal)) . " ")
-                      ((when (mode-line-window-selected-p)
-                         (propertize "|" 'face 'modus-themes-fg-cyan-faint)) . " ")
-											((mood-line-segment-buffer-status) . " ")
-											((if (mode-line-window-selected-p)
-													 (mood-line-segment-buffer-name)
-												 (propertize (mood-line-segment-buffer-name) 'face 'mood-line-unimportant)) . "")
-                      ((propertize " (" 'face 'mood-line-unimportant) . "")
-                      ((propertize (mood-line-segment-major-mode) 'face 'mood-line-unimportant) . "")
-                      ((propertize ")" 'face 'mood-line-unimportant) . "")
-                      ((when (mode-line-window-selected-p)
-                         (propertize " |" 'face 'modus-themes-fg-cyan-faint)) . " ")
-                      ((when (mode-line-window-selected-p)
-                         (mood-line-segment-vc)) . " "))
-                     :right
-                     (((when (mode-line-window-selected-p)
-                         (mood-line-segment-checker)) . " ")
-											;; ((when (mode-line-window-selected-p)
-                      ;;    (mood-line-segment-process)) . " ")
-                      ((mood-line-segment-anzu) . " ")
-                      ((when (mode-line-window-selected-p)
-                         (mood-line-segment-cursor-position)) . " ")
-                      ((when (mode-line-window-selected-p)
-                         (mood-line-segment-scroll)) . " ")
-                      (propertize "[" 'face 'modus-themes-fg-magenta-intense)
-											((propertize (mood-line-segment-project) 'face 'modus-themes-fg-magenta-intense) . "")
-                      (propertize "]" 'face 'modus-themes-fg-magenta-intense)))))
-
-(set-face-attribute 'default nil
-					:font "VictorMono Nerd Font"
-					:height 180
-					:weight 'normal)
-(set-face-attribute 'variable-pitch nil
-					:font "VictorMono Nerd Font"
-					:height 180
-					:weight 'normal)
-(set-face-attribute 'fixed-pitch nil
-					:font "VictorMono Nerd Font"
-					:height 180
-					:weight 'normal)
-;; Makes commented text and keywords italics.
-;; This is working in emacsclient but not emacs.
-;; Your font must have an italic face available.
-(set-face-attribute 'font-lock-comment-face nil
-					:slant 'italic)
-(set-face-attribute 'font-lock-keyword-face nil
-					:slant 'italic)
-
-;; This sets the default font on all graphical frames created after restarting Emacs.
-;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
-;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "VictorMono Nerd Font-18"))
-
-;; Uncomment the following line if line spacing needs adjusting.
-(setq-default line-spacing 0.12)
-
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
-(use-package emacs
-  :ensure nil
-  :bind
-  ("C-+" . text-scale-increase)
-  ("C--" . text-scale-decrease)
-  ("<C-wheel-up>" . text-scale-increase)
-  ("<C-wheel-down>" . text-scale-decrease))
 
 (use-package orderless
   :init
